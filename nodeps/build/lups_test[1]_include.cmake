@@ -1,0 +1,5 @@
+if(EXISTS "/home/eemil/dev/c++/lups/nodeps/build/lups_test[1]_tests.cmake")
+  include("/home/eemil/dev/c++/lups/nodeps/build/lups_test[1]_tests.cmake")
+else()
+  add_test(lups_test_NOT_BUILT lups_test_NOT_BUILT)
+endif()

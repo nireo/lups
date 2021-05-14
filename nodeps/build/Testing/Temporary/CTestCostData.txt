@@ -1,0 +1,3 @@
+LexerTest.TestNextToken 0 0
+---
+LexerTest.TestNextToken

@@ -17,6 +17,7 @@ enable_testing()
 
 add_executable(
 	lups_test
+	tests.cpp
 	token.h
 	lexer.cpp
 )
@@ -26,4 +27,4 @@ target_link_libraries(
 )
 
 include(GoogleTest)
-gtest_discover_tests(hello_test)
+gtest_discover_tests(lups_test)

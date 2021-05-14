@@ -35,10 +35,15 @@ const TokenType GT = ">";
 
 const TokenType FUNCTION = "FUNCTION";
 const TokenType LET = "LET";
+const TokenType TRUE = "TRUE";
+const TokenType FALSE = "FALSE";
+const TokenType IF = "IF";
+const TokenType ELSE = "ELSE";
+const TokenType RETURN = "RETURN";
 
 const std::unordered_map<std::string, TokenType> KEYWORDS = {
-		{"func", FUNCTION},
-		{"let", LET},
+		{"func", FUNCTION}, {"let", LET},   {"true", TRUE},     {"false", FALSE},
+		{"if", IF},         {"else", ELSE}, {"return", RETURN},
 };
 } // namespace tokentypes
 
