@@ -18,6 +18,10 @@ const TokenType INT = "INT";
 
 const TokenType ASSIGN = "=";
 const TokenType PLUS = "+";
+const TokenType MINUS = "=";
+const TokenType BANG = "!";
+const TokenType ASTERISK = "*";
+const TokenType SLASH = "/";
 const TokenType COMMA = ",";
 const TokenType SEMICOLON = ";";
 
@@ -25,6 +29,9 @@ const TokenType LPAREN = "(";
 const TokenType RPAREN = ")";
 const TokenType LBRACE = "{";
 const TokenType RBRACE = "}";
+
+const TokenType LT = "<";
+const TokenType GT = ">";
 
 const TokenType FUNCTION = "FUNCTION";
 const TokenType LET = "LET";

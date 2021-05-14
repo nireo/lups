@@ -8,7 +8,6 @@ class Lexer {
 public:
 	Lexer(const std::string &input);
 	Token next_token();
-	std::string read_ident();
 
 private:
 	std::string m_input;
@@ -16,7 +15,10 @@ private:
 	char m_ch;
 	int m_read_pos;
 
+	std::string read_ident();
+	std::string read_number();
 	void read_char();
+	void skip_whitespace();
 };
 
 #endif

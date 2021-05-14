@@ -36,6 +36,8 @@ std::string lookup_ident(const std::string &str) {
 Token Lexer::next_token() {
 	Token tok;
 
+	skip_whitespace();
+
 	switch (m_ch) {
 	case '=':
 		tok = new_token(tokentypes::ASSIGN, m_ch);
@@ -49,6 +51,18 @@ Token Lexer::next_token() {
 		tok = new_token(tokentypes::COMMA, m_ch);
 	case '+':
 		tok = new_token(tokentypes::PLUS, m_ch);
+	case '-':
+		tok = new_token(tokentypes::MINUS, m_ch);
+	case '!':
+		tok = new_token(tokentypes::BANG, m_ch);
+	case '/':
+		tok = new_token(tokentypes::SLASH, m_ch);
+	case '*':
+		tok = new_token(tokentypes::ASTERISK, m_ch);
+	case '<':
+		tok = new_token(tokentypes::LT, m_ch);
+	case '>':
+		tok = new_token(tokentypes::GT, m_ch);
 	case '{':
 		tok = new_token(tokentypes::LBRACE, m_ch);
 	case '}':
@@ -61,6 +75,10 @@ Token Lexer::next_token() {
 			tok.literal = read_ident();
 			tok.type = lookup_ident(tok.literal);
 			return tok;
+
+		} else if (std::isdigit(m_ch)) {
+			tok.type = tokentypes::INT;
+			tok.literal = read_number();
 		} else {
 			tok = new_token(tokentypes::ILLEGAL, m_ch);
 		}
@@ -70,9 +88,23 @@ Token Lexer::next_token() {
 	return tok;
 }
 
+void Lexer::skip_whitespace() {
+	while (m_ch == ' ' || m_ch == '\t' || m_ch == '\n' || m_ch == '\r')
+		read_char();
+}
+
 std::string Lexer::read_ident() {
 	int start_pos = m_pos;
 	while (std::isalpha(m_ch)) {
+		read_char();
+	}
+
+	return std::string(m_input.begin()+start_pos, m_input.begin()+m_pos);
+}
+
+std::string Lexer::read_number() {
+	int start_pos = m_pos;
+	while (std::isdigit(m_ch)) {
 		read_char();
 	}
 
