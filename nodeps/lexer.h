@@ -19,6 +19,8 @@ private:
 	std::string read_number();
 	void read_char();
 	void skip_whitespace();
+
+	char peek_char();
 };
 
 #endif

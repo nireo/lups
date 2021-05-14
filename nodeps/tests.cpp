@@ -12,7 +12,7 @@ TEST(LexerTest, TestNextToken) {
 	expected.push_back(std::make_pair(tokentypes::LPAREN, "("));
 	expected.push_back(std::make_pair(tokentypes::RPAREN, ")"));
 	expected.push_back(std::make_pair(tokentypes::LBRACE, "{"));
-	expected.push_back(std::make_pair(tokentypes::RBRACE, "="));
+	expected.push_back(std::make_pair(tokentypes::RBRACE, "}"));
 	expected.push_back(std::make_pair(tokentypes::COMMA, ","));
 	expected.push_back(std::make_pair(tokentypes::SEMICOLON, ";"));
 
@@ -39,6 +39,7 @@ TEST(LexerTest, IfStatements) {
 	expected.push_back(std::make_pair(tokentypes::LPAREN, "("));
 	expected.push_back(std::make_pair(tokentypes::INT, "5"));
 	expected.push_back(std::make_pair(tokentypes::LT, "<"));
+	expected.push_back(std::make_pair(tokentypes::INT, "10"));
 	expected.push_back(std::make_pair(tokentypes::RPAREN, ")"));
 	expected.push_back(std::make_pair(tokentypes::LBRACE, "{"));
 	expected.push_back(std::make_pair(tokentypes::RETURN, "return"));

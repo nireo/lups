@@ -1,10 +1,10 @@
-Start testing: May 14 23:33 EEST
+Start testing: May 15 00:56 EEST
 ----------------------------------------------------------
-1/1 Testing: LexerTest.TestNextToken
-1/1 Test: LexerTest.TestNextToken
+1/2 Testing: LexerTest.TestNextToken
+1/2 Test: LexerTest.TestNextToken
 Command: "/home/eemil/dev/c++/lups/nodeps/build/lups_test" "--gtest_filter=LexerTest.TestNextToken" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/nodeps/build
-"LexerTest.TestNextToken" start time: May 14 23:33 EEST
+"LexerTest.TestNextToken" start time: May 15 00:56 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -13,12 +13,45 @@ Note: Google Test filter = LexerTest.TestNextToken
 [----------] Global test environment set-up.
 [----------] 1 test from LexerTest
 [ RUN      ] LexerTest.TestNextToken
+[       OK ] LexerTest.TestNextToken (0 ms)
+[----------] 1 test from LexerTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
 <end of output>
-Test time =   0.05 sec
+Test time =   0.00 sec
 ----------------------------------------------------------
-Test Failed.
-"LexerTest.TestNextToken" end time: May 14 23:33 EEST
+Test Passed.
+"LexerTest.TestNextToken" end time: May 15 00:56 EEST
 "LexerTest.TestNextToken" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: May 14 23:33 EEST
+2/2 Testing: LexerTest.IfStatements
+2/2 Test: LexerTest.IfStatements
+Command: "/home/eemil/dev/c++/lups/nodeps/build/lups_test" "--gtest_filter=LexerTest.IfStatements" "--gtest_also_run_disabled_tests"
+Directory: /home/eemil/dev/c++/lups/nodeps/build
+"LexerTest.IfStatements" start time: May 15 00:56 EEST
+Output:
+----------------------------------------------------------
+Running main() from /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = LexerTest.IfStatements
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from LexerTest
+[ RUN      ] LexerTest.IfStatements
+[       OK ] LexerTest.IfStatements (0 ms)
+[----------] 1 test from LexerTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"LexerTest.IfStatements" end time: May 15 00:56 EEST
+"LexerTest.IfStatements" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: May 15 00:56 EEST

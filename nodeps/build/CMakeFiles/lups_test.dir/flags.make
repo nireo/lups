@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -isystem /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest
 
-CXX_FLAGS = -std=gnu++11
+CXX_FLAGS = -std=gnu++17
 
