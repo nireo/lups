@@ -11,11 +11,11 @@ public:
 	virtual ~Node(){};
 	virtual std::string literal() = 0;
 	virtual std::string type();
+	virtual std::string string() = 0;
 };
 
 class Statement : public Node {
 public:
-	virtual ~Statement(){};
 	virtual void statement_node() = 0;
 	virtual std::string literal() = 0;
 	virtual std::string type() = 0;
@@ -42,20 +42,23 @@ public:
 
 class Identifier : public Expression {
  public:
-	std::string TokenLiteral() { return tok.literal; }
-	std::string String() { return value; }
-	std::string Type() { return "Identifier"; }
+	void expression_node() {};
+	std::string literal() { return tok.literal; }
+	std::string string() { return value; }
+	std::string type() { return "Identifier"; }
 
 	Token tok;
 	std::string value;
 };
 
 class LetStatement : public Statement {
-	void statementNode() {}
+public:
+	void statement_node() {}
 	std::string literal() { return tok.literal; }
-	std::string string();
+	std::string string() {
+		return "";
+	}
 	std::string type() { return "LetStatement"; }
-
 	std::unique_ptr<Identifier> name;
 	std::unique_ptr<Expression> val;
 

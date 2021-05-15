@@ -12,10 +12,18 @@ public:
 	std::unique_ptr<Program> parse_program();
 
 private:
-	std::unique_ptr<Lexer> lx;
+	void next_token();
+	std::unique_ptr<Lexer> m_lx;
 
-	Token current;
-	Token peek;
+	Token m_current;
+	Token m_peek;
+
+	std::unique_ptr<Statement> parse_statement();
+	std::unique_ptr<Statement> parse_let_statement();
+
+	bool expect_peek(TokenType tt);
+	bool peek_token_is(TokenType tt);
+	bool current_token_is(TokenType tt);
 };
 
 #endif

@@ -1,6 +1,9 @@
+#include "ast.h"
 #include "lexer.h"
 #include "token.h"
+#include "parser.h"
 #include <gtest/gtest.h>
+#include <memory>
 #include <utility>
 
 TEST(LexerTest, TestNextToken) {
@@ -146,5 +149,30 @@ TEST(LexerTest, EqualNonEqual) {
 		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
 		EXPECT_EQ(expected[i].second, token.literal)
 				<< "token literals don't match";
+	}
+}
+
+TEST(ParserTest, LetStatements) {
+	std::string input =
+		"let x = 5;"
+		"let y = 10;"
+		"let foobar = 123456;";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	// check the the program ins't a nullptr
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+	EXPECT_EQ(program->m_statements.size(), 3) << "Wrong amount of statements";
+
+	std::string names[3] = { "x", "y", "foobar"};
+	for (int i = 0; i < (int)program->m_statements.size(); ++i) {
+		EXPECT_EQ(program->m_statements[i]->literal(), "let");
+
+		auto let_class = dynamic_cast<LetStatement*>(program->m_statements[i].get());
+		EXPECT_NE(let_class, nullptr);
+		EXPECT_EQ(let_class->name->value, names[i]);
+		EXPECT_EQ(let_class->name->literal(), names[i]);
 	}
 }
