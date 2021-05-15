@@ -1,22 +1,22 @@
 Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
 Change Dir: /home/eemil/dev/c++/lups/nodeps/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make -f Makefile cmTC_e3331/fast && /usr/bin/make  -f CMakeFiles/cmTC_e3331.dir/build.make CMakeFiles/cmTC_e3331.dir/build
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_7c25f/fast && /usr/bin/make  -f CMakeFiles/cmTC_7c25f.dir/build.make CMakeFiles/cmTC_7c25f.dir/build
 make[1]: Entering directory '/home/eemil/dev/c++/lups/nodeps/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_e3331.dir/src.c.o
-/usr/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_e3331.dir/src.c.o -c /home/eemil/dev/c++/lups/nodeps/build/CMakeFiles/CMakeTmp/src.c
-Linking C executable cmTC_e3331
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e3331.dir/link.txt --verbose=1
-/usr/bin/cc -rdynamic CMakeFiles/cmTC_e3331.dir/src.c.o -o cmTC_e3331 
-/usr/bin/ld: CMakeFiles/cmTC_e3331.dir/src.c.o: in function `main':
+Building C object CMakeFiles/cmTC_7c25f.dir/src.c.o
+/usr/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_7c25f.dir/src.c.o -c /home/eemil/dev/c++/lups/nodeps/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_7c25f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7c25f.dir/link.txt --verbose=1
+/usr/bin/cc -rdynamic CMakeFiles/cmTC_7c25f.dir/src.c.o -o cmTC_7c25f 
+/usr/bin/ld: CMakeFiles/cmTC_7c25f.dir/src.c.o: in function `main':
 src.c:(.text+0x3e): undefined reference to `pthread_create'
 /usr/bin/ld: src.c:(.text+0x4a): undefined reference to `pthread_detach'
 /usr/bin/ld: src.c:(.text+0x56): undefined reference to `pthread_cancel'
 /usr/bin/ld: src.c:(.text+0x67): undefined reference to `pthread_join'
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_e3331.dir/build.make:99: cmTC_e3331] Error 1
+make[1]: *** [CMakeFiles/cmTC_7c25f.dir/build.make:99: cmTC_7c25f] Error 1
 make[1]: Leaving directory '/home/eemil/dev/c++/lups/nodeps/build/CMakeFiles/CMakeTmp'
-make: *** [Makefile:127: cmTC_e3331/fast] Error 2
+make: *** [Makefile:127: cmTC_7c25f/fast] Error 2
 
 
 Source file was:
@@ -43,18 +43,18 @@ int main(void)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /home/eemil/dev/c++/lups/nodeps/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make -f Makefile cmTC_99d11/fast && /usr/bin/make  -f CMakeFiles/cmTC_99d11.dir/build.make CMakeFiles/cmTC_99d11.dir/build
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_87e36/fast && /usr/bin/make  -f CMakeFiles/cmTC_87e36.dir/build.make CMakeFiles/cmTC_87e36.dir/build
 make[1]: Entering directory '/home/eemil/dev/c++/lups/nodeps/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_99d11.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_99d11.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.20/Modules/CheckFunctionExists.c
-Linking C executable cmTC_99d11
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_99d11.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create -rdynamic CMakeFiles/cmTC_99d11.dir/CheckFunctionExists.c.o -o cmTC_99d11  -lpthreads 
+Building C object CMakeFiles/cmTC_87e36.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_87e36.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.20/Modules/CheckFunctionExists.c
+Linking C executable cmTC_87e36
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_87e36.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create -rdynamic CMakeFiles/cmTC_87e36.dir/CheckFunctionExists.c.o -o cmTC_87e36  -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_99d11.dir/build.make:99: cmTC_99d11] Error 1
+make[1]: *** [CMakeFiles/cmTC_87e36.dir/build.make:99: cmTC_87e36] Error 1
 make[1]: Leaving directory '/home/eemil/dev/c++/lups/nodeps/build/CMakeFiles/CMakeTmp'
-make: *** [Makefile:127: cmTC_99d11/fast] Error 2
+make: *** [Makefile:127: cmTC_87e36/fast] Error 2
 
 
 

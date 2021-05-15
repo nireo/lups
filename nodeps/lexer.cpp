@@ -28,11 +28,11 @@ Token new_token(TokenType type, char ch) {
 	return Token{type, std::string(1, ch)};
 }
 
-std::string lookup_ident(const std::string &str) {
-	if (tokentypes::KEYWORDS.count(str) > 0) {
-		return tokentypes::KEYWORDS.at(str);
-	}
-	return str;
+TokenType lookup_ident(const std::string &str) {
+	auto keyword = tokentypes::KEYWORDS.find(str);
+	if (keyword == tokentypes::KEYWORDS.end())
+		return tokentypes::IDENT;
+	return keyword->second;
 }
 
 Token Lexer::next_token() {
@@ -42,7 +42,12 @@ Token Lexer::next_token() {
 
 	switch (m_ch) {
 	case '=':
-		tok = new_token(tokentypes::ASSIGN, m_ch);
+		if (peek_char() == '=') {
+			tok = Token{.type=tokentypes::EQ, .literal="=="};
+			read_char();
+		} else {
+			tok = new_token(tokentypes::ASSIGN, m_ch);
+		}
 		read_char();
 		break;
 	case ';':
@@ -70,7 +75,12 @@ Token Lexer::next_token() {
 		read_char();
 		break;
 	case '!':
-		tok = new_token(tokentypes::BANG, m_ch);
+		if (peek_char() == '=') {
+			tok = Token{.type=tokentypes::NEQ, .literal="!="};
+			read_char();
+		} else {
+			tok = new_token(tokentypes::BANG, m_ch);
+		}
 		read_char();
 		break;
 	case '/':
@@ -106,14 +116,12 @@ Token Lexer::next_token() {
 		if (is_letter(m_ch)) {
 			tok.literal = read_ident();
 			tok.type = lookup_ident(tok.literal);
-			return tok;
-
 		} else if (is_digit(m_ch)) {
 			tok.type = tokentypes::INT;
 			tok.literal = read_number();
 		} else {
 			tok = new_token(tokentypes::ILLEGAL, m_ch);
-		read_char();
+			read_char();
 		}
 		break;
 	}
