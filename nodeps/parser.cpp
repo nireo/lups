@@ -2,7 +2,17 @@
 #include "ast.h"
 #include "token.h"
 #include <algorithm>
+#include <cstdlib>
 #include <memory>
+#include <sstream>
+#include <string>
+
+template <typename T> T FromString(const std::string &str) {
+	std::istringstream ss(str);
+	T ret;
+	ss >> ret;
+	return ret;
+}
 
 using std::unique_ptr;
 
@@ -26,6 +36,7 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 
 	m_prefix_parse_fns = std::unordered_map<TokenType, PrefixParseFn>();
 	add_prefix_parse(tokentypes::IDENT, &Parser::parse_identifier);
+	add_prefix_parse(tokentypes::INT, &Parser::parse_integer_literal);
 
 	next_token();
 	next_token();
@@ -124,6 +135,21 @@ unique_ptr<Expression> Parser::parse_identifier() {
 	identifier->value = m_current.literal;
 
 	return identifier;
+}
+
+unique_ptr<Expression> Parser::parse_integer_literal() {
+	auto lit = std::make_unique<IntegerLiteral>();
+	lit->token = m_current;
+
+	try {
+		int res = std::stoi(m_current.literal);
+		lit->value = res;
+	} catch (std::invalid_argument e) {
+		m_errors.push_back("could not parse integer");
+		return nullptr;
+	}
+
+	return lit;
 }
 
 std::vector<std::string> Parser::errors() const { return m_errors; }

@@ -86,4 +86,15 @@ public:
 	std::unique_ptr<Expression> expression;
 };
 
+class IntegerLiteral : public Expression {
+public:
+	~IntegerLiteral() {}
+	std::string TokenLiteral() { return token.literal; }
+	std::string String() { return token.literal; }
+	std::string Type() { return "ExpressionStatement"; }
+
+	Token token;
+	int value;
+};
+
 #endif

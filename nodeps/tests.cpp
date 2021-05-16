@@ -229,3 +229,24 @@ TEST(ParserTest, IdentifierExpression) {
 	EXPECT_EQ(ident->value, "foobar");
 	EXPECT_EQ(ident->TokenLiteral(), "foobar");
 }
+
+TEST(ParserTest, IntegerLiteralExpression) {
+	std::string input = "5;";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	// check the the program ins't a nullptr
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+	EXPECT_EQ(program->statements.size(), 1) << "Wrong amount of statements";
+
+	auto stmt = dynamic_cast<ExpressionStatement*>(program->statements[0].get());
+	EXPECT_NE(stmt, nullptr) << "Statement is not a expression statement";
+
+	auto lit = dynamic_cast<IntegerLiteral*>(stmt->expression.get());
+	EXPECT_NE(lit, nullptr) << "Expression is not a integer literal";
+
+	EXPECT_EQ(lit->value, 5) << "Value is not five";
+	EXPECT_EQ(lit->TokenLiteral(), "5") << "Literal value is wrong";
+}
