@@ -166,6 +166,10 @@ TEST(ParserTest, LetStatements) {
 	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
 	EXPECT_EQ(program->statements.size(), 3) << "Wrong amount of statements";
 
+	// there should be no errors
+	auto errors = parser.errors();
+	EXPECT_EQ(errors.size(), 0) << "There are errors in the parsing";
+
 	std::string names[3] = { "x", "y", "foobar"};
 	for (int i = 0; i < (int)program->statements.size(); ++i) {
 		EXPECT_EQ(program->statements[i]->Type(), "LetStatement");
@@ -175,5 +179,32 @@ TEST(ParserTest, LetStatements) {
 		EXPECT_NE(let_class, nullptr);
 		EXPECT_EQ(let_class->name->value, names[i]);
 		EXPECT_EQ(let_class->name->TokenLiteral(), names[i]);
+	}
+}
+
+TEST(ParserTest, ReturnStatements) {
+	std::string input =
+		"return 5;"
+		"return = 10;"
+		"return = 123456;";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	// check the the program ins't a nullptr
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+	EXPECT_EQ(program->statements.size(), 3) << "Wrong amount of statements";
+
+	// there should be no errors
+	auto errors = parser.errors();
+	EXPECT_EQ(errors.size(), 0) << "There are errors in the parsing";
+
+	for (int i = 0; i < program->statements.size(); ++i) {
+		EXPECT_EQ(program->statements[i]->Type(), "ReturnStatement");
+		EXPECT_EQ(program->statements[i]->TokenLiteral(), "return");
+
+		auto return_class = dynamic_cast<ReturnStatement*>(program->statements[i].get());
+		EXPECT_NE(return_class, nullptr);
 	}
 }

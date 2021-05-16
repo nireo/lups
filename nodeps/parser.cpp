@@ -35,7 +35,9 @@ void Parser::next_token() {
 unique_ptr<Statement> Parser::parse_statement() {
 	if (m_current.type == tokentypes::LET) {
 		return parse_let_statement();
-	} else {
+	} else if (m_current.type == tokentypes::RETURN) {
+		return parse_return_statement();
+	}else {
 		return nullptr;
 	}
 }
@@ -54,6 +56,7 @@ bool Parser::expect_peek(TokenType tt) {
 		return true;
 	}
 
+	peek_error(tt);
 	return false;
 }
 
@@ -79,4 +82,24 @@ unique_ptr<Statement> Parser::parse_let_statement() {
 	}
 
 	return letstmt;
+}
+
+unique_ptr<Statement> Parser::parse_return_statement() {
+	auto returnstmt = std::make_unique<ReturnStatement>();
+	returnstmt->token = m_current;
+
+	while (!current_token_is(tokentypes::SEMICOLON)) {
+		next_token();
+	}
+
+	return returnstmt;
+}
+
+std::vector<std::string> Parser::errors() const {
+	return m_errors;
+}
+
+void Parser::peek_error(TokenType tt) {
+	std::string err = "expected next token to be " + tt + " got " + m_peek.type + " instead";
+	m_errors.push_back(err);
 }

@@ -1,10 +1,10 @@
-Start testing: May 16 17:11 EEST
+Start testing: May 16 19:17 EEST
 ----------------------------------------------------------
-1/6 Testing: LexerTest.TestNextToken
-1/6 Test: LexerTest.TestNextToken
+1/7 Testing: LexerTest.TestNextToken
+1/7 Test: LexerTest.TestNextToken
 Command: "/home/eemil/dev/c++/lups/nodeps/build/lups_test" "--gtest_filter=LexerTest.TestNextToken" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/nodeps/build
-"LexerTest.TestNextToken" start time: May 16 17:11 EEST
+"LexerTest.TestNextToken" start time: May 16 19:17 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -23,15 +23,15 @@ Note: Google Test filter = LexerTest.TestNextToken
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.TestNextToken" end time: May 16 17:11 EEST
+"LexerTest.TestNextToken" end time: May 16 19:17 EEST
 "LexerTest.TestNextToken" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-2/6 Testing: LexerTest.IfStatements
-2/6 Test: LexerTest.IfStatements
+2/7 Testing: LexerTest.IfStatements
+2/7 Test: LexerTest.IfStatements
 Command: "/home/eemil/dev/c++/lups/nodeps/build/lups_test" "--gtest_filter=LexerTest.IfStatements" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/nodeps/build
-"LexerTest.IfStatements" start time: May 16 17:11 EEST
+"LexerTest.IfStatements" start time: May 16 19:17 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -50,15 +50,15 @@ Note: Google Test filter = LexerTest.IfStatements
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.IfStatements" end time: May 16 17:11 EEST
+"LexerTest.IfStatements" end time: May 16 19:17 EEST
 "LexerTest.IfStatements" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-3/6 Testing: LexerTest.Variables
-3/6 Test: LexerTest.Variables
+3/7 Testing: LexerTest.Variables
+3/7 Test: LexerTest.Variables
 Command: "/home/eemil/dev/c++/lups/nodeps/build/lups_test" "--gtest_filter=LexerTest.Variables" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/nodeps/build
-"LexerTest.Variables" start time: May 16 17:11 EEST
+"LexerTest.Variables" start time: May 16 19:17 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -77,15 +77,15 @@ Note: Google Test filter = LexerTest.Variables
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.Variables" end time: May 16 17:11 EEST
+"LexerTest.Variables" end time: May 16 19:17 EEST
 "LexerTest.Variables" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-4/6 Testing: LexerTest.FunctionDeclaration
-4/6 Test: LexerTest.FunctionDeclaration
+4/7 Testing: LexerTest.FunctionDeclaration
+4/7 Test: LexerTest.FunctionDeclaration
 Command: "/home/eemil/dev/c++/lups/nodeps/build/lups_test" "--gtest_filter=LexerTest.FunctionDeclaration" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/nodeps/build
-"LexerTest.FunctionDeclaration" start time: May 16 17:11 EEST
+"LexerTest.FunctionDeclaration" start time: May 16 19:17 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -104,15 +104,15 @@ Note: Google Test filter = LexerTest.FunctionDeclaration
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.FunctionDeclaration" end time: May 16 17:11 EEST
+"LexerTest.FunctionDeclaration" end time: May 16 19:17 EEST
 "LexerTest.FunctionDeclaration" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-5/6 Testing: LexerTest.EqualNonEqual
-5/6 Test: LexerTest.EqualNonEqual
+5/7 Testing: LexerTest.EqualNonEqual
+5/7 Test: LexerTest.EqualNonEqual
 Command: "/home/eemil/dev/c++/lups/nodeps/build/lups_test" "--gtest_filter=LexerTest.EqualNonEqual" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/nodeps/build
-"LexerTest.EqualNonEqual" start time: May 16 17:11 EEST
+"LexerTest.EqualNonEqual" start time: May 16 19:17 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -131,15 +131,15 @@ Note: Google Test filter = LexerTest.EqualNonEqual
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.EqualNonEqual" end time: May 16 17:11 EEST
+"LexerTest.EqualNonEqual" end time: May 16 19:17 EEST
 "LexerTest.EqualNonEqual" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-6/6 Testing: ParserTest.LetStatements
-6/6 Test: ParserTest.LetStatements
+6/7 Testing: ParserTest.LetStatements
+6/7 Test: ParserTest.LetStatements
 Command: "/home/eemil/dev/c++/lups/nodeps/build/lups_test" "--gtest_filter=ParserTest.LetStatements" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/nodeps/build
-"ParserTest.LetStatements" start time: May 16 17:11 EEST
+"ParserTest.LetStatements" start time: May 16 19:17 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -158,8 +158,35 @@ Note: Google Test filter = ParserTest.LetStatements
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.LetStatements" end time: May 16 17:11 EEST
+"ParserTest.LetStatements" end time: May 16 19:17 EEST
 "ParserTest.LetStatements" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: May 16 17:11 EEST
+7/7 Testing: ParserTest.ReturnStatements
+7/7 Test: ParserTest.ReturnStatements
+Command: "/home/eemil/dev/c++/lups/nodeps/build/lups_test" "--gtest_filter=ParserTest.ReturnStatements" "--gtest_also_run_disabled_tests"
+Directory: /home/eemil/dev/c++/lups/nodeps/build
+"ParserTest.ReturnStatements" start time: May 16 19:17 EEST
+Output:
+----------------------------------------------------------
+Running main() from /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = ParserTest.ReturnStatements
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ParserTest
+[ RUN      ] ParserTest.ReturnStatements
+[       OK ] ParserTest.ReturnStatements (0 ms)
+[----------] 1 test from ParserTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"ParserTest.ReturnStatements" end time: May 16 19:17 EEST
+"ParserTest.ReturnStatements" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: May 16 19:17 EEST

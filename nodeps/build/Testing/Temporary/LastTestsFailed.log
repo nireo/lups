@@ -1,1 +1,6 @@
+1:LexerTest.TestNextToken
+2:LexerTest.IfStatements
+3:LexerTest.Variables
+4:LexerTest.FunctionDeclaration
+5:LexerTest.EqualNonEqual
 6:ParserTest.LetStatements

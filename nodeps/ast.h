@@ -14,7 +14,6 @@ class Node {
 	virtual std::string Type() = 0;
 };
 
-// here I haven't found any good solution to nesting interface.
 class Statement : public Node {
  public:
 	virtual void statementNode() = 0;
@@ -63,6 +62,19 @@ class LetStatement : public Statement {
 	Token token;
 	std::unique_ptr<Identifier> name;
 	std::unique_ptr<Expression> value;
+};
+
+class ReturnStatement : public Statement {
+public:
+	~ReturnStatement() {
+	}
+	void statementNode() { }
+	std::string TokenLiteral() { return token.literal; }
+	std::string String();
+	std::string Type() { return "ReturnStatement"; }
+
+	Token token;
+	std::unique_ptr<Expression> return_value;
 };
 
 

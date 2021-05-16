@@ -27,3 +27,7 @@ std::string LetStatement::String() {
 	res += ";";
 	return res;
 }
+
+std::string ReturnStatement::String() {
+	return "return " + return_value->String();
+}
