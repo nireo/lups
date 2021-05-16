@@ -8,4 +8,6 @@ add_test( LexerTest.FunctionDeclaration [==[/home/eemil/dev/c++/lups/nodeps/buil
 set_tests_properties( LexerTest.FunctionDeclaration PROPERTIES WORKING_DIRECTORY [==[/home/eemil/dev/c++/lups/nodeps/build]==] SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
 add_test( LexerTest.EqualNonEqual [==[/home/eemil/dev/c++/lups/nodeps/build/lups_test]==] [==[--gtest_filter=LexerTest.EqualNonEqual]==] --gtest_also_run_disabled_tests)
 set_tests_properties( LexerTest.EqualNonEqual PROPERTIES WORKING_DIRECTORY [==[/home/eemil/dev/c++/lups/nodeps/build]==] SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
-set( lups_test_TESTS LexerTest.TestNextToken LexerTest.IfStatements LexerTest.Variables LexerTest.FunctionDeclaration LexerTest.EqualNonEqual)
+add_test( ParserTest.LetStatements [==[/home/eemil/dev/c++/lups/nodeps/build/lups_test]==] [==[--gtest_filter=ParserTest.LetStatements]==] --gtest_also_run_disabled_tests)
+set_tests_properties( ParserTest.LetStatements PROPERTIES WORKING_DIRECTORY [==[/home/eemil/dev/c++/lups/nodeps/build]==] SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+set( lups_test_TESTS LexerTest.TestNextToken LexerTest.IfStatements LexerTest.Variables LexerTest.FunctionDeclaration LexerTest.EqualNonEqual ParserTest.LetStatements)

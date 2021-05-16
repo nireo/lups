@@ -7,62 +7,64 @@
 #include "token.h"
 
 class Node {
-public:
-	virtual ~Node(){};
-	virtual std::string literal() = 0;
-	virtual std::string type();
-	virtual std::string string() = 0;
+ public:
+	virtual ~Node() { };
+	virtual std::string TokenLiteral() = 0;
+	virtual std::string String() = 0;
+	virtual std::string Type() = 0;
 };
 
+// here I haven't found any good solution to nesting interface.
 class Statement : public Node {
-public:
-	virtual void statement_node() = 0;
-	virtual std::string literal() = 0;
-	virtual std::string type() = 0;
-	virtual std::string string() = 0;
+ public:
+	virtual void statementNode() = 0;
+	virtual std::string TokenLiteral() = 0;
+	virtual std::string String() = 0;
+	virtual std::string Type() = 0;
 };
 
 class Expression : public Node {
-public:
-	virtual void expression_node() = 0;
-	virtual std::string type() = 0;
-	virtual std::string string() = 0;
-	virtual std::string literal() = 0;
+ public:
+	virtual std::string TokenLiteral() = 0;
+	virtual std::string String() = 0;
+	virtual std::string Type() = 0;
 };
 
-class Program {
-public:
-	std::string literal();
-	std::string string();
-	std::string type() { return "program"; }
+class Program : public Node {
+ public:
+	~Program() {
+	}
+	std::string TokenLiteral();
+	std::string String();
+	std::string Type() { return "Program"; }
 
-	std::vector<std::unique_ptr<Statement>> m_statements;
+	std::vector<std::unique_ptr<Statement>> statements;
 };
-
 
 class Identifier : public Expression {
  public:
-	void expression_node() {};
-	std::string literal() { return tok.literal; }
-	std::string string() { return value; }
-	std::string type() { return "Identifier"; }
+	std::string TokenLiteral() { return token.literal; }
+	std::string String() { return value; }
+	std::string Type() { return "Identifier"; }
 
-	Token tok;
+	Token token;
 	std::string value;
 };
 
 class LetStatement : public Statement {
-public:
-	void statement_node() {}
-	std::string literal() { return tok.literal; }
-	std::string string() {
-		return "";
+ public:
+	~LetStatement() {
 	}
-	std::string type() { return "LetStatement"; }
-	std::unique_ptr<Identifier> name;
-	std::unique_ptr<Expression> val;
+	void statementNode() { }
+	std::string TokenLiteral() { return token.literal; }
+	std::string String();
+	std::string Type() { return "LetStatement"; }
 
-	Token tok;
+	Token token;
+	std::unique_ptr<Identifier> name;
+	std::unique_ptr<Expression> value;
 };
+
+
 
 #endif

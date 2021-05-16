@@ -8,7 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/eemil/dev/c++/lups/nodeps/ast.cpp" "CMakeFiles/lups_test.dir/ast.cpp.o" "gcc" "CMakeFiles/lups_test.dir/ast.cpp.o.d"
   "/home/eemil/dev/c++/lups/nodeps/lexer.cpp" "CMakeFiles/lups_test.dir/lexer.cpp.o" "gcc" "CMakeFiles/lups_test.dir/lexer.cpp.o.d"
+  "/home/eemil/dev/c++/lups/nodeps/parser.cpp" "CMakeFiles/lups_test.dir/parser.cpp.o" "gcc" "CMakeFiles/lups_test.dir/parser.cpp.o.d"
   "/home/eemil/dev/c++/lups/nodeps/tests.cpp" "CMakeFiles/lups_test.dir/tests.cpp.o" "gcc" "CMakeFiles/lups_test.dir/tests.cpp.o.d"
   )
 

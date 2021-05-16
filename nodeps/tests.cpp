@@ -164,15 +164,16 @@ TEST(ParserTest, LetStatements) {
 	auto program = parser.parse_program();
 	// check the the program ins't a nullptr
 	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
-	EXPECT_EQ(program->m_statements.size(), 3) << "Wrong amount of statements";
+	EXPECT_EQ(program->statements.size(), 3) << "Wrong amount of statements";
 
 	std::string names[3] = { "x", "y", "foobar"};
-	for (int i = 0; i < (int)program->m_statements.size(); ++i) {
-		EXPECT_EQ(program->m_statements[i]->literal(), "let");
+	for (int i = 0; i < (int)program->statements.size(); ++i) {
+		EXPECT_EQ(program->statements[i]->Type(), "LetStatement");
+		EXPECT_EQ(program->statements[i]->TokenLiteral(), "let");
 
-		auto let_class = dynamic_cast<LetStatement*>(program->m_statements[i].get());
+		auto let_class = dynamic_cast<LetStatement*>(program->statements[i].get());
 		EXPECT_NE(let_class, nullptr);
 		EXPECT_EQ(let_class->name->value, names[i]);
-		EXPECT_EQ(let_class->name->literal(), names[i]);
+		EXPECT_EQ(let_class->name->TokenLiteral(), names[i]);
 	}
 }

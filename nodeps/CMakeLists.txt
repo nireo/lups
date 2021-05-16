@@ -21,6 +21,10 @@ add_executable(
 	token.h
 	lexer.cpp
 	lexer.h
+	parser.cpp
+	parser.h
+	ast.h
+	ast.cpp
 )
 target_link_libraries(
 	lups_test

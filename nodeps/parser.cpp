@@ -7,17 +7,17 @@ using std::unique_ptr;
 
 unique_ptr<Program> Parser::parse_program() {
 	auto program = std::make_unique<Program>();
-	program->m_statements = std::vector<unique_ptr<Statement>>();
+	program->statements = std::vector<unique_ptr<Statement>>();
 
 	while (m_current.type != tokentypes::EOFF) {
 		auto stmt = parse_statement();
 		if (stmt != nullptr) {
-			program->m_statements.push_back(std::move(stmt));
+			program->statements.push_back(std::move(stmt));
 		}
 		next_token();
 	}
 
-	return nullptr;
+	return program;
 }
 
 Parser::Parser(unique_ptr<Lexer> lx) {
@@ -59,14 +59,14 @@ bool Parser::expect_peek(TokenType tt) {
 
 unique_ptr<Statement> Parser::parse_let_statement() {
 	auto letstmt = std::make_unique<LetStatement>();
-	letstmt->tok = m_current;
+	letstmt->token = m_current;
 
 	if (!expect_peek(tokentypes::IDENT)) {
 		return nullptr;
 	}
 
 	auto ident = std::make_unique<Identifier>();
-	ident->tok = m_current;
+	ident->token = m_current;
 	ident->value = m_current.literal;
 	letstmt->name = std::move(ident);
 

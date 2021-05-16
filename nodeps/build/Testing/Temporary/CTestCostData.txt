@@ -1,6 +1,7 @@
-LexerTest.TestNextToken 8 0.000175436
-LexerTest.IfStatements 5 0.000267141
-LexerTest.Variables 3 0.000433781
-LexerTest.FunctionDeclaration 2 0.000758344
-LexerTest.EqualNonEqual 1 0.00185478
+LexerTest.TestNextToken 2 0.000956493
+LexerTest.IfStatements 2 0.000919592
+LexerTest.Variables 2 0.000913928
+LexerTest.FunctionDeclaration 2 0.000784005
+LexerTest.EqualNonEqual 2 0.000678608
+ParserTest.LetStatements 1 0.00136069
 ---

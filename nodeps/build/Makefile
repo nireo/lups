@@ -236,6 +236,30 @@ gtest/fast:
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
 .PHONY : gtest/fast
 
+ast.o: ast.cpp.o
+.PHONY : ast.o
+
+# target to build an object file
+ast.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/ast.cpp.o
+.PHONY : ast.cpp.o
+
+ast.i: ast.cpp.i
+.PHONY : ast.i
+
+# target to preprocess a source file
+ast.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/ast.cpp.i
+.PHONY : ast.cpp.i
+
+ast.s: ast.cpp.s
+.PHONY : ast.s
+
+# target to generate assembly for a file
+ast.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/ast.cpp.s
+.PHONY : ast.cpp.s
+
 lexer.o: lexer.cpp.o
 .PHONY : lexer.o
 
@@ -259,6 +283,30 @@ lexer.s: lexer.cpp.s
 lexer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/lexer.cpp.s
 .PHONY : lexer.cpp.s
+
+parser.o: parser.cpp.o
+.PHONY : parser.o
+
+# target to build an object file
+parser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/parser.cpp.o
+.PHONY : parser.cpp.o
+
+parser.i: parser.cpp.i
+.PHONY : parser.i
+
+# target to preprocess a source file
+parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/parser.cpp.i
+.PHONY : parser.cpp.i
+
+parser.s: parser.cpp.s
+.PHONY : parser.s
+
+# target to generate assembly for a file
+parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/parser.cpp.s
+.PHONY : parser.cpp.s
 
 tests.o: tests.cpp.o
 .PHONY : tests.o
@@ -302,9 +350,15 @@ help:
 	@echo "... gtest"
 	@echo "... gtest_main"
 	@echo "... lups_test"
+	@echo "... ast.o"
+	@echo "... ast.i"
+	@echo "... ast.s"
 	@echo "... lexer.o"
 	@echo "... lexer.i"
 	@echo "... lexer.s"
+	@echo "... parser.o"
+	@echo "... parser.i"
+	@echo "... parser.s"
 	@echo "... tests.o"
 	@echo "... tests.i"
 	@echo "... tests.s"
