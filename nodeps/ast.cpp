@@ -29,5 +29,17 @@ std::string LetStatement::String() {
 }
 
 std::string ReturnStatement::String() {
-	return "return " + return_value->String();
+	if (return_value != nullptr) {
+		return "return " + return_value->String();
+	}
+
+	return "return;";
+}
+
+std::string ExpressionStatement::String() {
+	if (expression != nullptr) {
+		return expression->String();
+	}
+
+	return "";
 }

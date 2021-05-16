@@ -1,6 +1,7 @@
 #include "parser.h"
 #include "ast.h"
 #include "token.h"
+#include <algorithm>
 #include <memory>
 
 using std::unique_ptr;
@@ -23,6 +24,9 @@ unique_ptr<Program> Parser::parse_program() {
 Parser::Parser(unique_ptr<Lexer> lx) {
 	m_lx = std::move(lx);
 
+	m_prefix_parse_fns = std::unordered_map<TokenType, PrefixParseFn>();
+	add_prefix_parse(tokentypes::IDENT, &Parser::parse_identifier);
+
 	next_token();
 	next_token();
 }
@@ -37,18 +41,14 @@ unique_ptr<Statement> Parser::parse_statement() {
 		return parse_let_statement();
 	} else if (m_current.type == tokentypes::RETURN) {
 		return parse_return_statement();
-	}else {
-		return nullptr;
+	} else {
+		return parse_expression_statement();
 	}
 }
 
-bool Parser::current_token_is(TokenType tt) {
-	return m_current.type == tt;
-}
+bool Parser::current_token_is(TokenType tt) { return m_current.type == tt; }
 
-bool Parser::peek_token_is(TokenType tt) {
-	return m_peek.type == tt;
-}
+bool Parser::peek_token_is(TokenType tt) { return m_peek.type == tt; }
 
 bool Parser::expect_peek(TokenType tt) {
 	if (peek_token_is(tt)) {
@@ -95,11 +95,49 @@ unique_ptr<Statement> Parser::parse_return_statement() {
 	return returnstmt;
 }
 
-std::vector<std::string> Parser::errors() const {
-	return m_errors;
+unique_ptr<Statement> Parser::parse_expression_statement() {
+	auto stmt = std::make_unique<ExpressionStatement>();
+	stmt->token = m_current;
+
+	stmt->expression = parse_expression(LOWEST);
+	if (peek_token_is(tokentypes::SEMICOLON)) {
+		next_token();
+	}
+
+	return stmt;
 }
 
+unique_ptr<Expression> Parser::parse_expression(Precedence prec) {
+	if (m_prefix_parse_fns.find(m_current.type) == m_prefix_parse_fns.end()) {
+		return nullptr;
+	}
+
+	auto fn = m_prefix_parse_fns[m_current.type];
+	auto left = (this->*fn)();
+
+	return left;
+}
+
+unique_ptr<Expression> Parser::parse_identifier() {
+	auto identifier = std::make_unique<Identifier>();
+	identifier->token = m_current;
+	identifier->value = m_current.literal;
+
+	return identifier;
+}
+
+std::vector<std::string> Parser::errors() const { return m_errors; }
+
 void Parser::peek_error(TokenType tt) {
-	std::string err = "expected next token to be " + tt + " got " + m_peek.type + " instead";
+	std::string err =
+			"expected next token to be " + tt + " got " + m_peek.type + " instead";
 	m_errors.push_back(err);
+}
+
+void Parser::add_prefix_parse(TokenType tt, PrefixParseFn fn) {
+	m_prefix_parse_fns[tt] = fn;
+}
+
+void Parser::add_infix_parse(TokenType tt, InfixParseFn fn) {
+	m_infix_parse_fns[tt] = fn;
 }

@@ -1,21 +1,21 @@
 #ifndef LUPS_AST_H
 #define LUPS_AST_H
 
+#include "token.h"
 #include <memory>
 #include <string>
 #include <vector>
-#include "token.h"
 
 class Node {
- public:
-	virtual ~Node() { };
+public:
+	virtual ~Node(){};
 	virtual std::string TokenLiteral() = 0;
 	virtual std::string String() = 0;
 	virtual std::string Type() = 0;
 };
 
 class Statement : public Node {
- public:
+public:
 	virtual void statementNode() = 0;
 	virtual std::string TokenLiteral() = 0;
 	virtual std::string String() = 0;
@@ -23,16 +23,15 @@ class Statement : public Node {
 };
 
 class Expression : public Node {
- public:
+public:
 	virtual std::string TokenLiteral() = 0;
 	virtual std::string String() = 0;
 	virtual std::string Type() = 0;
 };
 
 class Program : public Node {
- public:
-	~Program() {
-	}
+public:
+	~Program() {}
 	std::string TokenLiteral();
 	std::string String();
 	std::string Type() { return "Program"; }
@@ -41,7 +40,7 @@ class Program : public Node {
 };
 
 class Identifier : public Expression {
- public:
+public:
 	std::string TokenLiteral() { return token.literal; }
 	std::string String() { return value; }
 	std::string Type() { return "Identifier"; }
@@ -51,10 +50,9 @@ class Identifier : public Expression {
 };
 
 class LetStatement : public Statement {
- public:
-	~LetStatement() {
-	}
-	void statementNode() { }
+public:
+	~LetStatement() {}
+	void statementNode() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
 	std::string Type() { return "LetStatement"; }
@@ -66,9 +64,8 @@ class LetStatement : public Statement {
 
 class ReturnStatement : public Statement {
 public:
-	~ReturnStatement() {
-	}
-	void statementNode() { }
+	~ReturnStatement() {}
+	void statementNode() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
 	std::string Type() { return "ReturnStatement"; }
@@ -77,6 +74,16 @@ public:
 	std::unique_ptr<Expression> return_value;
 };
 
+class ExpressionStatement : public Statement {
+public:
+	~ExpressionStatement() {}
+	void statementNode() {}
+	std::string TokenLiteral() { return token.literal; }
+	std::string String();
+	std::string Type() { return "ExpressionStatement"; }
 
+	Token token;
+	std::unique_ptr<Expression> expression;
+};
 
 #endif

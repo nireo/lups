@@ -208,3 +208,24 @@ TEST(ParserTest, ReturnStatements) {
 		EXPECT_NE(return_class, nullptr);
 	}
 }
+
+TEST(ParserTest, IdentifierExpression) {
+	std::string input = "foobar;";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	// check the the program ins't a nullptr
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+	EXPECT_EQ(program->statements.size(), 1) << "Wrong amount of statements";
+
+	auto stmt = dynamic_cast<ExpressionStatement*>(program->statements[0].get());
+	EXPECT_NE(stmt, nullptr);
+
+	auto ident = dynamic_cast<Identifier*>(stmt->expression.get());
+	EXPECT_NE(ident, nullptr);
+
+	EXPECT_EQ(ident->value, "foobar");
+	EXPECT_EQ(ident->TokenLiteral(), "foobar");
+}
