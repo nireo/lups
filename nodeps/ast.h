@@ -97,4 +97,18 @@ public:
 	int value;
 };
 
+class PrefixExpression : public Expression {
+public:
+	~PrefixExpression() {}
+	std::string TokenLiteral() { return token.literal; }
+	std::string String();
+	std::string Type() { return "PrefixEXpression"; }
+
+	Token token;
+
+	// the operator
+	std::string opr;
+	std::unique_ptr<Expression> right;
+};
+
 #endif

@@ -1,9 +1,10 @@
 #include "ast.h"
 #include "lexer.h"
-#include "token.h"
 #include "parser.h"
+#include "token.h"
 #include <gtest/gtest.h>
 #include <memory>
+#include <tuple>
 #include <utility>
 
 TEST(LexerTest, TestNextToken) {
@@ -36,7 +37,6 @@ TEST(LexerTest, IfStatements) {
 											"    return false;"
 											"}";
 
-
 	std::vector<std::pair<TokenType, std::string>> expected;
 	expected.push_back(std::make_pair(tokentypes::IF, "if"));
 	expected.push_back(std::make_pair(tokentypes::LPAREN, "("));
@@ -67,9 +67,8 @@ TEST(LexerTest, IfStatements) {
 }
 
 TEST(LexerTest, Variables) {
-	std::string input =
-		"let a = 102;"
-		"a = 5;";
+	std::string input = "let a = 102;"
+											"a = 5;";
 
 	std::vector<std::pair<TokenType, std::string>> expected;
 	expected.push_back(std::make_pair(tokentypes::LET, "let"));
@@ -93,10 +92,9 @@ TEST(LexerTest, Variables) {
 }
 
 TEST(LexerTest, FunctionDeclaration) {
-	std::string input =
-		"let add = func(x, y) {"
-		"    return x + y;"
-		"}";
+	std::string input = "let add = func(x, y) {"
+											"    return x + y;"
+											"}";
 
 	std::vector<std::pair<TokenType, std::string>> expected;
 	expected.push_back(std::make_pair(tokentypes::LET, "let"));
@@ -127,9 +125,8 @@ TEST(LexerTest, FunctionDeclaration) {
 }
 
 TEST(LexerTest, EqualNonEqual) {
-	std::string input =
-		"10 == 10;"
-		"10 != 5;";
+	std::string input = "10 == 10;"
+											"10 != 5;";
 
 	std::vector<std::pair<TokenType, std::string>> expected;
 	expected.push_back(std::make_pair(tokentypes::INT, "10"));
@@ -153,10 +150,9 @@ TEST(LexerTest, EqualNonEqual) {
 }
 
 TEST(ParserTest, LetStatements) {
-	std::string input =
-		"let x = 5;"
-		"let y = 10;"
-		"let foobar = 123456;";
+	std::string input = "let x = 5;"
+											"let y = 10;"
+											"let foobar = 123456;";
 
 	auto lexer = Lexer(input);
 	auto parser = Parser(std::make_unique<Lexer>(lexer));
@@ -170,12 +166,12 @@ TEST(ParserTest, LetStatements) {
 	auto errors = parser.errors();
 	EXPECT_EQ(errors.size(), 0) << "There are errors in the parsing";
 
-	std::string names[3] = { "x", "y", "foobar"};
+	std::string names[3] = {"x", "y", "foobar"};
 	for (int i = 0; i < (int)program->statements.size(); ++i) {
 		EXPECT_EQ(program->statements[i]->Type(), "LetStatement");
 		EXPECT_EQ(program->statements[i]->TokenLiteral(), "let");
 
-		auto let_class = dynamic_cast<LetStatement*>(program->statements[i].get());
+		auto let_class = dynamic_cast<LetStatement *>(program->statements[i].get());
 		EXPECT_NE(let_class, nullptr);
 		EXPECT_EQ(let_class->name->value, names[i]);
 		EXPECT_EQ(let_class->name->TokenLiteral(), names[i]);
@@ -183,10 +179,9 @@ TEST(ParserTest, LetStatements) {
 }
 
 TEST(ParserTest, ReturnStatements) {
-	std::string input =
-		"return 5;"
-		"return = 10;"
-		"return = 123456;";
+	std::string input = "return 5;"
+											"return = 10;"
+											"return = 123456;";
 
 	auto lexer = Lexer(input);
 	auto parser = Parser(std::make_unique<Lexer>(lexer));
@@ -204,7 +199,8 @@ TEST(ParserTest, ReturnStatements) {
 		EXPECT_EQ(program->statements[i]->Type(), "ReturnStatement");
 		EXPECT_EQ(program->statements[i]->TokenLiteral(), "return");
 
-		auto return_class = dynamic_cast<ReturnStatement*>(program->statements[i].get());
+		auto return_class =
+				dynamic_cast<ReturnStatement *>(program->statements[i].get());
 		EXPECT_NE(return_class, nullptr);
 	}
 }
@@ -220,10 +216,10 @@ TEST(ParserTest, IdentifierExpression) {
 	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
 	EXPECT_EQ(program->statements.size(), 1) << "Wrong amount of statements";
 
-	auto stmt = dynamic_cast<ExpressionStatement*>(program->statements[0].get());
+	auto stmt = dynamic_cast<ExpressionStatement *>(program->statements[0].get());
 	EXPECT_NE(stmt, nullptr);
 
-	auto ident = dynamic_cast<Identifier*>(stmt->expression.get());
+	auto ident = dynamic_cast<Identifier *>(stmt->expression.get());
 	EXPECT_NE(ident, nullptr);
 
 	EXPECT_EQ(ident->value, "foobar");
@@ -241,12 +237,42 @@ TEST(ParserTest, IntegerLiteralExpression) {
 	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
 	EXPECT_EQ(program->statements.size(), 1) << "Wrong amount of statements";
 
-	auto stmt = dynamic_cast<ExpressionStatement*>(program->statements[0].get());
+	auto stmt = dynamic_cast<ExpressionStatement *>(program->statements[0].get());
 	EXPECT_NE(stmt, nullptr) << "Statement is not a expression statement";
 
-	auto lit = dynamic_cast<IntegerLiteral*>(stmt->expression.get());
+	auto lit = dynamic_cast<IntegerLiteral *>(stmt->expression.get());
 	EXPECT_NE(lit, nullptr) << "Expression is not a integer literal";
 
 	EXPECT_EQ(lit->value, 5) << "Value is not five";
 	EXPECT_EQ(lit->TokenLiteral(), "5") << "Literal value is wrong";
+}
+
+TEST(ParserTest, PrefixExpressionTest) {
+	std::vector < std::tuple<std::string, std::string, int> test_cases;
+	test_cases.push_back(std::make_tuple("!5;", "!", 5));
+	test_cases.push_back(std::make_tuple("-15;", "-", 15));
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(std::get<0>(tc));
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+		auto program = parser.parse_program();
+		// check the the program ins't a nullptr
+		EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+		EXPECT_EQ(program->statements.size(), 1) << "Wrong amount of statements";
+
+		auto stmt =
+				dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+		EXPECT_NE(stmt, nullptr) << "Statement is not a expression statement";
+
+		auto pre = dynamic_cast<PrefixExpression *>(stmt->expression.get());
+		EXPECT_NE(lit, nullptr) << "Expression is not a prefix expression";
+
+		EXPECT_EQ(pre->opr, std::get<1>(tc));
+
+		auto lit = dynamic_cast<IntegerLiteral *>(pre->right.get());
+		EXPECT_NE(lit, nullptr) << "Expression is not a integer literal";
+
+		EXPECT_EQ(lit->value, std::get<2>(tc)) << "Value is not five";
+	}
 }

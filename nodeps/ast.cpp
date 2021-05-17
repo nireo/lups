@@ -43,3 +43,7 @@ std::string ExpressionStatement::String() {
 
 	return "";
 }
+
+std::string PrefixExpression::String() {
+	return "(" + opr + right->String() + ")";
+}

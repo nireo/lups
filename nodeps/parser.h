@@ -47,6 +47,7 @@ private:
 	std::unique_ptr<Expression> parse_expression(Precedence prec);
 	std::unique_ptr<Expression> parse_identifier();
 	std::unique_ptr<Expression> parse_integer_literal();
+	std::unique_ptr<Expression> parse_prefix_expression();
 
 	bool expect_peek(TokenType tt);
 	bool peek_token_is(TokenType tt);

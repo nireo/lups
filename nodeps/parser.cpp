@@ -37,6 +37,8 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	m_prefix_parse_fns = std::unordered_map<TokenType, PrefixParseFn>();
 	add_prefix_parse(tokentypes::IDENT, &Parser::parse_identifier);
 	add_prefix_parse(tokentypes::INT, &Parser::parse_integer_literal);
+	add_prefix_parse(tokentypes::BANG, &Parser::parse_prefix_expression);
+	add_prefix_parse(tokentypes::MINUS, &Parser::parse_prefix_expression);
 
 	next_token();
 	next_token();
@@ -150,6 +152,17 @@ unique_ptr<Expression> Parser::parse_integer_literal() {
 	}
 
 	return lit;
+}
+
+unique_ptr<Expression> Parser::parse_prefix_expression() {
+	auto exp = std::make_unique<PrefixExpression>();
+	exp->token = m_current;
+	exp->opr = m_current.literal;
+
+	next_token();
+	exp->right = parse_expression(PREFIX);
+
+	return exp;
 }
 
 std::vector<std::string> Parser::errors() const { return m_errors; }
