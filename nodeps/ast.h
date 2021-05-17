@@ -91,7 +91,7 @@ public:
 	~IntegerLiteral() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String() { return token.literal; }
-	std::string Type() { return "ExpressionStatement"; }
+	std::string Type() { return "IntegerLiteral"; }
 
 	Token token;
 	int value;
@@ -102,13 +102,26 @@ public:
 	~PrefixExpression() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
-	std::string Type() { return "PrefixEXpression"; }
+	std::string Type() { return "PrefixExpression"; }
 
 	Token token;
 
 	// the operator
 	std::string opr;
 	std::unique_ptr<Expression> right;
+};
+
+class InfixExpression : public Expression {
+public:
+	~InfixExpression() {}
+	std::string TokenLiteral() { return token.literal; }
+	std::string String();
+	std::string Type() { return "InfixExpression"; }
+
+	Token token;
+	std::string opr;
+	std::unique_ptr<Expression> right;
+	std::unique_ptr<Expression> left;
 };
 
 #endif

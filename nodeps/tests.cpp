@@ -248,7 +248,7 @@ TEST(ParserTest, IntegerLiteralExpression) {
 }
 
 TEST(ParserTest, PrefixExpressionTest) {
-	std::vector < std::tuple<std::string, std::string, int> test_cases;
+	std::vector < std::tuple<std::string, std::string, int>> test_cases;
 	test_cases.push_back(std::make_tuple("!5;", "!", 5));
 	test_cases.push_back(std::make_tuple("-15;", "-", 15));
 
@@ -266,7 +266,7 @@ TEST(ParserTest, PrefixExpressionTest) {
 		EXPECT_NE(stmt, nullptr) << "Statement is not a expression statement";
 
 		auto pre = dynamic_cast<PrefixExpression *>(stmt->expression.get());
-		EXPECT_NE(lit, nullptr) << "Expression is not a prefix expression";
+		EXPECT_NE(pre, nullptr) << "Expression is not a prefix expression";
 
 		EXPECT_EQ(pre->opr, std::get<1>(tc));
 
@@ -274,5 +274,56 @@ TEST(ParserTest, PrefixExpressionTest) {
 		EXPECT_NE(lit, nullptr) << "Expression is not a integer literal";
 
 		EXPECT_EQ(lit->value, std::get<2>(tc)) << "Value is not five";
+	}
+}
+
+bool test_integer_literal(int expected, std::unique_ptr<Expression> exp) {
+	auto lit = dynamic_cast<IntegerLiteral *>(exp.get());
+	if (lit == nullptr)
+		return false;
+
+	if (lit->value != expected)
+		return false;
+
+	return true;
+}
+
+TEST(ParserTest, InfixExpressionTest) {
+	struct Testcase {
+		std::string input;
+		int left_value;
+		std::string opr;
+		int right_value;
+	};
+
+	std::vector<Testcase> test_cases = {
+		{"5 + 5;", 5, "+", 5},
+		{"5 - 5;", 5, "-", 5},
+		{"5 * 5;", 5, "*", 5},
+		{"5 / 5;", 5, "/", 5},
+		{"5 > 5;", 5, ">", 5},
+		{"5 < 5;", 5, "<", 5},
+		{"5 == 5;", 5, "==", 5},
+		{"5 != 5;", 5, "!=", 5},
+	};
+
+	for (auto& tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+		auto program = parser.parse_program();
+		EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+		EXPECT_EQ(program->statements.size(), 1) << "Wrong amount of statements";
+
+		auto stmt =
+				dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+		EXPECT_NE(stmt, nullptr) << "Statement is not a expression statement";
+
+		auto exp = dynamic_cast<InfixExpression *>(stmt->expression.get());
+		EXPECT_NE(exp, nullptr) << "Statement is not a infix expression";
+
+		EXPECT_EQ(tc.opr, exp->opr);
+		EXPECT_TRUE(test_integer_literal(tc.left_value, std::move(exp->left)));
+		EXPECT_TRUE(test_integer_literal(tc.right_value, std::move(exp->right)));
 	}
 }

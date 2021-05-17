@@ -375,7 +375,8 @@ CMakeFiles/lups_test.dir/lexer.cpp.o: ../lexer.cpp \
 CMakeFiles/lups_test.dir/parser.cpp.o: ../parser.cpp \
   /usr/include/stdc-predef.h \
   ../parser.h \
-  ../lexer.h \
+  ../ast.h \
+  ../token.h \
   /usr/include/c++/10.2.0/string \
   /usr/include/c++/10.2.0/x86_64-pc-linux-gnu/bits/c++config.h \
   /usr/include/c++/10.2.0/x86_64-pc-linux-gnu/bits/os_defines.h \
@@ -530,7 +531,6 @@ CMakeFiles/lups_test.dir/parser.cpp.o: ../parser.cpp \
   /usr/include/bits/types/error_t.h \
   /usr/include/c++/10.2.0/bits/charconv.h \
   /usr/include/c++/10.2.0/bits/basic_string.tcc \
-  ../token.h \
   /usr/include/c++/10.2.0/unordered_map \
   /usr/include/c++/10.2.0/ext/aligned_buffer.h \
   /usr/include/c++/10.2.0/bits/hashtable.h \
@@ -564,11 +564,11 @@ CMakeFiles/lups_test.dir/parser.cpp.o: ../parser.cpp \
   /usr/include/c++/10.2.0/backward/auto_ptr.h \
   /usr/include/c++/10.2.0/pstl/glue_memory_defs.h \
   /usr/include/c++/10.2.0/pstl/execution_defs.h \
-  ../ast.h \
   /usr/include/c++/10.2.0/vector \
   /usr/include/c++/10.2.0/bits/stl_vector.h \
   /usr/include/c++/10.2.0/bits/stl_bvector.h \
   /usr/include/c++/10.2.0/bits/vector.tcc \
+  ../lexer.h \
   /usr/include/c++/10.2.0/algorithm \
   /usr/include/c++/10.2.0/bits/stl_algo.h \
   /usr/include/c++/10.2.0/bits/algorithmfwd.h \
@@ -576,7 +576,32 @@ CMakeFiles/lups_test.dir/parser.cpp.o: ../parser.cpp \
   /usr/include/c++/10.2.0/bits/uniform_int_dist.h \
   /usr/include/c++/10.2.0/pstl/glue_algorithm_defs.h \
   /usr/include/c++/10.2.0/functional \
-  /usr/include/c++/10.2.0/bits/std_function.h
+  /usr/include/c++/10.2.0/bits/std_function.h \
+  /usr/include/c++/10.2.0/sstream \
+  /usr/include/c++/10.2.0/istream \
+  /usr/include/c++/10.2.0/ios \
+  /usr/include/c++/10.2.0/bits/ios_base.h \
+  /usr/include/c++/10.2.0/bits/locale_classes.h \
+  /usr/include/c++/10.2.0/bits/locale_classes.tcc \
+  /usr/include/c++/10.2.0/system_error \
+  /usr/include/c++/10.2.0/x86_64-pc-linux-gnu/bits/error_constants.h \
+  /usr/include/c++/10.2.0/stdexcept \
+  /usr/include/c++/10.2.0/streambuf \
+  /usr/include/c++/10.2.0/bits/streambuf.tcc \
+  /usr/include/c++/10.2.0/bits/basic_ios.h \
+  /usr/include/c++/10.2.0/bits/locale_facets.h \
+  /usr/include/c++/10.2.0/cwctype \
+  /usr/include/wctype.h \
+  /usr/include/bits/wctype-wchar.h \
+  /usr/include/c++/10.2.0/x86_64-pc-linux-gnu/bits/ctype_base.h \
+  /usr/include/c++/10.2.0/bits/streambuf_iterator.h \
+  /usr/include/c++/10.2.0/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+  /usr/include/c++/10.2.0/bits/locale_facets.tcc \
+  /usr/include/c++/10.2.0/bits/basic_ios.tcc \
+  /usr/include/c++/10.2.0/ostream \
+  /usr/include/c++/10.2.0/bits/ostream.tcc \
+  /usr/include/c++/10.2.0/bits/istream.tcc \
+  /usr/include/c++/10.2.0/bits/sstream.tcc
 
 CMakeFiles/lups_test.dir/tests.cpp.o: ../tests.cpp \
   /usr/include/stdc-predef.h \
@@ -943,8 +968,6 @@ _deps/googletest-src/googletest/include/gtest/internal/gtest-filepath.h:
 
 /usr/include/c++/10.2.0/map:
 
-/usr/include/c++/10.2.0/bits/sstream.tcc:
-
 /usr/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include/float.h:
 
 /usr/include/bits/sigthread.h:
@@ -1015,7 +1038,13 @@ _deps/googletest-src/googletest/include/gtest/internal/custom/gtest-port.h:
 
 /usr/include/c++/10.2.0/bits/locale_facets_nonio.h:
 
-/usr/include/c++/10.2.0/bits/istream.tcc:
+/usr/include/c++/10.2.0/iostream:
+
+/usr/include/bits/types/struct_statx.h:
+
+/usr/include/c++/10.2.0/locale:
+
+/usr/include/bits/types/struct_statx_timestamp.h:
 
 /usr/include/c++/10.2.0/bits/std_function.h:
 
@@ -1142,6 +1171,8 @@ _deps/googletest-src/googletest/include/gtest/internal/custom/gtest-port.h:
 /usr/include/bits/byteswap.h:
 
 /usr/include/c++/10.2.0/ios:
+
+/usr/include/c++/10.2.0/bits/sstream.tcc:
 
 /usr/include/c++/10.2.0/bits/nested_exception.h:
 
@@ -1405,10 +1436,6 @@ _deps/googletest-src/googletest/include/gtest/internal/gtest-port.h:
 
 /usr/include/c++/10.2.0/utility:
 
-/usr/include/c++/10.2.0/locale:
-
-/usr/include/bits/types/struct_statx_timestamp.h:
-
 /usr/include/c++/10.2.0/bits/hashtable_policy.h:
 
 /usr/include/c++/10.2.0/bits/uses_allocator.h:
@@ -1517,9 +1544,7 @@ _deps/googletest-src/googletest/include/gtest/internal/gtest-string.h:
 
 /usr/include/c++/10.2.0/functional:
 
-/usr/include/c++/10.2.0/iterator:
-
-/usr/include/c++/10.2.0/cstddef:
+/usr/include/c++/10.2.0/istream:
 
 /usr/include/bits/statx.h:
 
@@ -1546,6 +1571,12 @@ _deps/googletest-src/googletest/include/gtest/internal/gtest-string.h:
 /usr/include/c++/10.2.0/bits/locale_facets.tcc:
 
 /usr/include/linux/stddef.h:
+
+/usr/include/c++/10.2.0/bits/istream.tcc:
+
+/usr/include/c++/10.2.0/iterator:
+
+/usr/include/c++/10.2.0/cstddef:
 
 /usr/include/bits/signal_ext.h:
 
@@ -1576,9 +1607,3 @@ _deps/googletest-src/googletest/include/gtest/internal/gtest-internal.h:
 /usr/include/c++/10.2.0/type_traits:
 
 /usr/include/asm/posix_types_64.h:
-
-/usr/include/bits/types/struct_statx.h:
-
-/usr/include/c++/10.2.0/iostream:
-
-/usr/include/c++/10.2.0/istream:

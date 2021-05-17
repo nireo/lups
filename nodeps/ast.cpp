@@ -47,3 +47,7 @@ std::string ExpressionStatement::String() {
 std::string PrefixExpression::String() {
 	return "(" + opr + right->String() + ")";
 }
+
+std::string InfixExpression::String() {
+	return "(" + left->String() + " " + opr + " " + right->String() + ")";
+}

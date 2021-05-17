@@ -1,15 +1,16 @@
 #ifndef LUPS_PARSER_H
 #define LUPS_PARSER_H
 
+#include "ast.h"
 #include "lexer.h"
 #include "token.h"
 #include <memory>
 #include <unordered_map>
-#include "ast.h"
 
 class Parser;
-typedef std::unique_ptr<Expression>(Parser::*PrefixParseFn)();
-typedef std::unique_ptr<Expression>(Parser::*InfixParseFn)(std::unique_ptr<Expression>);
+typedef std::unique_ptr<Expression> (Parser::*PrefixParseFn)();
+typedef std::unique_ptr<Expression> (Parser::*InfixParseFn)(
+		std::unique_ptr<Expression>);
 
 enum Precedence {
 	LOWEST,
@@ -20,6 +21,12 @@ enum Precedence {
 	PREFIX,
 	CALL,
 };
+
+const std::unordered_map<TokenType, Precedence> precedences = {
+		{tokentypes::EQ, EQUALS},      {tokentypes::NEQ, EQUALS},
+		{tokentypes::LT, LESSGREATER}, {tokentypes::GT, LESSGREATER},
+		{tokentypes::PLUS, SUM},       {tokentypes::MINUS, SUM},
+		{tokentypes::SLASH, PRODUCT},  {tokentypes::ASTERISK, PRODUCT}};
 
 class Parser {
 public:
@@ -37,7 +44,6 @@ private:
 	void add_prefix_parse(TokenType tt, PrefixParseFn fn);
 	void add_infix_parse(TokenType tt, InfixParseFn fn);
 
-
 	void next_token();
 
 	std::unique_ptr<Statement> parse_statement();
@@ -48,6 +54,10 @@ private:
 	std::unique_ptr<Expression> parse_identifier();
 	std::unique_ptr<Expression> parse_integer_literal();
 	std::unique_ptr<Expression> parse_prefix_expression();
+	std::unique_ptr<Expression> parse_infix_expression(std::unique_ptr<Expression> left);
+
+	Precedence peek_precedence();
+	Precedence current_precedence();
 
 	bool expect_peek(TokenType tt);
 	bool peek_token_is(TokenType tt);

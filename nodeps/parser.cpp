@@ -40,6 +40,16 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	add_prefix_parse(tokentypes::BANG, &Parser::parse_prefix_expression);
 	add_prefix_parse(tokentypes::MINUS, &Parser::parse_prefix_expression);
 
+	m_infix_parse_fns = std::unordered_map<TokenType, InfixParseFn>();
+	add_infix_parse(tokentypes::PLUS, &Parser::parse_infix_expression);
+	add_infix_parse(tokentypes::MINUS, &Parser::parse_infix_expression);
+	add_infix_parse(tokentypes::SLASH, &Parser::parse_infix_expression);
+	add_infix_parse(tokentypes::ASTERISK, &Parser::parse_infix_expression);
+	add_infix_parse(tokentypes::EQ, &Parser::parse_infix_expression);
+	add_infix_parse(tokentypes::NEQ, &Parser::parse_infix_expression);
+	add_infix_parse(tokentypes::LT, &Parser::parse_infix_expression);
+	add_infix_parse(tokentypes::GT, &Parser::parse_infix_expression);
+
 	next_token();
 	next_token();
 }
@@ -128,6 +138,14 @@ unique_ptr<Expression> Parser::parse_expression(Precedence prec) {
 	auto fn = m_prefix_parse_fns[m_current.type];
 	auto left = (this->*fn)();
 
+	while (!peek_token_is(tokentypes::SEMICOLON) && prec <= peek_precedence()) {
+		auto infix = m_infix_parse_fns[m_peek.type];
+		if (infix == nullptr)
+			return left;
+		next_token();
+		left = (this->*infix)(std::move(left));
+	}
+
 	return left;
 }
 
@@ -161,6 +179,31 @@ unique_ptr<Expression> Parser::parse_prefix_expression() {
 
 	next_token();
 	exp->right = parse_expression(PREFIX);
+
+	return exp;
+}
+
+Precedence Parser::peek_precedence() {
+	if (precedences.find(m_peek.type) != precedences.end())
+		return precedences.at(m_peek.type);
+	return LOWEST;
+}
+
+Precedence Parser::current_precedence() {
+	if (precedences.find(m_current.type) != precedences.end())
+		return precedences.at(m_current.type);
+	return LOWEST;
+}
+
+unique_ptr<Expression> Parser::parse_infix_expression(unique_ptr<Expression> left) {
+	auto exp = std::make_unique<InfixExpression>();
+	exp->token = m_current;
+	exp->opr = m_current.literal;
+	exp->left = std::move(left);
+
+	auto prec = current_precedence();
+	next_token();
+	exp->right = std::move(parse_expression(prec));
 
 	return exp;
 }

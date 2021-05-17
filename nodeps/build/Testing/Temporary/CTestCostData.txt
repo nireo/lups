@@ -1,10 +1,12 @@
-LexerTest.TestNextToken 6 0.000287812
-LexerTest.IfStatements 6 0.000232351
-LexerTest.Variables 6 0.00023246
-LexerTest.FunctionDeclaration 6 0.000225436
-LexerTest.EqualNonEqual 6 0.000226721
-ParserTest.LetStatements 5 0.000266413
-ParserTest.ReturnStatements 4 0.000366244
-ParserTest.IdentifierExpression 2 0.000661724
-ParserTest.IntegerLiteralExpression 1 0.00132729
+LexerTest.TestNextToken 9 0.00016992
+LexerTest.IfStatements 9 0.000221887
+LexerTest.Variables 9 0.000215537
+LexerTest.FunctionDeclaration 9 0.000167832
+LexerTest.EqualNonEqual 9 0.000153322
+ParserTest.LetStatements 8 0.000178724
+ParserTest.ReturnStatements 7 0.000194132
+ParserTest.IdentifierExpression 5 0.000276534
+ParserTest.IntegerLiteralExpression 4 0.000332563
+ParserTest.PrefixExpressionTest 3 0.000463901
+ParserTest.InfixExpressionTest 2 0.000845239
 ---
