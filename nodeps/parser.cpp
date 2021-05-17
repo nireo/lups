@@ -138,7 +138,7 @@ unique_ptr<Expression> Parser::parse_expression(Precedence prec) {
 	auto fn = m_prefix_parse_fns[m_current.type];
 	auto left = (this->*fn)();
 
-	while (!peek_token_is(tokentypes::SEMICOLON) && prec <= peek_precedence()) {
+	while (!peek_token_is(tokentypes::SEMICOLON) && prec < peek_precedence()) {
 		auto infix = m_infix_parse_fns[m_peek.type];
 		if (infix == nullptr)
 			return left;

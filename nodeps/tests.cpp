@@ -248,7 +248,7 @@ TEST(ParserTest, IntegerLiteralExpression) {
 }
 
 TEST(ParserTest, PrefixExpressionTest) {
-	std::vector < std::tuple<std::string, std::string, int>> test_cases;
+	std::vector<std::tuple<std::string, std::string, int>> test_cases;
 	test_cases.push_back(std::make_tuple("!5;", "!", 5));
 	test_cases.push_back(std::make_tuple("-15;", "-", 15));
 
@@ -297,17 +297,12 @@ TEST(ParserTest, InfixExpressionTest) {
 	};
 
 	std::vector<Testcase> test_cases = {
-		{"5 + 5;", 5, "+", 5},
-		{"5 - 5;", 5, "-", 5},
-		{"5 * 5;", 5, "*", 5},
-		{"5 / 5;", 5, "/", 5},
-		{"5 > 5;", 5, ">", 5},
-		{"5 < 5;", 5, "<", 5},
-		{"5 == 5;", 5, "==", 5},
-		{"5 != 5;", 5, "!=", 5},
+			{"5 + 5;", 5, "+", 5},   {"5 - 5;", 5, "-", 5},   {"5 * 5;", 5, "*", 5},
+			{"5 / 5;", 5, "/", 5},   {"5 > 5;", 5, ">", 5},   {"5 < 5;", 5, "<", 5},
+			{"5 == 5;", 5, "==", 5}, {"5 != 5;", 5, "!=", 5},
 	};
 
-	for (auto& tc : test_cases) {
+	for (auto &tc : test_cases) {
 		auto lexer = Lexer(tc.input);
 		auto parser = Parser(std::make_unique<Lexer>(lexer));
 
@@ -325,5 +320,82 @@ TEST(ParserTest, InfixExpressionTest) {
 		EXPECT_EQ(tc.opr, exp->opr);
 		EXPECT_TRUE(test_integer_literal(tc.left_value, std::move(exp->left)));
 		EXPECT_TRUE(test_integer_literal(tc.right_value, std::move(exp->right)));
+	}
+}
+
+TEST(ParserTest, OperatorPrecedenceParsing) {
+	struct Testcase {
+		std::string input;
+		std::string expected;
+	};
+
+	std::vector<Testcase> test_cases = {
+			{
+					"-a * b",
+					"((-a) * b)",
+			},
+			{
+					"!-a",
+					"(!(-a))",
+			},
+			{
+					"a + b + c",
+					"((a + b) + c)",
+			},
+			{
+					"a + b - c",
+					"((a + b) - c)",
+			},
+			{
+					"a * b * c",
+					"((a * b) * c)",
+			},
+			{
+					"a * b / c",
+					"((a * b) / c)",
+			},
+			{
+					"a + b / c",
+					"(a + (b / c))",
+			},
+			{
+					"a + b * c + d / e - f",
+					"(((a + (b * c)) + (d / e)) - f)",
+			},
+			{
+					"3 + 4; -5 * 5",
+					"(3 + 4)((-5) * 5)",
+			},
+			{
+					"5 > 4 == 3 < 4",
+					"((5 > 4) == (3 < 4))",
+			},
+			{
+					"5 < 4 != 3 > 4",
+					"((5 < 4) != (3 > 4))",
+			},
+			{
+					"5 > 4 == 3 < 4",
+					"((5 > 4) == (3 < 4))",
+			},
+			{
+					"5 < 4 != 3 > 4",
+					"((5 < 4) != (3 > 4))",
+			},
+			{
+					"3 + 4 * 5 == 3 * 1 + 4 * 5",
+					"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
+			},
+	};
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+		auto program = parser.parse_program();
+		EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+		auto actual = program->String();
+		EXPECT_EQ(actual, tc.expected);
 	}
 }

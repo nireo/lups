@@ -11,7 +11,7 @@ std::string Program::TokenLiteral() {
 std::string Program::String() {
 	std::string res;
 	for (int i = 0; i < (int)statements.size(); ++i) {
-		res += statements[i]->String() + "\n";
+		res += statements[i]->String();
 	}
 
 	return res;
