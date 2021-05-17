@@ -124,4 +124,15 @@ public:
 	std::unique_ptr<Expression> left;
 };
 
+class BooleanExpression : public Expression {
+public:
+	~BooleanExpression() {}
+	std::string String() { return token.literal; }
+	std::string Type() { return "BooleanExpression"; }
+	std::string TokenLiteral() { return token.literal; }
+
+	Token token;
+	bool value;
+};
+
 #endif

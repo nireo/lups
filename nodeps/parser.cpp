@@ -39,6 +39,8 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	add_prefix_parse(tokentypes::INT, &Parser::parse_integer_literal);
 	add_prefix_parse(tokentypes::BANG, &Parser::parse_prefix_expression);
 	add_prefix_parse(tokentypes::MINUS, &Parser::parse_prefix_expression);
+	add_prefix_parse(tokentypes::TRUE, &Parser::parse_boolean);
+	add_prefix_parse(tokentypes::FALSE, &Parser::parse_boolean);
 
 	m_infix_parse_fns = std::unordered_map<TokenType, InfixParseFn>();
 	add_infix_parse(tokentypes::PLUS, &Parser::parse_infix_expression);
@@ -204,6 +206,14 @@ unique_ptr<Expression> Parser::parse_infix_expression(unique_ptr<Expression> lef
 	auto prec = current_precedence();
 	next_token();
 	exp->right = std::move(parse_expression(prec));
+
+	return exp;
+}
+
+unique_ptr<Expression> Parser::parse_boolean() {
+	auto exp = std::make_unique<BooleanExpression>();
+	exp->token = m_current;
+	exp->value = current_token_is(tokentypes::TRUE);
 
 	return exp;
 }

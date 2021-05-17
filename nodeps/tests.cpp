@@ -277,8 +277,54 @@ TEST(ParserTest, PrefixExpressionTest) {
 	}
 }
 
+TEST(ParsetTest, BooleanPrefixExpressionTest) {
+	struct Testcase {
+		std::string input;
+		std::string opr;
+		bool value;
+	};
+
+	std::vector<Testcase> test_cases = {
+		{"!true;", "!", true},
+		{"!false;", "!", false},
+	};
+
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+		auto program = parser.parse_program();
+
+		// check the the program ins't a nullptr
+		EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+		EXPECT_EQ(program->statements.size(), 1) << "Wrong amount of statements";
+
+		auto stmt =
+				dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+		EXPECT_NE(stmt, nullptr) << "Statement is not a expression statement";
+
+		auto pre = dynamic_cast<PrefixExpression *>(stmt->expression.get());
+		EXPECT_NE(pre, nullptr) << "Expression is not a prefix expression";
+
+		auto boolexp = dynamic_cast<BooleanExpression *>(pre->right.get());
+		EXPECT_NE(boolexp, nullptr) << "Expression is not a integer literal";
+		EXPECT_EQ(boolexp->value, tc.value);
+	}
+}
+
 bool test_integer_literal(int expected, std::unique_ptr<Expression> exp) {
 	auto lit = dynamic_cast<IntegerLiteral *>(exp.get());
+	if (lit == nullptr)
+		return false;
+
+	if (lit->value != expected)
+		return false;
+
+	return true;
+}
+
+bool test_bool_literal(bool expected, std::unique_ptr<Expression> exp) {
+	auto lit = dynamic_cast<BooleanExpression *>(exp.get());
 	if (lit == nullptr)
 		return false;
 
@@ -320,6 +366,41 @@ TEST(ParserTest, InfixExpressionTest) {
 		EXPECT_EQ(tc.opr, exp->opr);
 		EXPECT_TRUE(test_integer_literal(tc.left_value, std::move(exp->left)));
 		EXPECT_TRUE(test_integer_literal(tc.right_value, std::move(exp->right)));
+	}
+}
+
+TEST(ParserTest, BooleanInfixExpression) {
+	struct Testcase {
+		std::string input;
+		bool left_value;
+		std::string opr;
+		bool right_value;
+	};
+
+	std::vector<Testcase> test_cases = {
+		{"true == true", true, "==", true},
+		{"true != false", true, "!=", false},
+		{"false == false", false, "==", false},
+	};
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+		auto program = parser.parse_program();
+		EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+		EXPECT_EQ(program->statements.size(), 1) << "Wrong amount of statements";
+
+		auto stmt =
+				dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+		EXPECT_NE(stmt, nullptr) << "Statement is not a expression statement";
+
+		auto exp = dynamic_cast<InfixExpression *>(stmt->expression.get());
+		EXPECT_NE(exp, nullptr) << "Statement is not a infix expression";
+
+		EXPECT_EQ(tc.opr, exp->opr);
+		EXPECT_TRUE(test_bool_literal(tc.left_value, std::move(exp->left)));
+		EXPECT_TRUE(test_bool_literal(tc.right_value, std::move(exp->right)));
 	}
 }
 
@@ -385,6 +466,22 @@ TEST(ParserTest, OperatorPrecedenceParsing) {
 			{
 					"3 + 4 * 5 == 3 * 1 + 4 * 5",
 					"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
+			},
+			{
+					"true",
+					"true",
+			},
+			{
+					"false",
+					"false",
+			},
+			{
+					"3 > 5 == false",
+					"((3 > 5) == false)",
+			},
+			{
+					"3 < 5 == true",
+					"((3 < 5) == true)",
 			},
 	};
 
