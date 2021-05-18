@@ -135,4 +135,30 @@ public:
 	bool value;
 };
 
+
+class BlockStatement : public Statement {
+public:
+	~BlockStatement() {}
+	void statementNode() {}
+	std::string String() { return token.literal; }
+	std::string Type() { return "BlockExpression"; }
+	std::string TokenLiteral() { return token.literal; }
+
+	Token token;
+	std::vector<std::unique_ptr<Statement>> statements;
+};
+
+class IfExpression : public Expression {
+public:
+	~IfExpression() {}
+	std::string String() { return token.literal; }
+	std::string Type() { return "IfExpression"; }
+	std::string TokenLiteral() { return token.literal; }
+
+	Token token;
+	std::unique_ptr<Expression> cond;
+	std::unique_ptr<BlockStatement> after;
+	std::unique_ptr<BlockStatement> other;
+};
+
 #endif

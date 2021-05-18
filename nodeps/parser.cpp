@@ -41,6 +41,8 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	add_prefix_parse(tokentypes::MINUS, &Parser::parse_prefix_expression);
 	add_prefix_parse(tokentypes::TRUE, &Parser::parse_boolean);
 	add_prefix_parse(tokentypes::FALSE, &Parser::parse_boolean);
+	add_prefix_parse(tokentypes::LPAREN, &Parser::parse_grouped_expression);
+	add_prefix_parse(tokentypes::IF, &Parser::parse_if_expression);
 
 	m_infix_parse_fns = std::unordered_map<TokenType, InfixParseFn>();
 	add_infix_parse(tokentypes::PLUS, &Parser::parse_infix_expression);
@@ -197,7 +199,8 @@ Precedence Parser::current_precedence() {
 	return LOWEST;
 }
 
-unique_ptr<Expression> Parser::parse_infix_expression(unique_ptr<Expression> left) {
+unique_ptr<Expression>
+Parser::parse_infix_expression(unique_ptr<Expression> left) {
 	auto exp = std::make_unique<InfixExpression>();
 	exp->token = m_current;
 	exp->opr = m_current.literal;
@@ -210,12 +213,70 @@ unique_ptr<Expression> Parser::parse_infix_expression(unique_ptr<Expression> lef
 	return exp;
 }
 
+unique_ptr<Expression> Parser::parse_grouped_expression() {
+	next_token();
+	auto exp = parse_expression(LOWEST);
+	if (!expect_peek(tokentypes::RPAREN))
+		return nullptr;
+
+	return exp;
+}
+
 unique_ptr<Expression> Parser::parse_boolean() {
 	auto exp = std::make_unique<BooleanExpression>();
 	exp->token = m_current;
 	exp->value = current_token_is(tokentypes::TRUE);
 
 	return exp;
+}
+
+unique_ptr<Expression> Parser::parse_if_expression() {
+	auto exp = std::make_unique<IfExpression>();
+	exp->token = m_current;
+
+	if (!expect_peek(tokentypes::LPAREN))
+		return nullptr;
+
+	next_token();
+	exp->cond = parse_expression(LOWEST);
+
+	if (!expect_peek(tokentypes::RPAREN))
+		return nullptr;
+
+	if (!expect_peek(tokentypes::LBRACE))
+		return nullptr;
+
+	exp->after = parse_block_statement();
+
+	if (peek_token_is(tokentypes::ELSE)) {
+		next_token();
+
+		if (!expect_peek(tokentypes::LBRACE)) {
+			return nullptr;
+		}
+
+		exp->other = parse_block_statement();
+	}
+
+	return exp;
+}
+
+unique_ptr<BlockStatement> Parser::parse_block_statement() {
+	auto block = std::make_unique<BlockStatement>();
+	block->token = m_current;
+	block->statements = std::vector<unique_ptr<Statement>>();
+
+	next_token();
+
+	while (!current_token_is(tokentypes::RBRACE) && !current_token_is(tokentypes::EOFF)) {
+		auto stmt = parse_statement();
+		if (stmt != nullptr)  {
+			block->statements.push_back(std::move(stmt));
+		}
+		next_token();
+	}
+
+	return block;
 }
 
 std::vector<std::string> Parser::errors() const { return m_errors; }

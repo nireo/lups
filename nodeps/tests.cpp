@@ -285,10 +285,9 @@ TEST(ParsetTest, BooleanPrefixExpressionTest) {
 	};
 
 	std::vector<Testcase> test_cases = {
-		{"!true;", "!", true},
-		{"!false;", "!", false},
+			{"!true;", "!", true},
+			{"!false;", "!", false},
 	};
-
 
 	for (auto &tc : test_cases) {
 		auto lexer = Lexer(tc.input);
@@ -378,9 +377,9 @@ TEST(ParserTest, BooleanInfixExpression) {
 	};
 
 	std::vector<Testcase> test_cases = {
-		{"true == true", true, "==", true},
-		{"true != false", true, "!=", false},
-		{"false == false", false, "==", false},
+			{"true == true", true, "==", true},
+			{"true != false", true, "!=", false},
+			{"false == false", false, "==", false},
 	};
 
 	for (auto &tc : test_cases) {
@@ -483,7 +482,26 @@ TEST(ParserTest, OperatorPrecedenceParsing) {
 					"3 < 5 == true",
 					"((3 < 5) == true)",
 			},
-	};
+			{
+					"1 + (2 + 3) + 4",
+					"((1 + (2 + 3)) + 4)",
+			},
+			{
+					"(5 + 5) * 2",
+					"((5 + 5) * 2)",
+			},
+			{
+					"2 / (5 + 5)",
+					"(2 / (5 + 5))",
+			},
+			{
+					"-(5 + 5)",
+					"(-(5 + 5))",
+			},
+			{
+					"!(true == true)",
+					"(!(true == true))",
+			}};
 
 	for (auto &tc : test_cases) {
 		auto lexer = Lexer(tc.input);
@@ -495,4 +513,21 @@ TEST(ParserTest, OperatorPrecedenceParsing) {
 		auto actual = program->String();
 		EXPECT_EQ(actual, tc.expected);
 	}
+}
+
+TEST(ParserTest, IfExpressionTest) {
+	std::string input = "if (x < y) { x }";
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+	EXPECT_EQ(program->statements.size(), 1);
+
+	auto expstmt = dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
+
+	auto ifexp = dynamic_cast<IfExpression *>(expstmt);
+	EXPECT_NE(ifexp, nullptr);
 }

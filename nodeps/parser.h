@@ -56,6 +56,9 @@ private:
 	std::unique_ptr<Expression> parse_prefix_expression();
 	std::unique_ptr<Expression> parse_infix_expression(std::unique_ptr<Expression> left);
 	std::unique_ptr<Expression> parse_boolean();
+	std::unique_ptr<Expression> parse_grouped_expression();
+	std::unique_ptr<Expression> parse_if_expression();
+	std::unique_ptr<BlockStatement> parse_block_statement();
 
 	Precedence peek_precedence();
 	Precedence current_precedence();
