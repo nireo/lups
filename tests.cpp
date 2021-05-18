@@ -525,7 +525,8 @@ TEST(ParserTest, IfExpressionTest) {
 
 	EXPECT_EQ(program->statements.size(), 1);
 
-	auto expstmt = dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
 	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
 
 	auto ifexp = dynamic_cast<IfExpression *>(expstmt->expression.get());
@@ -541,11 +542,35 @@ TEST(ParserTest, FunctionLiteralParsing) {
 	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
 	EXPECT_EQ(program->statements.size(), 1);
 
-	auto expstmt = dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
 	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
 
 	auto funcexp = dynamic_cast<FunctionLiteral *>(expstmt->expression.get());
 	EXPECT_NE(funcexp, nullptr);
 
 	EXPECT_EQ(funcexp->params.size(), 2);
+}
+
+TEST(ParserTest, FunctionParameterTest) {
+	std::string input = "func(x, y, z) {};";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
+
+	auto funcexp = dynamic_cast<FunctionLiteral *>(expstmt->expression.get());
+	EXPECT_NE(funcexp, nullptr);
+
+	EXPECT_EQ(funcexp->params.size(), 3);
+
+	EXPECT_EQ(funcexp->params[0]->value, "x");
+	EXPECT_EQ(funcexp->params[1]->value, "y");
+	EXPECT_EQ(funcexp->params[2]->value, "z");
 }
