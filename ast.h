@@ -161,4 +161,16 @@ public:
 	std::unique_ptr<BlockStatement> other;
 };
 
+class FunctionLiteral : public Expression {
+public:
+	~FunctionLiteral() {}
+	std::string String() { return token.literal; }
+	std::string Type() { return "FunctionLiteral"; }
+	std::string TokenLiteral() { return token.literal; }
+
+	Token token;
+	std::vector<std::unique_ptr<Identifier>> params;
+	std::unique_ptr<BlockStatement> body;
+};
+
 #endif

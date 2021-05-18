@@ -43,6 +43,7 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	add_prefix_parse(tokentypes::FALSE, &Parser::parse_boolean);
 	add_prefix_parse(tokentypes::LPAREN, &Parser::parse_grouped_expression);
 	add_prefix_parse(tokentypes::IF, &Parser::parse_if_expression);
+	add_prefix_parse(tokentypes::FUNCTION, &Parser::parse_function_literal);
 
 	m_infix_parse_fns = std::unordered_map<TokenType, InfixParseFn>();
 	add_infix_parse(tokentypes::PLUS, &Parser::parse_infix_expression);
@@ -268,15 +269,63 @@ unique_ptr<BlockStatement> Parser::parse_block_statement() {
 
 	next_token();
 
-	while (!current_token_is(tokentypes::RBRACE) && !current_token_is(tokentypes::EOFF)) {
+	while (!current_token_is(tokentypes::RBRACE) &&
+				 !current_token_is(tokentypes::EOFF)) {
 		auto stmt = parse_statement();
-		if (stmt != nullptr)  {
+		if (stmt != nullptr) {
 			block->statements.push_back(std::move(stmt));
 		}
 		next_token();
 	}
 
 	return block;
+}
+
+unique_ptr<Expression> Parser::parse_function_literal() {
+	auto lit = std::make_unique<FunctionLiteral>();
+	lit->token = m_current;
+
+	if (!expect_peek(tokentypes::LPAREN))
+		return nullptr;
+
+	lit->params = parse_function_params();
+
+	if (!expect_peek(tokentypes::LBRACE))
+		return nullptr;
+
+	lit->body = std::move(parse_block_statement());
+
+	return lit;
+}
+
+std::vector<unique_ptr<Identifier>> Parser::parse_function_params() {
+	std::vector<unique_ptr<Identifier>> params;
+	if (peek_token_is(tokentypes::LPAREN)) {
+		next_token();
+		return params;
+	}
+
+	next_token();
+
+	auto ident = std::make_unique<Identifier>();
+	ident->token = m_current;
+	ident->value = m_current.literal;
+	params.push_back(std::move(ident));
+
+	while (peek_token_is(tokentypes::COMMA)) {
+		next_token();
+		next_token();
+
+		auto ident = std::make_unique<Identifier>();
+		ident->token = m_current;
+		ident->value = m_current.literal;
+		params.push_back(std::move(ident));
+	}
+
+	if (!expect_peek(tokentypes::RPAREN))
+		return std::vector<unique_ptr<Identifier>>();
+
+	return params;
 }
 
 std::vector<std::string> Parser::errors() const { return m_errors; }

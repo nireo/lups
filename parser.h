@@ -59,6 +59,8 @@ private:
 	std::unique_ptr<Expression> parse_grouped_expression();
 	std::unique_ptr<Expression> parse_if_expression();
 	std::unique_ptr<BlockStatement> parse_block_statement();
+	std::unique_ptr<Expression> parse_function_literal();
+	std::vector<std::unique_ptr<Identifier>> parse_function_params();
 
 	Precedence peek_precedence();
 	Precedence current_precedence();

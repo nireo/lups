@@ -22,14 +22,14 @@ function(check_file_hash has_hash hash_is_good)
   set("${has_hash}" TRUE PARENT_SCOPE)
 
   message(STATUS "verifying file...
-       file='/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip'")
+       file='/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip'")
 
-  file("" "/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip" actual_value)
+  file("" "/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip" actual_value)
 
   if(NOT "${actual_value}" STREQUAL "")
     set("${hash_is_good}" FALSE PARENT_SCOPE)
     message(STATUS " hash of
-    /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+    /home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
   does not match expected value
     expected: ''
       actual: '${actual_value}'")
@@ -71,7 +71,7 @@ function(sleep_before_download attempt)
   execute_process(COMMAND "${CMAKE_COMMAND}" -E sleep "${sleep_seconds}")
 endfunction()
 
-if("/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip" STREQUAL "")
+if("/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip" STREQUAL "")
   message(FATAL_ERROR "LOCAL can't be empty")
 endif()
 
@@ -79,32 +79,32 @@ if("https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c3
   message(FATAL_ERROR "REMOTE can't be empty")
 endif()
 
-if(EXISTS "/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip")
+if(EXISTS "/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip")
   check_file_hash(has_hash hash_is_good)
   if(has_hash)
     if(hash_is_good)
       message(STATUS "File already exists and hash match (skip download):
-  file='/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip'
+  file='/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip'
   =''"
       )
       return()
     else()
       message(STATUS "File already exists but hash mismatch. Removing...")
-      file(REMOVE "/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip")
+      file(REMOVE "/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip")
     endif()
   else()
     message(STATUS "File already exists but no hash specified (use URL_HASH):
-  file='/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip'
+  file='/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip'
 Old file will be removed and new file downloaded from URL."
     )
-    file(REMOVE "/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip")
+    file(REMOVE "/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip")
   endif()
 endif()
 
 set(retry_number 5)
 
 message(STATUS "Downloading...
-   dst='/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip'
+   dst='/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip'
    timeout='none'
    inactivity timeout='none'"
 )
@@ -126,7 +126,7 @@ foreach(i RANGE ${retry_number})
 
       file(
         DOWNLOAD
-        "${url}" "/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip"
+        "${url}" "/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip"
         SHOW_PROGRESS
         # no TIMEOUT
         # no INACTIVITY_TIMEOUT
@@ -143,7 +143,7 @@ foreach(i RANGE ${retry_number})
         check_file_hash(has_hash hash_is_good)
         if(has_hash AND NOT hash_is_good)
           message(STATUS "Hash mismatch, removing...")
-          file(REMOVE "/home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip")
+          file(REMOVE "/home/eemil/dev/c++/lups/build/_deps/googletest-subbuild/googletest-populate-prefix/src/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip")
         else()
           message(STATUS "Downloading... done")
           return()

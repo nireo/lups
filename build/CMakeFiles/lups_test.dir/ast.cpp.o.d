@@ -1,7 +1,6 @@
-CMakeFiles/lups_test.dir/ast.cpp.o: \
- /home/eemil/dev/c++/lups/nodeps/ast.cpp /usr/include/stdc-predef.h \
- /home/eemil/dev/c++/lups/nodeps/ast.h \
- /home/eemil/dev/c++/lups/nodeps/token.h /usr/include/c++/11.1.0/string \
+CMakeFiles/lups_test.dir/ast.cpp.o: /home/eemil/dev/c++/lups/ast.cpp \
+ /usr/include/stdc-predef.h /home/eemil/dev/c++/lups/ast.h \
+ /home/eemil/dev/c++/lups/token.h /usr/include/c++/11.1.0/string \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/os_defines.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \

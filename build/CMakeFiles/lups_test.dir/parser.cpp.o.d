@@ -1,8 +1,7 @@
 CMakeFiles/lups_test.dir/parser.cpp.o: \
- /home/eemil/dev/c++/lups/nodeps/parser.cpp /usr/include/stdc-predef.h \
- /home/eemil/dev/c++/lups/nodeps/parser.h \
- /home/eemil/dev/c++/lups/nodeps/ast.h \
- /home/eemil/dev/c++/lups/nodeps/token.h /usr/include/c++/11.1.0/string \
+ /home/eemil/dev/c++/lups/parser.cpp /usr/include/stdc-predef.h \
+ /home/eemil/dev/c++/lups/parser.h /home/eemil/dev/c++/lups/ast.h \
+ /home/eemil/dev/c++/lups/token.h /usr/include/c++/11.1.0/string \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/os_defines.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
@@ -141,8 +140,7 @@ CMakeFiles/lups_test.dir/parser.cpp.o: \
  /usr/include/c++/11.1.0/pstl/execution_defs.h \
  /usr/include/c++/11.1.0/vector /usr/include/c++/11.1.0/bits/stl_vector.h \
  /usr/include/c++/11.1.0/bits/stl_bvector.h \
- /usr/include/c++/11.1.0/bits/vector.tcc \
- /home/eemil/dev/c++/lups/nodeps/lexer.h \
+ /usr/include/c++/11.1.0/bits/vector.tcc /home/eemil/dev/c++/lups/lexer.h \
  /usr/include/c++/11.1.0/algorithm \
  /usr/include/c++/11.1.0/bits/stl_algo.h \
  /usr/include/c++/11.1.0/bits/algorithmfwd.h \

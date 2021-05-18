@@ -1,7 +1,6 @@
-CMakeFiles/lups_test.dir/tests.cpp.o: \
- /home/eemil/dev/c++/lups/nodeps/tests.cpp /usr/include/stdc-predef.h \
- /home/eemil/dev/c++/lups/nodeps/ast.h \
- /home/eemil/dev/c++/lups/nodeps/token.h /usr/include/c++/11.1.0/string \
+CMakeFiles/lups_test.dir/tests.cpp.o: /home/eemil/dev/c++/lups/tests.cpp \
+ /usr/include/stdc-predef.h /home/eemil/dev/c++/lups/ast.h \
+ /home/eemil/dev/c++/lups/token.h /usr/include/c++/11.1.0/string \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/os_defines.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
@@ -140,10 +139,9 @@ CMakeFiles/lups_test.dir/tests.cpp.o: \
  /usr/include/c++/11.1.0/pstl/execution_defs.h \
  /usr/include/c++/11.1.0/vector /usr/include/c++/11.1.0/bits/stl_vector.h \
  /usr/include/c++/11.1.0/bits/stl_bvector.h \
- /usr/include/c++/11.1.0/bits/vector.tcc \
- /home/eemil/dev/c++/lups/nodeps/lexer.h \
- /home/eemil/dev/c++/lups/nodeps/parser.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest.h \
+ /usr/include/c++/11.1.0/bits/vector.tcc /home/eemil/dev/c++/lups/lexer.h \
+ /home/eemil/dev/c++/lups/parser.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest.h \
  /usr/include/c++/11.1.0/cstddef /usr/include/c++/11.1.0/limits \
  /usr/include/c++/11.1.0/ostream /usr/include/c++/11.1.0/ios \
  /usr/include/c++/11.1.0/bits/ios_base.h \
@@ -163,8 +161,8 @@ CMakeFiles/lups_test.dir/tests.cpp.o: \
  /usr/include/c++/11.1.0/bits/locale_facets.tcc \
  /usr/include/c++/11.1.0/bits/basic_ios.tcc \
  /usr/include/c++/11.1.0/bits/ostream.tcc \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-internal.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-port.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-internal.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-port.h \
  /usr/include/c++/11.1.0/stdlib.h /usr/include/string.h \
  /usr/include/strings.h /usr/include/sys/stat.h /usr/include/bits/stat.h \
  /usr/include/bits/struct_stat.h /usr/include/bits/statx.h \
@@ -186,8 +184,8 @@ CMakeFiles/lups_test.dir/tests.cpp.o: \
  /usr/include/libintl.h /usr/include/c++/11.1.0/bits/codecvt.h \
  /usr/include/c++/11.1.0/bits/locale_facets_nonio.tcc \
  /usr/include/c++/11.1.0/bits/locale_conv.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/custom/gtest-port.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-port-arch.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/custom/gtest-port.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-port-arch.h \
  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
  /usr/include/bits/environments.h /usr/include/bits/confname.h \
  /usr/include/bits/getopt_posix.h /usr/include/bits/getopt_core.h \
@@ -216,30 +214,30 @@ CMakeFiles/lups_test.dir/tests.cpp.o: \
  /usr/include/c++/11.1.0/bits/stl_multimap.h /usr/include/c++/11.1.0/set \
  /usr/include/c++/11.1.0/bits/stl_set.h \
  /usr/include/c++/11.1.0/bits/stl_multiset.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest-message.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-filepath.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-string.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-type-util.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest-message.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-filepath.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-string.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-type-util.h \
  /usr/include/c++/11.1.0/cxxabi.h \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/cxxabi_tweaks.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest-death-test.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-death-test-internal.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest-matchers.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest-death-test.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-death-test-internal.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest-matchers.h \
  /usr/include/c++/11.1.0/atomic \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest-printers.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest-printers.h \
  /usr/include/c++/11.1.0/functional \
  /usr/include/c++/11.1.0/bits/std_function.h \
  /usr/include/c++/11.1.0/bits/stl_algo.h \
  /usr/include/c++/11.1.0/bits/algorithmfwd.h \
  /usr/include/c++/11.1.0/bits/stl_heap.h \
  /usr/include/c++/11.1.0/bits/uniform_int_dist.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/custom/gtest-printers.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest-param-test.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/custom/gtest-printers.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest-param-test.h \
  /usr/include/c++/11.1.0/iterator \
  /usr/include/c++/11.1.0/bits/stream_iterator.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-param-util.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/internal/gtest-param-util.h \
  /usr/include/c++/11.1.0/cassert /usr/include/assert.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest-test-part.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest_prod.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest-typed-test.h \
- /home/eemil/dev/c++/lups/nodeps/build/_deps/googletest-src/googletest/include/gtest/gtest_pred_impl.h
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest-test-part.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest_prod.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest-typed-test.h \
+ /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest_pred_impl.h

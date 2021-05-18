@@ -1,6 +1,6 @@
-CMakeFiles/lups_test.dir/lexer.cpp.o: \
- /home/eemil/dev/c++/lups/nodeps/lexer.cpp /usr/include/stdc-predef.h \
- /home/eemil/dev/c++/lups/nodeps/lexer.h /usr/include/c++/11.1.0/string \
+CMakeFiles/lups_test.dir/lexer.cpp.o: /home/eemil/dev/c++/lups/lexer.cpp \
+ /usr/include/stdc-predef.h /home/eemil/dev/c++/lups/lexer.h \
+ /usr/include/c++/11.1.0/string \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/os_defines.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
@@ -105,8 +105,7 @@ CMakeFiles/lups_test.dir/lexer.cpp.o: \
  /usr/include/bits/types/error_t.h \
  /usr/include/c++/11.1.0/bits/charconv.h \
  /usr/include/c++/11.1.0/bits/basic_string.tcc \
- /home/eemil/dev/c++/lups/nodeps/token.h \
- /usr/include/c++/11.1.0/unordered_map \
+ /home/eemil/dev/c++/lups/token.h /usr/include/c++/11.1.0/unordered_map \
  /usr/include/c++/11.1.0/ext/aligned_buffer.h \
  /usr/include/c++/11.1.0/bits/hashtable.h \
  /usr/include/c++/11.1.0/bits/hashtable_policy.h \

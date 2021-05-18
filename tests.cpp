@@ -528,6 +528,24 @@ TEST(ParserTest, IfExpressionTest) {
 	auto expstmt = dynamic_cast<ExpressionStatement *>(program->statements[0].get());
 	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
 
-	auto ifexp = dynamic_cast<IfExpression *>(expstmt);
+	auto ifexp = dynamic_cast<IfExpression *>(expstmt->expression.get());
 	EXPECT_NE(ifexp, nullptr);
+}
+
+TEST(ParserTest, FunctionLiteralParsing) {
+	std::string input = "func(x, y) { x + y; }";
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+	EXPECT_EQ(program->statements.size(), 1);
+
+	auto expstmt = dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
+
+	auto funcexp = dynamic_cast<FunctionLiteral *>(expstmt->expression.get());
+	EXPECT_NE(funcexp, nullptr);
+
+	EXPECT_EQ(funcexp->params.size(), 2);
 }
