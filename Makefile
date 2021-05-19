@@ -1,2 +1,2 @@
 all:
-	g++ repl.cpp lexer.cpp -o lups
+	g++ repl.cpp lexer.cpp parser.cpp ast.cpp -o lups

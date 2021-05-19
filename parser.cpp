@@ -106,9 +106,12 @@ unique_ptr<Statement> Parser::parse_let_statement() {
 		return nullptr;
 	}
 
-	while (!current_token_is(tokentypes::SEMICOLON)) {
+	next_token();
+
+	letstmt->value = parse_expression(LOWEST);
+
+	if (peek_token_is(tokentypes::SEMICOLON))
 		next_token();
-	}
 
 	return letstmt;
 }
@@ -117,9 +120,11 @@ unique_ptr<Statement> Parser::parse_return_statement() {
 	auto returnstmt = std::make_unique<ReturnStatement>();
 	returnstmt->token = m_current;
 
-	while (!current_token_is(tokentypes::SEMICOLON)) {
+	next_token();
+	returnstmt->return_value = parse_expression(LOWEST);
+
+	if (peek_token_is(tokentypes::SEMICOLON))
 		next_token();
-	}
 
 	return returnstmt;
 }
