@@ -1,5 +1,6 @@
 #include "ast.h"
 #include "lexer.h"
+#include "object.h"
 #include "parser.h"
 #include "token.h"
 #include <gtest/gtest.h>
@@ -607,4 +608,33 @@ TEST(ParserTest, CallExpressionParsing) {
 	EXPECT_EQ("+", exp2->opr);
 	EXPECT_TRUE(test_integer_literal(4, std::move(exp2->left)));
 	EXPECT_TRUE(test_integer_literal(5, std::move(exp2->right)));
+}
+
+bool test_integer_object(std::unique_ptr<Object> obj, int expected) {
+	auto res = dynamic_cast<Integer *>(obj.get());
+	if (res == nullptr)
+		return false;
+
+	if (res->value != expected)
+		return false;
+
+	return true;
+}
+
+TEST(EvalTest, IntegerExpressions) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+			{"5", 5},
+			{"10", 10},
+	};
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+		auto program = parser.parse_program();
+	}
 }
