@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "eval.h"
 #include "lexer.h"
 #include "object.h"
 #include "parser.h"
@@ -610,8 +611,8 @@ TEST(ParserTest, CallExpressionParsing) {
 	EXPECT_TRUE(test_integer_literal(5, std::move(exp2->right)));
 }
 
-bool test_integer_object(std::unique_ptr<Object> obj, int expected) {
-	auto res = dynamic_cast<Integer *>(obj.get());
+bool test_integer_object(Object* obj, int expected) {
+	auto res = dynamic_cast<Integer *>(obj);
 	if (res == nullptr)
 		return false;
 
@@ -636,5 +637,10 @@ TEST(EvalTest, IntegerExpressions) {
 		auto lexer = Lexer(tc.input);
 		auto parser = Parser(std::make_unique<Lexer>(lexer));
 		auto program = parser.parse_program();
+		auto obj = eval::Eval(program.get());
+
+		EXPECT_NE(obj, nullptr);
+
+		test_integer_object(obj, tc.expected);
 	}
 }

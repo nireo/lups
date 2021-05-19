@@ -25,6 +25,9 @@ add_executable(
 	parser.h
 	ast.h
 	ast.cpp
+	object.h
+	eval.cpp
+	eval.h
 )
 target_link_libraries(
 	lups_test

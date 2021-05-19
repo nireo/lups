@@ -260,6 +260,30 @@ ast.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/ast.cpp.s
 .PHONY : ast.cpp.s
 
+eval.o: eval.cpp.o
+.PHONY : eval.o
+
+# target to build an object file
+eval.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/eval.cpp.o
+.PHONY : eval.cpp.o
+
+eval.i: eval.cpp.i
+.PHONY : eval.i
+
+# target to preprocess a source file
+eval.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/eval.cpp.i
+.PHONY : eval.cpp.i
+
+eval.s: eval.cpp.s
+.PHONY : eval.s
+
+# target to generate assembly for a file
+eval.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/eval.cpp.s
+.PHONY : eval.cpp.s
+
 lexer.o: lexer.cpp.o
 .PHONY : lexer.o
 
@@ -353,6 +377,9 @@ help:
 	@echo "... ast.o"
 	@echo "... ast.i"
 	@echo "... ast.s"
+	@echo "... eval.o"
+	@echo "... eval.i"
+	@echo "... eval.s"
 	@echo "... lexer.o"
 	@echo "... lexer.i"
 	@echo "... lexer.s"
