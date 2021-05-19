@@ -173,4 +173,16 @@ public:
 	std::unique_ptr<BlockStatement> body;
 };
 
+class CallExpression : public Expression {
+public:
+	~CallExpression() {}
+	std::string String();
+	std::string TokenLiteral() { return token.literal; }
+	std::string Type() { return "CallExpression"; }
+
+	Token token;
+	std::vector<std::unique_ptr<Expression>> arguments;
+	std::unique_ptr<Expression> func;
+};
+
 #endif

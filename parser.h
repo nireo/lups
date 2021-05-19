@@ -12,6 +12,8 @@ typedef std::unique_ptr<Expression> (Parser::*PrefixParseFn)();
 typedef std::unique_ptr<Expression> (Parser::*InfixParseFn)(
 		std::unique_ptr<Expression>);
 
+
+// TODO: make scoped enum
 enum Precedence {
 	LOWEST,
 	EQUALS,
@@ -23,10 +25,16 @@ enum Precedence {
 };
 
 const std::unordered_map<TokenType, Precedence> precedences = {
-		{tokentypes::EQ, EQUALS},      {tokentypes::NEQ, EQUALS},
-		{tokentypes::LT, LESSGREATER}, {tokentypes::GT, LESSGREATER},
-		{tokentypes::PLUS, SUM},       {tokentypes::MINUS, SUM},
-		{tokentypes::SLASH, PRODUCT},  {tokentypes::ASTERISK, PRODUCT}};
+		{tokentypes::EQ, EQUALS},
+		{tokentypes::NEQ, EQUALS},
+		{tokentypes::LT, LESSGREATER},
+		{tokentypes::GT, LESSGREATER},
+		{tokentypes::PLUS, SUM},
+		{tokentypes::MINUS, SUM},
+		{tokentypes::SLASH, PRODUCT},
+		{tokentypes::ASTERISK, PRODUCT},
+		{tokentypes::LPAREN, CALL},
+};
 
 class Parser {
 public:
@@ -60,7 +68,9 @@ private:
 	std::unique_ptr<Expression> parse_if_expression();
 	std::unique_ptr<BlockStatement> parse_block_statement();
 	std::unique_ptr<Expression> parse_function_literal();
+	std::unique_ptr<Expression> parse_call_expression(std::unique_ptr<Expression> func);
 	std::vector<std::unique_ptr<Identifier>> parse_function_params();
+	std::vector<std::unique_ptr<Expression>> parse_call_arguments();
 
 	Precedence peek_precedence();
 	Precedence current_precedence();

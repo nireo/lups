@@ -54,6 +54,7 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	add_infix_parse(tokentypes::NEQ, &Parser::parse_infix_expression);
 	add_infix_parse(tokentypes::LT, &Parser::parse_infix_expression);
 	add_infix_parse(tokentypes::GT, &Parser::parse_infix_expression);
+	add_infix_parse(tokentypes::LPAREN, &Parser::parse_call_expression);
 
 	next_token();
 	next_token();
@@ -326,6 +327,39 @@ std::vector<unique_ptr<Identifier>> Parser::parse_function_params() {
 		return std::vector<unique_ptr<Identifier>>();
 
 	return params;
+}
+
+unique_ptr<Expression> Parser::parse_call_expression(unique_ptr<Expression> func) {
+	auto exp = std::make_unique<CallExpression>();
+	exp->token = m_current;
+	exp->func = std::move(func);
+	exp->arguments = parse_call_arguments();
+
+	return exp;
+}
+
+std::vector<unique_ptr<Expression>> Parser::parse_call_arguments() {
+	std::vector<unique_ptr<Expression>> args;
+
+	if (peek_token_is(tokentypes::RPAREN)) {
+		next_token();
+		return args;
+	}
+
+	next_token();
+	args.push_back(std::move(parse_expression(LOWEST)));
+
+	while (peek_token_is(tokentypes::COMMA)) {
+		next_token();
+		next_token();
+
+		args.push_back(std::move(parse_expression(LOWEST)));
+	}
+
+	if (!expect_peek(tokentypes::RPAREN))
+		return std::vector<unique_ptr<Expression>>();
+
+	return args;
 }
 
 std::vector<std::string> Parser::errors() const { return m_errors; }

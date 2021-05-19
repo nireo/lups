@@ -574,3 +574,37 @@ TEST(ParserTest, FunctionParameterTest) {
 	EXPECT_EQ(funcexp->params[1]->value, "y");
 	EXPECT_EQ(funcexp->params[2]->value, "z");
 }
+
+TEST(ParserTest, CallExpressionParsing) {
+	std::string input = "add(1, 2 * 3, 4 + 5);";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
+
+	auto callexp = dynamic_cast<CallExpression *>(expstmt->expression.get());
+	EXPECT_NE(callexp, nullptr)
+			<< "The expression statement wasn't a call expression";
+
+	EXPECT_TRUE(test_integer_literal(1, std::move(callexp->arguments[0])));
+
+	auto exp1 = dynamic_cast<InfixExpression *>(callexp->arguments[1].get());
+	EXPECT_NE(exp1, nullptr) << "Statement is not a infix expression";
+
+	EXPECT_EQ("*", exp1->opr);
+	EXPECT_TRUE(test_integer_literal(2, std::move(exp1->left)));
+	EXPECT_TRUE(test_integer_literal(3, std::move(exp1->right)));
+
+	auto exp2 = dynamic_cast<InfixExpression *>(callexp->arguments[2].get());
+	EXPECT_NE(exp2, nullptr) << "Statement is not a infix expression";
+
+	EXPECT_EQ("+", exp2->opr);
+	EXPECT_TRUE(test_integer_literal(4, std::move(exp2->left)));
+	EXPECT_TRUE(test_integer_literal(5, std::move(exp2->right)));
+}

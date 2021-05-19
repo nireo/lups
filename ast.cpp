@@ -51,3 +51,11 @@ std::string PrefixExpression::String() {
 std::string InfixExpression::String() {
 	return "(" + left->String() + " " + opr + " " + right->String() + ")";
 }
+
+std::string CallExpression::String() {
+	std::string argstring;
+	for (auto& arg : arguments)
+		argstring += arg->String();
+
+	return func->String() + "(" + argstring + ")";
+}
