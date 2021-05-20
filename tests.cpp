@@ -676,3 +676,29 @@ TEST(EvalTest, BooleanLiteral) {
 		test_boolean_object(obj, tc.expected);
 	}
 }
+
+TEST(EvalTest, PrefixExpression) {
+	struct Testcase {
+		std::string input;
+		bool expected;
+	};
+
+	std::vector<Testcase> test_cases{
+		{"!true", false},
+		{"!false", true},
+		{"!5", false},
+		{"!!true", true},
+		{"!!false", false},
+		{"!!5", true},
+	};
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+		auto program = parser.parse_program();
+		auto obj = eval::Eval(program.get());
+
+		EXPECT_NE(obj, nullptr);
+		test_boolean_object(obj, tc.expected);
+	}
+}

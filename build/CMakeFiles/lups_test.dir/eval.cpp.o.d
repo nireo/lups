@@ -1,6 +1,7 @@
 CMakeFiles/lups_test.dir/eval.cpp.o: /home/eemil/dev/c++/lups/eval.cpp \
  /usr/include/stdc-predef.h /home/eemil/dev/c++/lups/eval.h \
- /home/eemil/dev/c++/lups/object.h /usr/include/c++/11.1.0/string \
+ /home/eemil/dev/c++/lups/ast.h /home/eemil/dev/c++/lups/token.h \
+ /usr/include/c++/11.1.0/string \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/os_defines.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
@@ -105,7 +106,6 @@ CMakeFiles/lups_test.dir/eval.cpp.o: /home/eemil/dev/c++/lups/eval.cpp \
  /usr/include/bits/types/error_t.h \
  /usr/include/c++/11.1.0/bits/charconv.h \
  /usr/include/c++/11.1.0/bits/basic_string.tcc \
- /home/eemil/dev/c++/lups/ast.h /home/eemil/dev/c++/lups/token.h \
  /usr/include/c++/11.1.0/unordered_map \
  /usr/include/c++/11.1.0/ext/aligned_buffer.h \
  /usr/include/c++/11.1.0/bits/hashtable.h \
@@ -140,4 +140,5 @@ CMakeFiles/lups_test.dir/eval.cpp.o: /home/eemil/dev/c++/lups/eval.cpp \
  /usr/include/c++/11.1.0/pstl/execution_defs.h \
  /usr/include/c++/11.1.0/vector /usr/include/c++/11.1.0/bits/stl_vector.h \
  /usr/include/c++/11.1.0/bits/stl_bvector.h \
- /usr/include/c++/11.1.0/bits/vector.tcc
+ /usr/include/c++/11.1.0/bits/vector.tcc \
+ /home/eemil/dev/c++/lups/object.h
