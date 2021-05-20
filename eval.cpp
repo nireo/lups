@@ -5,10 +5,7 @@
 Object* eval::Eval(Node* node) {
 	auto type = node->Type();
 	if (type == "IntegerLiteral") {
-		Integer* obj;
-		auto intobj = dynamic_cast<IntegerLiteral *>(node);
-		obj->value = intobj->value;
-
+		Integer* obj = new Integer(((IntegerLiteral*)node)->value);
 		return obj;
 	} else if (type == "Program") {
 		return eval::eval_statements(node);

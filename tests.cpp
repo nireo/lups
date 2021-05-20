@@ -640,7 +640,6 @@ TEST(EvalTest, IntegerExpressions) {
 		auto obj = eval::Eval(program.get());
 
 		EXPECT_NE(obj, nullptr);
-
 		test_integer_object(obj, tc.expected);
 	}
 }
