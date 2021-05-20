@@ -5,10 +5,13 @@
 
 typedef std::string ObjectType;
 
+class Boolean;
+
 namespace objecttypes {
 const ObjectType INTEGER = "INTEGER";
 const ObjectType BOOLEAN = "BOOLEAN";
 const ObjectType NULLOBJ = "NULL";
+
 } // namespace objecttypes
 
 class Object {
@@ -41,5 +44,6 @@ class Null : public Object {
 	ObjectType Type() { return NULL; }
 	std::string Inspect() { return "NULL"; }
 };
+
 
 #endif

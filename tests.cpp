@@ -643,3 +643,36 @@ TEST(EvalTest, IntegerExpressions) {
 		test_integer_object(obj, tc.expected);
 	}
 }
+
+bool test_boolean_object(Object* obj, bool expected) {
+	auto res = dynamic_cast<Boolean *>(obj);
+	if (res == nullptr)
+		return false;
+
+	if (res->value != expected)
+		return false;
+
+	return true;
+}
+
+TEST(EvalTest, BooleanLiteral) {
+	struct Testcase {
+		std::string input;
+		bool expected;
+	};
+
+	std::vector<Testcase> test_cases{
+			{"true", true},
+			{"false", false},
+	};
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+		auto program = parser.parse_program();
+		auto obj = eval::Eval(program.get());
+
+		EXPECT_NE(obj, nullptr);
+		test_boolean_object(obj, tc.expected);
+	}
+}

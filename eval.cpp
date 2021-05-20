@@ -2,6 +2,10 @@
 #include "ast.h"
 #include "object.h"
 
+namespace object_constant {
+	Null* null = new Null();
+}
+
 Object* eval::Eval(Node* node) {
 	auto type = node->Type();
 	if (type == "IntegerLiteral") {
@@ -12,6 +16,9 @@ Object* eval::Eval(Node* node) {
 	} else if (type == "ExpressionStatement") {
 		auto exps = dynamic_cast<ExpressionStatement *>(node);
 		return eval::Eval(exps->expression.get());
+	} else if (type == "BooleanExpression") {
+		Boolean* obj = new Boolean(((BooleanExpression*)node)->value);
+		return obj;
 	}
 
 	return nullptr;
