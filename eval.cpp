@@ -38,9 +38,12 @@ Object *eval::Eval(Node *node) {
 		return eval::eval_infix_exp(inf->opr, right, left);
 	} else if (type == "BlockExpression") {
 		return eval::eval_blockstatement(node);
-	}else if (type == "IfExpression") {
+	} else if (type == "IfExpression") {
 		auto ifexp = (IfExpression*)node;
 		return eval::eval_if_expression(ifexp);
+	} else if (type == "ReturnStatement") {
+		auto val = eval::Eval(((ReturnStatement *)node)->return_value.get());
+		return new Return(val);
 	}
 
 	return nullptr;
@@ -52,6 +55,10 @@ Object *eval::eval_statements(Node *program) {
 
 	for (auto &st : pg->statements) {
 		res = eval::Eval(st.get());
+
+		if (res->Type() == objecttypes::RETURN) {
+			return ((Return*)res)->value;
+		}
 	}
 
 	return res;
@@ -159,6 +166,10 @@ Object *eval::eval_blockstatement(Node *blockexp) {
 
 	for (auto &st : bckexp->statements) {
 		res = eval::Eval(st.get());
+
+		if (res != nullptr && res->Type() == objecttypes::RETURN) {
+			return res;
+		}
 	}
 
 	return res;

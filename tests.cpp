@@ -757,11 +757,62 @@ TEST(EvalTest, IfElseTest) {
 		EXPECT_NE(obj, nullptr);
 
 		if (obj == object_constant::null) {
-			EXPECT_EQ(0, tc.expected) << "The value should expected value should be 0";
+			EXPECT_EQ(0, tc.expected)
+					<< "The value should expected value should be 0";
 		} else {
 			auto res = (Integer *)obj;
 			EXPECT_NE(res, nullptr) << "The object is not an integer";
 			EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
 		}
 	}
+}
+
+TEST(EvalTest, ReturnTest) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+			{"return 10;", 10},
+			{"return 10; 9;", 10},
+			{"return 2 * 5; 9;", 10},
+			{"9; return 2 * 5; 9;", 10},
+	};
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+		auto program = parser.parse_program();
+		auto obj = eval::Eval(program.get());
+		EXPECT_NE(obj, nullptr);
+
+		if (obj == object_constant::null) {
+			EXPECT_EQ(0, tc.expected)
+					<< "The value should expected value should be 0";
+		} else {
+			auto res = (Integer *)obj;
+			EXPECT_NE(res, nullptr) << "The object is not an integer";
+			EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
+		}
+	}
+}
+
+TEST(EvalTest, ReturnComplex) {
+	std::string input = "if (10 > 1) {"
+											"  if (10 > 1) {"
+											"     return 10;"
+											"   }"
+											"  return 1;"
+											"}";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+	auto program = parser.parse_program();
+	auto obj = eval::Eval(program.get());
+	EXPECT_NE(obj, nullptr);
+
+	auto res = (Integer *)obj;
+	EXPECT_NE(res, nullptr) << "The object is not an integer";
+	EXPECT_EQ(res->value, 10) << "The values are not equal";
 }
