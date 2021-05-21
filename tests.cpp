@@ -655,7 +655,7 @@ TEST(EvalTest, IntegerExpressions) {
 		EXPECT_NE(obj, nullptr);
 		test_integer_object(obj, tc.expected);
 
-		auto res = (Integer*)obj;
+		auto res = (Integer *)obj;
 		EXPECT_NE(res, nullptr) << "The object is not an integer";
 		EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
 	}
@@ -711,7 +711,7 @@ TEST(EvalTest, BooleanExpression) {
 	}
 }
 
-TEST(EvalTest, PrefixExpression) {
+TEST(EvalTest, PrefixExpressionTest) {
 	struct Testcase {
 		std::string input;
 		bool expected;
@@ -730,5 +730,38 @@ TEST(EvalTest, PrefixExpression) {
 
 		EXPECT_NE(obj, nullptr);
 		test_boolean_object(obj, tc.expected);
+	}
+}
+
+TEST(EvalTest, IfElseTest) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+			{"if (true) { 10 }", 10},
+			{"if (false) { 10 }", 0},
+			{"if (1) { 10 }", 10},
+			{"if (1 < 2) { 10 }", 10},
+			{"if (1 > 2) { 10 }", 0},
+			{"if (1 > 2) { 10 } else { 20 }", 20},
+			{"if (1 < 2) { 10 } else { 20 }", 10},
+	};
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+		auto program = parser.parse_program();
+		auto obj = eval::Eval(program.get());
+		EXPECT_NE(obj, nullptr);
+
+		if (obj == object_constant::null) {
+			EXPECT_EQ(0, tc.expected) << "The value should expected value should be 0";
+		} else {
+			auto res = (Integer *)obj;
+			EXPECT_NE(res, nullptr) << "The object is not an integer";
+			EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
+		}
 	}
 }

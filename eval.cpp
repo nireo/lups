@@ -36,6 +36,11 @@ Object *eval::Eval(Node *node) {
 		auto left = eval::Eval(inf->left.get());
 
 		return eval::eval_infix_exp(inf->opr, right, left);
+	} else if (type == "BlockExpression") {
+		return eval::eval_blockstatement(node);
+	}else if (type == "IfExpression") {
+		auto ifexp = (IfExpression*)node;
+		return eval::eval_if_expression(ifexp);
 	}
 
 	return nullptr;
@@ -122,4 +127,39 @@ Object *eval::eval_integer_infix(std::string opr, Object *right,
 
 Object *eval::boolean_to_object(bool value) {
 	return (value ? object_constant::TRUE_OBJ : object_constant::FALSE_OBJ);
+}
+
+bool eval::is_true(Object *obj) {
+	if (obj == object_constant::null) {
+		return false;
+	} else if (obj == object_constant::TRUE_OBJ) {
+		return true;
+	} else if (obj == object_constant::FALSE_OBJ) {
+		return false;
+	}
+
+	return true;
+}
+
+Object *eval::eval_if_expression(IfExpression *ifexp) {
+	auto cond = eval::Eval(ifexp->cond.get());
+
+	if (eval::is_true(cond)) {
+		return eval::Eval(ifexp->after.get());
+	} else if (ifexp->other != nullptr) {
+		return eval::Eval(ifexp->other.get());
+	}
+
+	return object_constant::null;
+}
+
+Object *eval::eval_blockstatement(Node *blockexp) {
+	Object *res;
+	auto bckexp = dynamic_cast<BlockStatement *>(blockexp);
+
+	for (auto &st : bckexp->statements) {
+		res = eval::Eval(st.get());
+	}
+
+	return res;
 }
