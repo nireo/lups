@@ -7,11 +7,11 @@
 namespace eval {
 Object *Eval(Node *node);
 Object *eval_statements(Node *program);
-Object *eval_prefix_expression(const std::string &opr, Object *right);
+Object *eval_prefix_expression(std::string opr, Object *right);
 Object *eval_bang_exp(Object *right);
 Object *eval_minus_exp(Object *right);
-Object *eval_infix_exp(const std::string &opr, Object *right, Object *left);
-Object *eval_integer_infix(const std::string &opr, Object *right, Object *left);
+Object *eval_infix_exp(std::string opr, Object *right, Object *left);
+Object *eval_integer_infix(std::string opr, Object *right, Object *left);
 } // namespace eval
 
 #endif

@@ -18,21 +18,20 @@ Object *eval::Eval(Node *node) {
 	} else if (type == "Program") {
 		return eval::eval_statements(node);
 	} else if (type == "ExpressionStatement") {
-		auto exps = dynamic_cast<ExpressionStatement *>(node);
+		auto exps = (ExpressionStatement *)node;
 		return eval::Eval(exps->expression.get());
 	} else if (type == "BooleanExpression") {
 		bool truthy = ((BooleanExpression *)node)->value;
 		if (truthy) {
 			return object_constant::TRUE_OBJ;
 		}
-
 		return object_constant::FALSE_OBJ;
 	} else if (type == "PrefixExpression") {
-		auto pre = dynamic_cast<PrefixExpression *>(node);
-		auto right = Eval(((PrefixExpression *)node)->right.get());
+		auto pre = (PrefixExpression *)node;
+		auto right = Eval(pre->right.get());
 		return eval::eval_prefix_expression(pre->opr, right);
 	} else if (type == "InfixExpression") {
-		auto inf = dynamic_cast<InfixExpression *>(node);
+		auto inf = (InfixExpression *)node;
 		auto right = eval::Eval(inf->right.get());
 		auto left = eval::Eval(inf->left.get());
 
@@ -53,7 +52,7 @@ Object *eval::eval_statements(Node *program) {
 	return res;
 }
 
-Object *eval::eval_prefix_expression(const std::string &opr, Object *right) {
+Object *eval::eval_prefix_expression(std::string opr, Object *right) {
 	if (opr == "!") {
 		return eval::eval_bang_exp(right);
 	} else if (opr == "-") {
@@ -76,21 +75,22 @@ Object *eval::eval_bang_exp(Object *right) {
 }
 
 Object *eval::eval_minus_exp(Object *right) {
-	if (right->Type() == objecttypes::INTEGER)
-		return object_constant::null;
+	if (right->Type() == objecttypes::INTEGER) {
+		Integer* obj = new Integer(-((Integer*)right)->value);
+		return obj;
+	}
 
-	auto value = ((Integer*)right)->value;
-	return new Integer(-value);
+	return object_constant::null;
 }
 
-Object *eval::eval_infix_exp(const std::string &opr, Object *right,
+Object *eval::eval_infix_exp(std::string opr, Object *right,
 														 Object *left) {
 	if (left->Type() == objecttypes::INTEGER && right->Type() == objecttypes::INTEGER)
 		return eval::eval_integer_infix(opr, right, left);
 	return object_constant::null;
 }
 
-Object *eval::eval_integer_infix(const std::string &opr, Object *right,
+Object *eval::eval_integer_infix(std::string opr, Object *right,
 														 Object *left) {
 	auto left_val = ((Integer*)left)->value;
 	auto right_val = ((Integer*)right)->value;

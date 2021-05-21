@@ -611,7 +611,7 @@ TEST(ParserTest, CallExpressionParsing) {
 	EXPECT_TRUE(test_integer_literal(5, std::move(exp2->right)));
 }
 
-bool test_integer_object(Object* obj, int expected) {
+bool test_integer_object(Object *obj, int expected) {
 	auto res = dynamic_cast<Integer *>(obj);
 	if (res == nullptr)
 		return false;
@@ -654,10 +654,14 @@ TEST(EvalTest, IntegerExpressions) {
 
 		EXPECT_NE(obj, nullptr);
 		test_integer_object(obj, tc.expected);
+
+		auto res = (Integer*)obj;
+		EXPECT_NE(res, nullptr) << "The object is not an integer";
+		EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
 	}
 }
 
-bool test_boolean_object(Object* obj, bool expected) {
+bool test_boolean_object(Object *obj, bool expected) {
 	auto res = dynamic_cast<Boolean *>(obj);
 	if (res == nullptr)
 		return false;
@@ -697,12 +701,8 @@ TEST(EvalTest, PrefixExpression) {
 	};
 
 	std::vector<Testcase> test_cases{
-		{"!true", false},
-		{"!false", true},
-		{"!5", false},
-		{"!!true", true},
-		{"!!false", false},
-		{"!!5", true},
+			{"!true", false}, {"!false", true},   {"!5", false},
+			{"!!true", true}, {"!!false", false}, {"!!5", true},
 	};
 
 	for (auto &tc : test_cases) {
