@@ -672,7 +672,7 @@ bool test_boolean_object(Object *obj, bool expected) {
 	return true;
 }
 
-TEST(EvalTest, BooleanLiteral) {
+TEST(EvalTest, BooleanExpression) {
 	struct Testcase {
 		std::string input;
 		bool expected;
@@ -681,6 +681,23 @@ TEST(EvalTest, BooleanLiteral) {
 	std::vector<Testcase> test_cases{
 			{"true", true},
 			{"false", false},
+			{"1 < 2", true},
+			{"1 > 2", false},
+			{"1 < 1", false},
+			{"1 > 1", false},
+			{"1 == 1", true},
+			{"1 != 1", false},
+			{"1 == 2", false},
+			{"1 != 2", true},
+			{"true == true", true},
+			{"false == false", true},
+			{"true == false", false},
+			{"true != false", true},
+			{"false != true", true},
+			{"(1 < 2) == true", true},
+			{"(1 < 2) == false", false},
+			{"(1 > 2) == true", false},
+			{"(1 > 2) == false", true},
 	};
 
 	for (auto &tc : test_cases) {

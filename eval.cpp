@@ -87,6 +87,11 @@ Object *eval::eval_infix_exp(std::string opr, Object *right,
 														 Object *left) {
 	if (left->Type() == objecttypes::INTEGER && right->Type() == objecttypes::INTEGER)
 		return eval::eval_integer_infix(opr, right, left);
+	else if (opr == "==") {
+		return eval::boolean_to_object(left == right);
+	} else if (opr == "!=") {
+		return eval::boolean_to_object(left != right);
+	}
 	return object_constant::null;
 }
 
@@ -103,7 +108,18 @@ Object *eval::eval_integer_infix(std::string opr, Object *right,
 		return new Integer(left_val*right_val);
 	} else if (opr == "/") {
 		return new Integer(left_val/right_val);
-	}
+	} else if (opr == "<")
+		return eval::boolean_to_object(left_val < right_val);
+	else if (opr == ">")
+		return eval::boolean_to_object(left_val > right_val);
+	else if (opr == "==")
+		return eval::boolean_to_object(left_val == right_val);
+	else if (opr == "!=")
+		return eval::boolean_to_object(left_val != right_val);
 
 	return object_constant::null;
+}
+
+Object *eval::boolean_to_object(bool value) {
+	return (value ? object_constant::TRUE_OBJ : object_constant::FALSE_OBJ);
 }

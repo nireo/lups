@@ -12,6 +12,8 @@ Object *eval_bang_exp(Object *right);
 Object *eval_minus_exp(Object *right);
 Object *eval_infix_exp(std::string opr, Object *right, Object *left);
 Object *eval_integer_infix(std::string opr, Object *right, Object *left);
+Object *eval_boolean_infix(std::string opr, Object *right, Object *left);
+Object *boolean_to_object(bool value);
 } // namespace eval
 
 #endif
