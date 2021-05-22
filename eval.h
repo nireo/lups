@@ -11,18 +11,19 @@ extern Boolean *FALSE_OBJ;
 } // namespace object_constant
 
 namespace eval {
-Object *Eval(Node *node);
-Object *eval_statements(Node *program);
+Object *Eval(Node *node, Environment *env);
+Object *eval_statements(Node *program, Environment *env);
 Object *eval_prefix_expression(std::string opr, Object *right);
 Object *eval_bang_exp(Object *right);
 Object *eval_minus_exp(Object *right);
 Object *eval_infix_exp(std::string opr, Object *right, Object *left);
 Object *eval_integer_infix(std::string opr, Object *right, Object *left);
 Object *eval_boolean_infix(std::string opr, Object *right, Object *left);
-Object *eval_blockstatement(Node *blockexp);
+Object *eval_blockstatement(Node *blockexp, Environment *env);
 Object *boolean_to_object(bool value);
+Object *eval_if_expression(IfExpression *ifexp, Environment *env);
+Object *eval_identifier(Node *ident, Environment *env);
 bool is_true(Object *obj);
-Object *eval_if_expression(IfExpression *ifexp);
 } // namespace eval
 
 #endif

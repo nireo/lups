@@ -6,6 +6,13 @@
 #include <memory>
 #include <string>
 
+Object *eval_test(const std::string &input) {
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+	auto program = parser.parse_program();
+	return eval::Eval(program.get(), new Environment());
+}
+
 int main() {
 	std::cout << "welcome to the lupslang repl!" << '\n';
 
@@ -28,36 +35,19 @@ int main() {
 	//		continue;
 	//	}
 
-
 	struct Testcase {
 		std::string input;
-		std::string expected_msg;
+		int expected;
 	};
 
 	std::vector<Testcase> test_cases{
-			{"5 + true;", "wrong types: INTEGER + BOOLEAN"},
-			{"5 + true; 5;", "wrong types: INTEGER + BOOLEAN"},
-			{"-true", "unknown operation: -BOOLEAN"},
-			{"true + false;", "unknown operation: BOOLEAN + BOOLEAN"},
-			{"5; true + false; 5", "unknown operation: BOOLEAN + BOOLEAN"},
-			{"if (10 > 1) { return true + false; }",
-			 "unknown operation: BOOLEAN + BOOLEAN"},
-				{"if (10 > 1) {"
-				 "  if (10 > 1) {"
-				 "     return true + false;"
-				 "   }"
-				 "  return 1;"
-				 "}",
-				 "unknown operation: BOOLEAN + BOOLEAN"}};
+			{"let a = 5; a;", 5},
+			{"let a = 5 * 5; a;", 25},
+			{"let a = 5; let b = a; b;", 5},
+			{"let a = 5; let b = a; let c = a + b + 5; c;", 15},
+	};
 
 	for (auto &tc : test_cases) {
-		auto lexer = Lexer(tc.input);
-		auto parser = Parser(std::make_unique<Lexer>(lexer));
-		auto program = parser.parse_program();
-		auto obj = eval::Eval(program.get());
-		if (obj != nullptr) {
-			std::cout << "object is not a nullptr" << '\n';
-			std::cout << obj->Type();
-		}
+		auto obj = eval_test(tc.input);
 	}
 }

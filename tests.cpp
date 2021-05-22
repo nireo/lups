@@ -622,6 +622,13 @@ bool test_integer_object(Object *obj, int expected) {
 	return true;
 }
 
+Object *eval_test(const std::string &input) {
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+	auto program = parser.parse_program();
+	return eval::Eval(program.get(), new Environment());
+}
+
 TEST(EvalTest, IntegerExpressions) {
 	struct Testcase {
 		std::string input;
@@ -647,10 +654,7 @@ TEST(EvalTest, IntegerExpressions) {
 	};
 
 	for (auto &tc : test_cases) {
-		auto lexer = Lexer(tc.input);
-		auto parser = Parser(std::make_unique<Lexer>(lexer));
-		auto program = parser.parse_program();
-		auto obj = eval::Eval(program.get());
+		auto obj = eval_test(tc.input);
 
 		EXPECT_NE(obj, nullptr);
 		test_integer_object(obj, tc.expected);
@@ -701,10 +705,7 @@ TEST(EvalTest, BooleanExpression) {
 	};
 
 	for (auto &tc : test_cases) {
-		auto lexer = Lexer(tc.input);
-		auto parser = Parser(std::make_unique<Lexer>(lexer));
-		auto program = parser.parse_program();
-		auto obj = eval::Eval(program.get());
+		auto obj = eval_test(tc.input);
 
 		EXPECT_NE(obj, nullptr);
 		test_boolean_object(obj, tc.expected);
@@ -723,10 +724,7 @@ TEST(EvalTest, PrefixExpressionTest) {
 	};
 
 	for (auto &tc : test_cases) {
-		auto lexer = Lexer(tc.input);
-		auto parser = Parser(std::make_unique<Lexer>(lexer));
-		auto program = parser.parse_program();
-		auto obj = eval::Eval(program.get());
+		auto obj = eval_test(tc.input);
 
 		EXPECT_NE(obj, nullptr);
 		test_boolean_object(obj, tc.expected);
@@ -750,10 +748,7 @@ TEST(EvalTest, IfElseTest) {
 	};
 
 	for (auto &tc : test_cases) {
-		auto lexer = Lexer(tc.input);
-		auto parser = Parser(std::make_unique<Lexer>(lexer));
-		auto program = parser.parse_program();
-		auto obj = eval::Eval(program.get());
+		auto obj = eval_test(tc.input);
 		EXPECT_NE(obj, nullptr);
 
 		if (obj == object_constant::null) {
@@ -781,10 +776,7 @@ TEST(EvalTest, ReturnTest) {
 	};
 
 	for (auto &tc : test_cases) {
-		auto lexer = Lexer(tc.input);
-		auto parser = Parser(std::make_unique<Lexer>(lexer));
-		auto program = parser.parse_program();
-		auto obj = eval::Eval(program.get());
+		auto obj = eval_test(tc.input);
 		EXPECT_NE(obj, nullptr);
 
 		if (obj == object_constant::null) {
@@ -806,10 +798,7 @@ TEST(EvalTest, ReturnComplex) {
 											"  return 1;"
 											"}";
 
-	auto lexer = Lexer(input);
-	auto parser = Parser(std::make_unique<Lexer>(lexer));
-	auto program = parser.parse_program();
-	auto obj = eval::Eval(program.get());
+	auto obj = eval_test(input);
 	EXPECT_NE(obj, nullptr);
 
 	auto res = (Integer *)obj;
@@ -831,20 +820,41 @@ TEST(EvalTest, ErrorHandling) {
 			{"5; true + false; 5", "unknown operation: BOOLEAN + BOOLEAN"},
 			{"if (10 > 1) { return true + false; }",
 			 "unknown operation: BOOLEAN + BOOLEAN"},
-				{"if (10 > 1) {"
-				 "  if (10 > 1) {"
-				 "     return true + false;"
-				 "   }"
-				 "  return 1;"
-				 "}",
-				 "unknown operation: BOOLEAN + BOOLEAN"}};
+			{"if (10 > 1) {"
+			 "  if (10 > 1) {"
+			 "     return true + false;"
+			 "   }"
+			 "  return 1;"
+			 "}",
+			 "unknown operation: BOOLEAN + BOOLEAN"},
+			{"foobar", "identifier not found: foobar"}};
 
 	for (auto &tc : test_cases) {
-		auto lexer = Lexer(tc.input);
-		auto parser = Parser(std::make_unique<Lexer>(lexer));
-		auto program = parser.parse_program();
-		auto obj = eval::Eval(program.get());
+		auto obj = eval_test(tc.input);
 		EXPECT_NE(obj, nullptr) << "The evaluated object was null.";
 		EXPECT_EQ(obj->Type(), objecttypes::ERROR) << "The object wasn't an error";
+	}
+}
+
+TEST(EvalTest, LetStatements) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+			{"let a = 5; a;", 5},
+			{"let a = 5 * 5; a;", 25},
+			{"let a = 5; let b = a; b;", 5},
+			{"let a = 5; let b = a; let c = a + b + 5; c;", 15},
+	};
+
+	for (auto &tc : test_cases) {
+		auto obj = eval_test(tc.input);
+		EXPECT_NE(obj, nullptr) << "The evaluated object was null.";
+
+		auto res = (Integer *)obj;
+		EXPECT_NE(res, nullptr) << "The object is not an integer";
+		EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
 	}
 }

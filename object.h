@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 typedef std::string ObjectType;
 
@@ -63,6 +64,28 @@ public:
 	ObjectType Type() { return objecttypes::ERROR; }
 
 	std::string message;
+};
+
+class Environment {
+public:
+	Environment() {
+		m_store = std::unordered_map<std::string, Object*>();
+	}
+
+	void set(const std::string &identifier, Object *value) {
+		m_store[identifier] = value;
+	}
+
+	Object *get(const std::string &identifier) {
+		if (m_store.count(identifier) == 0) {
+			return nullptr;
+		}
+
+		return m_store[identifier];
+	}
+private:
+	// mapping the identifier to the object
+	std::unordered_map<std::string, Object*> m_store;
 };
 
 #endif
