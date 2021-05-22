@@ -1,8 +1,9 @@
 #include "eval.h"
 #include "ast.h"
 #include "object.h"
+#include <stdexcept>
 
-// TODO: start using unique pointers
+// TODO: start using unique pointers for more safety
 
 namespace object_constant {
 Null *null = new Null();
@@ -39,7 +40,7 @@ Object *eval::Eval(Node *node) {
 	} else if (type == "BlockExpression") {
 		return eval::eval_blockstatement(node);
 	} else if (type == "IfExpression") {
-		auto ifexp = (IfExpression*)node;
+		auto ifexp = (IfExpression *)node;
 		return eval::eval_if_expression(ifexp);
 	} else if (type == "ReturnStatement") {
 		auto val = eval::Eval(((ReturnStatement *)node)->return_value.get());
@@ -56,9 +57,10 @@ Object *eval::eval_statements(Node *program) {
 	for (auto &st : pg->statements) {
 		res = eval::Eval(st.get());
 
-		if (res->Type() == objecttypes::RETURN) {
-			return ((Return*)res)->value;
-		}
+		if (res->Type() == objecttypes::RETURN)
+			return ((Return *)res)->value;
+		else if (res->Type() == objecttypes::ERROR)
+			return ((Error*)res);
 	}
 
 	return res;
@@ -71,7 +73,7 @@ Object *eval::eval_prefix_expression(std::string opr, Object *right) {
 		return eval::eval_minus_exp(right);
 	}
 
-	return object_constant::null;
+	return new Error("unknown operation: " + opr + right->Type());
 }
 
 Object *eval::eval_bang_exp(Object *right) {
@@ -88,38 +90,40 @@ Object *eval::eval_bang_exp(Object *right) {
 
 Object *eval::eval_minus_exp(Object *right) {
 	if (right->Type() == objecttypes::INTEGER) {
-		Integer* obj = new Integer(-((Integer*)right)->value);
+		Integer *obj = new Integer(-((Integer *)right)->value);
 		return obj;
 	}
 
-	return object_constant::null;
+	return new Error("unknown operation: -" + right->Type());
 }
 
-Object *eval::eval_infix_exp(std::string opr, Object *right,
-														 Object *left) {
-	if (left->Type() == objecttypes::INTEGER && right->Type() == objecttypes::INTEGER)
+Object *eval::eval_infix_exp(std::string opr, Object *right, Object *left) {
+	if (left->Type() == objecttypes::INTEGER &&
+			right->Type() == objecttypes::INTEGER)
 		return eval::eval_integer_infix(opr, right, left);
-	else if (opr == "==") {
+	else if (left->Type() != right->Type()) {
+		return new Error("wrong types: " + left->Type() + " " + opr + " " + right->Type());
+	} else if (opr == "==") {
 		return eval::boolean_to_object(left == right);
 	} else if (opr == "!=") {
 		return eval::boolean_to_object(left != right);
 	}
-	return object_constant::null;
+
+	return new Error("unknown operation: " + left->Type() + " " + opr + " " + right->Type());
 }
 
-Object *eval::eval_integer_infix(std::string opr, Object *right,
-														 Object *left) {
-	auto left_val = ((Integer*)left)->value;
-	auto right_val = ((Integer*)right)->value;
+Object *eval::eval_integer_infix(std::string opr, Object *right, Object *left) {
+	auto left_val = ((Integer *)left)->value;
+	auto right_val = ((Integer *)right)->value;
 
 	if (opr == "+") {
-		return new Integer(left_val+right_val);
+		return new Integer(left_val + right_val);
 	} else if (opr == "-") {
-		return new Integer(left_val-right_val);
+		return new Integer(left_val - right_val);
 	} else if (opr == "*") {
-		return new Integer(left_val*right_val);
+		return new Integer(left_val * right_val);
 	} else if (opr == "/") {
-		return new Integer(left_val/right_val);
+		return new Integer(left_val / right_val);
 	} else if (opr == "<")
 		return eval::boolean_to_object(left_val < right_val);
 	else if (opr == ">")
@@ -129,7 +133,7 @@ Object *eval::eval_integer_infix(std::string opr, Object *right,
 	else if (opr == "!=")
 		return eval::boolean_to_object(left_val != right_val);
 
-	return object_constant::null;
+	return new Error("unknown operation: " + left->Type() + " " + opr + " " + right->Type());
 }
 
 Object *eval::boolean_to_object(bool value) {
@@ -167,8 +171,10 @@ Object *eval::eval_blockstatement(Node *blockexp) {
 	for (auto &st : bckexp->statements) {
 		res = eval::Eval(st.get());
 
-		if (res != nullptr && res->Type() == objecttypes::RETURN) {
-			return res;
+		if (res != nullptr) {
+			auto tp = res->Type();
+			if (tp == objecttypes::RETURN || tp == objecttypes::ERROR)
+				return res;
 		}
 	}
 

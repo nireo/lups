@@ -28,27 +28,36 @@ int main() {
 	//		continue;
 	//	}
 
+
 	struct Testcase {
 		std::string input;
-		int expected;
+		std::string expected_msg;
 	};
 
 	std::vector<Testcase> test_cases{
-			{"5", 5},
-			{"10", 10},
-	};
+			{"5 + true;", "wrong types: INTEGER + BOOLEAN"},
+			{"5 + true; 5;", "wrong types: INTEGER + BOOLEAN"},
+			{"-true", "unknown operation: -BOOLEAN"},
+			{"true + false;", "unknown operation: BOOLEAN + BOOLEAN"},
+			{"5; true + false; 5", "unknown operation: BOOLEAN + BOOLEAN"},
+			{"if (10 > 1) { return true + false; }",
+			 "unknown operation: BOOLEAN + BOOLEAN"},
+				{"if (10 > 1) {"
+				 "  if (10 > 1) {"
+				 "     return true + false;"
+				 "   }"
+				 "  return 1;"
+				 "}",
+				 "unknown operation: BOOLEAN + BOOLEAN"}};
 
-	auto lexer = Lexer(test_cases[0].input);
-	auto parser = Parser(std::make_unique<Lexer>(lexer));
-	auto program = parser.parse_program();
-	auto obj = eval::Eval(program.get());
-
-	std::cout << obj << '\n';
-
-	if (obj != nullptr) {
-		std::cout << "type: " << obj->Type() << '\n';
-		std::cout << "inspect: " << obj->Inspect() << '\n';
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+		auto program = parser.parse_program();
+		auto obj = eval::Eval(program.get());
+		if (obj != nullptr) {
+			std::cout << "object is not a nullptr" << '\n';
+			std::cout << obj->Type();
+		}
 	}
-
-	return 0;
 }

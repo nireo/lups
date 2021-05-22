@@ -816,3 +816,35 @@ TEST(EvalTest, ReturnComplex) {
 	EXPECT_NE(res, nullptr) << "The object is not an integer";
 	EXPECT_EQ(res->value, 10) << "The values are not equal";
 }
+
+TEST(EvalTest, ErrorHandling) {
+	struct Testcase {
+		std::string input;
+		std::string expected_msg;
+	};
+
+	std::vector<Testcase> test_cases{
+			{"5 + true;", "wrong types: INTEGER + BOOLEAN"},
+			{"5 + true; 5;", "wrong types: INTEGER + BOOLEAN"},
+			{"-true", "unknown operation: -BOOLEAN"},
+			{"true + false;", "unknown operation: BOOLEAN + BOOLEAN"},
+			{"5; true + false; 5", "unknown operation: BOOLEAN + BOOLEAN"},
+			{"if (10 > 1) { return true + false; }",
+			 "unknown operation: BOOLEAN + BOOLEAN"},
+				{"if (10 > 1) {"
+				 "  if (10 > 1) {"
+				 "     return true + false;"
+				 "   }"
+				 "  return 1;"
+				 "}",
+				 "unknown operation: BOOLEAN + BOOLEAN"}};
+
+	for (auto &tc : test_cases) {
+		auto lexer = Lexer(tc.input);
+		auto parser = Parser(std::make_unique<Lexer>(lexer));
+		auto program = parser.parse_program();
+		auto obj = eval::Eval(program.get());
+		EXPECT_NE(obj, nullptr) << "The evaluated object was null.";
+		EXPECT_EQ(obj->Type(), objecttypes::ERROR) << "The object wasn't an error";
+	}
+}

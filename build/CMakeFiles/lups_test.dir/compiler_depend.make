@@ -385,7 +385,8 @@ CMakeFiles/lups_test.dir/eval.cpp.o: ../eval.cpp \
   /usr/include/c++/11.1.0/bits/stl_vector.h \
   /usr/include/c++/11.1.0/bits/stl_bvector.h \
   /usr/include/c++/11.1.0/bits/vector.tcc \
-  ../object.h
+  ../object.h \
+  /usr/include/c++/11.1.0/stdexcept
 
 CMakeFiles/lups_test.dir/lexer.cpp.o: ../lexer.cpp \
   /usr/include/stdc-predef.h \

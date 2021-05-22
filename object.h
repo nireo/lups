@@ -13,7 +13,7 @@ const ObjectType INTEGER = "INTEGER";
 const ObjectType BOOLEAN = "BOOLEAN";
 const ObjectType NULLOBJ = "NULL";
 const ObjectType RETURN = "RETURN";
-
+const ObjectType ERROR = "ERROR";
 } // namespace objecttypes
 
 class Object {
@@ -54,6 +54,15 @@ public:
 	std::string Inspect() { return value->Inspect(); }
 
 	Object *value;
+};
+
+class Error : public Object {
+public:
+	Error(std::string msg) : Object(), message(msg) {}
+	std::string Inspect() { return "err: " + message; }
+	ObjectType Type() { return objecttypes::ERROR; }
+
+	std::string message;
 };
 
 #endif
