@@ -16,6 +16,7 @@ const ObjectType BOOLEAN = "BOOLEAN";
 const ObjectType NULLOBJ = "NULL";
 const ObjectType RETURN = "RETURN";
 const ObjectType ERROR = "ERROR";
+	const ObjectType FUNCTION = "FUNCTION";
 } // namespace objecttypes
 
 class Object {
@@ -69,6 +70,15 @@ public:
 
 class Environment {
 public:
+	Environment() {
+		m_store = std::unordered_map<std::string, Object *>();
+		m_outer = nullptr;
+	}
+	Environment(Environment *outer) {
+		m_store = std::unordered_map<std::string, Object *>();
+		m_outer = outer;
+	}
+
 	Object* set(std::string name, Object* val) {
 		m_store[name] = val;
 		return nullptr;
@@ -76,6 +86,10 @@ public:
 
 	Object *get(std::string name) {
 		if (m_store.find(name) == m_store.end()) {
+			if (m_outer != nullptr) {
+				auto res = m_outer->get(name);
+				return res;
+			}
 			return new Error("identifier not found: " + name);
 		}
 
@@ -83,6 +97,17 @@ public:
 	}
 
 	std::unordered_map<std::string, Object *> m_store;
+	Environment *m_outer;
+};
+
+class Function : public Object {
+public:
+	ObjectType Type() { return objecttypes::FUNCTION;	}
+	std::string Inspect() { return "function :D"; }
+
+	Environment *env;
+	std::vector<Identifier*> params;
+	BlockStatement *body;
 };
 
 #endif

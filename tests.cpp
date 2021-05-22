@@ -858,3 +858,42 @@ TEST(EvalTest, LetStatements) {
 		EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
 	}
 }
+
+TEST(EvalTest, FunctionObject) {
+	std::string input = "func(x) { x + 2; };";
+	auto obj = eval_test(input);
+	EXPECT_NE(obj, nullptr);
+
+	auto func = dynamic_cast<Function *>(obj);
+	EXPECT_NE(func, nullptr);
+
+	if (func != nullptr) {
+		EXPECT_EQ(1, func->params.size());
+		EXPECT_EQ("x", func->params[0]->value);
+	}
+}
+
+TEST(EvalTest, FunctionUsage) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+			{"let identity = func(x) { x; }; identity(5);", 5},
+			{"let identity = func(x) { return x; }; identity(5);", 5},
+			{"let double = func(x) { x * 2; }; double(5);", 10},
+			{"let add = func(x, y) { x + y; }; add(5, 5);", 10},
+			{"let add = func(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+			{"fucn(x) { x; }(5)", 5},
+	};
+
+	for (const auto& tc : test_cases) {
+		auto obj = eval_test(tc.input);
+		EXPECT_NE(obj, nullptr);
+
+		auto res = dynamic_cast<Integer*>(obj);
+		EXPECT_NE(res, nullptr) << "The object is not an integer";
+		// EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
+	}
+}

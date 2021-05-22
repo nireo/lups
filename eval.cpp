@@ -52,6 +52,10 @@ Object *eval::Eval(Node *node, Environment *env) {
 		return new Return(val);
 	} else if (type == "Identifier") {
 		return eval::eval_identifier((Identifier *)node, env);
+	} else if (type == "FunctionLiteral") {
+		return eval::eval_function_literal(node, env);
+	} else if (type == "CallExpression") {
+		return eval::eval_call_expression(node, env);
 	}
 
 	return nullptr;
@@ -202,4 +206,84 @@ Object *eval::eval_identifier(Node *ident, Environment *env) {
 	}
 
 	return value;
+}
+
+Object *eval::eval_function_literal(Node *node, Environment *env) {
+	auto fn = dynamic_cast<FunctionLiteral *>(node);
+	std::vector<Identifier *> params;
+	params.reserve(fn->params.size());
+
+	for (const auto &ident : fn->params) {
+		params.push_back(ident.get());
+	}
+
+	auto obj = new Function();
+	obj->params = params;
+	obj->env = env;
+	obj->body = fn->body.get();
+
+	return obj;
+}
+
+std::vector<Object *> eval::eval_expressions(std::vector<Expression *> &exps,
+																						 Environment *env) {
+	auto res = std::vector<Object *>();
+
+	for (const auto &exp : exps) {
+		auto evaluated = eval::Eval(exp, env);
+		if (evaluated != nullptr && evaluated->Type() == objecttypes::ERROR) {
+			auto other = std::vector<Object *>();
+			other.reserve(1);
+			other.push_back(evaluated);
+			return other;
+		}
+
+		res.push_back(evaluated);
+	}
+
+	return res;
+}
+
+Object *eval::eval_call_expression(Node *node, Environment *env) {
+	auto callexp = dynamic_cast<CallExpression *>(node);
+	auto func = eval::Eval(callexp->func.get(), env);
+	if (func != nullptr && func->Type() == objecttypes::ERROR)
+		return func;
+	auto args = std::vector<Expression *>();
+	args.reserve(callexp->arguments.size());
+	for (const auto &exp : callexp->arguments)
+		args.push_back(exp.get());
+
+	auto eval_args = eval::eval_expressions(args, env);
+	// an error has occured with evaluating the arguments
+	if (eval_args.size() == 1 && eval_args[0]->Type() == objecttypes::ERROR)
+		return eval_args[0];
+	return eval::apply_function(func, eval_args);
+}
+
+Object *eval::apply_function(Object *func, std::vector<Object *> &args) {
+	if (func->Type() != objecttypes::FUNCTION)
+		return new Error("not a function, got: " + func->Type());
+
+	auto extended = eval::extend_function_env(func, args);
+	auto evaluated = eval::Eval(((Function *)func)->body, extended);
+
+	return eval::unwrap_return(evaluated);
+}
+
+Environment *eval::extend_function_env(Object *func,
+																			 std::vector<Object *> &args) {
+	auto fn = dynamic_cast<Function *>(func);
+	auto env = new Environment(fn->env);
+
+	for (int i = 0; i < fn->params.size(); ++i)
+		env->set(fn->params[i]->value, args[i]);
+
+	return env;
+}
+
+Object *eval::unwrap_return(Object *obj) {
+	if (obj->Type() == objecttypes::RETURN)
+		return (((Return *)obj)->value);
+	return obj;
 }

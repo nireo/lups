@@ -23,7 +23,14 @@ Object *eval_blockstatement(Node *blockexp, Environment *env);
 Object *boolean_to_object(bool value);
 Object *eval_if_expression(IfExpression *ifexp, Environment *env);
 Object *eval_identifier(Node *ident, Environment *env);
+Object *eval_function_literal(Node *func, Environment *env);
 bool is_true(Object *obj);
+std::vector<Object *> eval_expressions(std::vector<Expression *> &exps,
+																			 Environment *env);
+Object *eval_call_expression(Node *node, Environment *env);
+Object *apply_function(Object *func, std::vector<Object *> &args);
+Environment *extend_function_env(Object *func, std::vector<Object *> &args);
+Object *unwrap_return(Object *obj);
 } // namespace eval
 
 #endif
