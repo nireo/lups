@@ -43,15 +43,15 @@ Object *eval::Eval(Node *node, Environment *env) {
 		auto ifexp = (IfExpression *)node;
 		return eval::eval_if_expression(ifexp, env);
 	} else if (type == "LetStatement") {
-		auto value = eval::Eval(((LetStatement*)node)->value.get(), env);
+		auto value = eval::Eval(((LetStatement *)node)->value.get(), env);
 		if (value->Type() == objecttypes::ERROR)
 			return value;
-		env->set(((LetStatement*)node)->name->value, value);
+		env->set(((LetStatement *)node)->name->value, value);
 	} else if (type == "ReturnStatement") {
 		auto val = eval::Eval(((ReturnStatement *)node)->return_value.get(), env);
 		return new Return(val);
 	} else if (type == "Identifier") {
-		return eval::eval_identifier((Identifier*)node, env);
+		return eval::eval_identifier((Identifier *)node, env);
 	}
 
 	return nullptr;
@@ -65,10 +65,10 @@ Object *eval::eval_statements(Node *program, Environment *env) {
 		res = eval::Eval(st.get(), env);
 
 		if (res != nullptr) {
-		if (res->Type() == objecttypes::RETURN)
-			return ((Return *)res)->value;
-		else if (res->Type() == objecttypes::ERROR)
-			return ((Error*)res);
+			if (res->Type() == objecttypes::RETURN)
+				return ((Return *)res)->value;
+			else if (res->Type() == objecttypes::ERROR)
+				return ((Error *)res);
 		}
 	}
 
@@ -111,14 +111,16 @@ Object *eval::eval_infix_exp(std::string opr, Object *right, Object *left) {
 			right->Type() == objecttypes::INTEGER)
 		return eval::eval_integer_infix(opr, right, left);
 	else if (left->Type() != right->Type()) {
-		return new Error("wrong types: " + left->Type() + " " + opr + " " + right->Type());
+		return new Error("wrong types: " + left->Type() + " " + opr + " " +
+										 right->Type());
 	} else if (opr == "==") {
 		return eval::boolean_to_object(left == right);
 	} else if (opr == "!=") {
 		return eval::boolean_to_object(left != right);
 	}
 
-	return new Error("unknown operation: " + left->Type() + " " + opr + " " + right->Type());
+	return new Error("unknown operation: " + left->Type() + " " + opr + " " +
+									 right->Type());
 }
 
 Object *eval::eval_integer_infix(std::string opr, Object *right, Object *left) {
@@ -142,7 +144,8 @@ Object *eval::eval_integer_infix(std::string opr, Object *right, Object *left) {
 	else if (opr == "!=")
 		return eval::boolean_to_object(left_val != right_val);
 
-	return new Error("unknown operation: " + left->Type() + " " + opr + " " + right->Type());
+	return new Error("unknown operation: " + left->Type() + " " + opr + " " +
+									 right->Type());
 }
 
 Object *eval::boolean_to_object(bool value) {

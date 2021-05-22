@@ -1,8 +1,9 @@
 #ifndef LUPS_OBJECT_H
 #define LUPS_OBJECT_H
 
-#include <string>
+#include "eval.h"
 #include <memory>
+#include <string>
 #include <unordered_map>
 
 typedef std::string ObjectType;
@@ -68,24 +69,20 @@ public:
 
 class Environment {
 public:
-	Environment() {
-		m_store = std::unordered_map<std::string, Object*>();
+	Object* set(std::string name, Object* val) {
+		m_store[name] = val;
+		return nullptr;
 	}
 
-	void set(const std::string &identifier, Object *value) {
-		m_store[identifier] = value;
-	}
-
-	Object *get(const std::string &identifier) {
-		if (m_store.count(identifier) == 0) {
-			return nullptr;
+	Object *get(std::string name) {
+		if (m_store.find(name) == m_store.end()) {
+			return new Error("identifier not found: " + name);
 		}
 
-		return m_store[identifier];
+		return m_store[name];
 	}
-private:
-	// mapping the identifier to the object
-	std::unordered_map<std::string, Object*> m_store;
+
+	std::unordered_map<std::string, Object *> m_store;
 };
 
 #endif

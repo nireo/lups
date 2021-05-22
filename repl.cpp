@@ -1,53 +1,38 @@
 #include "eval.h"
 #include "lexer.h"
+#include "object.h"
 #include "parser.h"
 #include "token.h"
 #include <iostream>
 #include <memory>
 #include <string>
 
-Object *eval_test(const std::string &input) {
+Object *eval_input(const std::string &input, Environment *env) {
 	auto lexer = Lexer(input);
 	auto parser = Parser(std::make_unique<Lexer>(lexer));
 	auto program = parser.parse_program();
-	return eval::Eval(program.get(), new Environment());
+	return eval::Eval(program.get(), env);
 }
 
 int main() {
 	std::cout << "welcome to the lupslang repl!" << '\n';
 
-	// for (;;) {
-	//	std::string input;
-	//	std::cout << "input:" << '\n';
-	//	std::getline(std::cin, input);
-
-	//	if (input == ".quit")
-	//		break;
-
-	//	auto lexer = Lexer(input);
-	//	auto parser = Parser(std::make_unique<Lexer>(lexer));
-	//	auto program = parser.parse_program();
-
-	//	if (parser.errors().size() != 0) {
-	//		std::cout << "there were " << parser.errors().size() << "
-	// errors."
-	//							<< '\n';
-	//		continue;
-	//	}
-
-	struct Testcase {
+	auto env = new Environment();
+	for (;;) {
 		std::string input;
-		int expected;
-	};
+		std::cout << "> ";
+		std::getline(std::cin, input);
 
-	std::vector<Testcase> test_cases{
-			{"let a = 5; a;", 5},
-			{"let a = 5 * 5; a;", 25},
-			{"let a = 5; let b = a; b;", 5},
-			{"let a = 5; let b = a; let c = a + b + 5; c;", 15},
-	};
+		if (input == ".quit")
+			break;
 
-	for (auto &tc : test_cases) {
-		auto obj = eval_test(tc.input);
+		auto obj = eval_input(input, env);
+		if (obj != nullptr) {
+			std::cout << obj->Inspect() << '\n';
+		}
+
+		for (auto& v : env->m_store) {
+			std::cout << v.first << ": " << v.second->Inspect() << '\n';
+		}
 	}
 }
