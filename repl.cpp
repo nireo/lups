@@ -17,33 +17,22 @@ Object *eval_input(const std::string &input, Environment *env) {
 int main() {
 	std::cout << "welcome to the lupslang repl!" << '\n';
 
-//	auto env = new Environment();
-//	for (;;) {
-//		std::string input;
-//		std::cout << "> ";
-//		std::getline(std::cin, input);
-
-//		if (input == ".quit")
-//			break;
-
-//		auto obj = eval_input(input, env);
-//		if (obj != nullptr) {
-//			std::cout << obj->Inspect() << '\n';
-//		}
-
-//		for (auto& v : env->m_store) {
-//			std::cout << v.first << ": " << v.second->Inspect() << '\n';
-//		}
-//	}
-
 	auto env = new Environment();
-	std::string input = "func(x) { x + 2; };";
-	auto obj = eval_input(input, env);
-	auto func = dynamic_cast<Function *>(obj);
-	if (func != nullptr) {
-		std::cout << func->params.size() << "\n";
-		for (auto& p : func->params) {
-			std::cout << p << '\n';
+	for (;;) {
+		std::string input;
+		std::cout << "> ";
+		std::getline(std::cin, input);
+
+		if (input == ".quit")
+			break;
+
+		auto obj = eval_input(input, env);
+		if (obj != nullptr) {
+			std::cout << obj->Inspect() << '\n';
+		}
+
+		for (auto& v : env->m_store) {
+			std::cout << v.first << ": " << v.second->Inspect() << '\n';
 		}
 	}
 }

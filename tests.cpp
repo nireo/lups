@@ -885,7 +885,7 @@ TEST(EvalTest, FunctionUsage) {
 			{"let double = func(x) { x * 2; }; double(5);", 10},
 			{"let add = func(x, y) { x + y; }; add(5, 5);", 10},
 			{"let add = func(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
-			{"fucn(x) { x; }(5)", 5},
+			{"func(x) { x; }(5)", 5},
 	};
 
 	for (const auto& tc : test_cases) {
