@@ -169,6 +169,26 @@ TEST(LexerTest, EqualNonEqual) {
 	}
 }
 
+TEST(LexerTest, ArrayTest) {
+	std::string input = "[1, 2];";
+	std::vector<std::pair<TokenType, std::string>> expected;
+	expected.push_back(std::make_pair(tokentypes::LBRACKET, "["));
+	expected.push_back(std::make_pair(tokentypes::INT, "1"));
+	expected.push_back(std::make_pair(tokentypes::COMMA, ","));
+	expected.push_back(std::make_pair(tokentypes::INT, "2"));
+	expected.push_back(std::make_pair(tokentypes::RBRACKET, "]"));
+	expected.push_back(std::make_pair(tokentypes::SEMICOLON, ";"));
+
+	auto lexer = Lexer(input);
+	for (int i = 0; i < (int)expected.size(); ++i) {
+		auto token = lexer.next_token();
+
+		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
+		EXPECT_EQ(expected[i].second, token.literal)
+				<< "token literals don't match";
+	}
+}
+
 TEST(ParserTest, LetStatements) {
 	std::string input = "let x = 5;"
 											"let y = 10;"
@@ -645,6 +665,40 @@ TEST(ParserTest, StringLiteralTest) {
 	EXPECT_EQ(((StringLiteral *)expstmt)->String(), "hello world");
 }
 
+TEST(ParserTest, ArrayLiteralParsing) {
+	std::string input = "[1, 2 * 2, 3 + 3]";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
+
+	auto arraylit = dynamic_cast<ArrayLiteral*>(expstmt->expression.get());
+	EXPECT_NE(arraylit, nullptr);
+
+	EXPECT_EQ(arraylit->elements.size(), 3);
+	EXPECT_TRUE(test_integer_literal(1, std::move(arraylit->elements[0])));
+
+	auto exp1 = dynamic_cast<InfixExpression *>(arraylit->elements[1].get());
+	EXPECT_NE(exp1, nullptr) << "Statement is not a infix expression";
+
+	EXPECT_EQ("*", exp1->opr);
+	EXPECT_TRUE(test_integer_literal(2, std::move(exp1->left)));
+	EXPECT_TRUE(test_integer_literal(2, std::move(exp1->right)));
+
+	auto exp2 = dynamic_cast<InfixExpression *>(arraylit->elements[2].get());
+	EXPECT_NE(exp2, nullptr) << "Statement is not a infix expression";
+
+	EXPECT_EQ("+", exp2->opr);
+	EXPECT_TRUE(test_integer_literal(3, std::move(exp2->left)));
+	EXPECT_TRUE(test_integer_literal(3, std::move(exp2->right)));
+}
+
 bool test_integer_object(Object *obj, int expected) {
 	auto res = dynamic_cast<Integer *>(obj);
 	if (res == nullptr)
@@ -962,7 +1016,7 @@ TEST(EvalTest, BuiltInFunction) {
 			{"len(1)", -1},
 			{"len(\"one\", \"two\")", -1}};
 
-	for (const auto& tc : test_cases) {
+	for (const auto &tc : test_cases) {
 		auto obj = eval_test(tc.input);
 		EXPECT_NE(obj, nullptr);
 

@@ -8,7 +8,6 @@
 
 class Node {
 public:
-	virtual ~Node(){};
 	virtual std::string TokenLiteral() = 0;
 	virtual std::string String() = 0;
 	virtual std::string Type() = 0;
@@ -31,7 +30,6 @@ public:
 
 class Program : public Node {
 public:
-	~Program() {}
 	std::string TokenLiteral();
 	std::string String();
 	std::string Type() { return "Program"; }
@@ -51,7 +49,6 @@ public:
 
 class LetStatement : public Statement {
 public:
-	~LetStatement() {}
 	void statementNode() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
@@ -64,7 +61,6 @@ public:
 
 class ReturnStatement : public Statement {
 public:
-	~ReturnStatement() {}
 	void statementNode() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
@@ -76,7 +72,6 @@ public:
 
 class ExpressionStatement : public Statement {
 public:
-	~ExpressionStatement() {}
 	void statementNode() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
@@ -88,7 +83,6 @@ public:
 
 class IntegerLiteral : public Expression {
 public:
-	~IntegerLiteral() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String() { return token.literal; }
 	std::string Type() { return "IntegerLiteral"; }
@@ -99,7 +93,6 @@ public:
 
 class PrefixExpression : public Expression {
 public:
-	~PrefixExpression() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
 	std::string Type() { return "PrefixExpression"; }
@@ -113,7 +106,6 @@ public:
 
 class InfixExpression : public Expression {
 public:
-	~InfixExpression() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
 	std::string Type() { return "InfixExpression"; }
@@ -126,7 +118,6 @@ public:
 
 class BooleanExpression : public Expression {
 public:
-	~BooleanExpression() {}
 	std::string String() { return token.literal; }
 	std::string Type() { return "BooleanExpression"; }
 	std::string TokenLiteral() { return token.literal; }
@@ -138,7 +129,6 @@ public:
 
 class BlockStatement : public Statement {
 public:
-	~BlockStatement() {}
 	void statementNode() {}
 	std::string String() { return token.literal; }
 	std::string Type() { return "BlockExpression"; }
@@ -150,7 +140,6 @@ public:
 
 class IfExpression : public Expression {
 public:
-	~IfExpression() {}
 	std::string String() { return token.literal; }
 	std::string Type() { return "IfExpression"; }
 	std::string TokenLiteral() { return token.literal; }
@@ -163,7 +152,6 @@ public:
 
 class FunctionLiteral : public Expression {
 public:
-	~FunctionLiteral() {}
 	std::string String() { return token.literal; }
 	std::string Type() { return "FunctionLiteral"; }
 	std::string TokenLiteral() { return token.literal; }
@@ -175,7 +163,6 @@ public:
 
 class CallExpression : public Expression {
 public:
-	~CallExpression() {}
 	std::string String();
 	std::string TokenLiteral() { return token.literal; }
 	std::string Type() { return "CallExpression"; }
@@ -187,13 +174,22 @@ public:
 
 class StringLiteral : public Expression {
 public:
-	~StringLiteral() {}
 	std::string String() { return value; }
 	std::string TokenLiteral() { return token.literal; }
 	std::string Type() { return "StringLiteral"; }
 
 	Token token;
 	std::string value;
+};
+
+class ArrayLiteral : public Expression {
+public:
+	std::string String();
+	std::string TokenLiteral() { return token.literal; }
+	std::string Type() { return "ArrayLiteral"; }
+
+	std::vector<std::unique_ptr<Expression>> elements;
+	Token token;
 };
 
 #endif

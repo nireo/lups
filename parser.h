@@ -70,6 +70,9 @@ private:
 	std::unique_ptr<Expression> parse_function_literal();
 	std::unique_ptr<Expression> parse_string_literal();
 	std::unique_ptr<Expression> parse_call_expression(std::unique_ptr<Expression> func);
+	std::unique_ptr<Expression> parse_array_literal();
+	std::vector<std::unique_ptr<Expression>> parse_expression_list(TokenType end);
+
 	std::vector<std::unique_ptr<Identifier>> parse_function_params();
 	std::vector<std::unique_ptr<Expression>> parse_call_arguments();
 

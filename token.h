@@ -31,6 +31,8 @@ const TokenType LPAREN = "(";
 const TokenType RPAREN = ")";
 const TokenType LBRACE = "{";
 const TokenType RBRACE = "}";
+const TokenType LBRACKET = "[";
+const TokenType RBRACKET = "]";
 
 const TokenType LT = "<";
 const TokenType GT = ">";

@@ -47,6 +47,7 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	add_prefix_parse(tokentypes::IF, &Parser::parse_if_expression);
 	add_prefix_parse(tokentypes::FUNCTION, &Parser::parse_function_literal);
 	add_prefix_parse(tokentypes::STRING, &Parser::parse_string_literal);
+	add_prefix_parse(tokentypes::LBRACKET, &Parser::parse_array_literal);
 
 	m_infix_parse_fns = std::unordered_map<TokenType, InfixParseFn>();
 	add_infix_parse(tokentypes::PLUS, &Parser::parse_infix_expression);
@@ -341,7 +342,7 @@ unique_ptr<Expression> Parser::parse_call_expression(unique_ptr<Expression> func
 	auto exp = std::make_unique<CallExpression>();
 	exp->token = m_current;
 	exp->func = std::move(func);
-	exp->arguments = parse_call_arguments();
+	exp->arguments = std::move(parse_expression_list(tokentypes::RPAREN));
 
 	return exp;
 }
@@ -352,6 +353,37 @@ unique_ptr<Expression> Parser::parse_string_literal() {
 	strlit->value = m_current.literal;
 
 	return strlit;
+}
+
+unique_ptr<Expression> Parser::parse_array_literal() {
+	auto arr = std::make_unique<ArrayLiteral>();
+	arr->token = m_current;
+	arr->elements = std::move(parse_expression_list(tokentypes::RBRACKET));
+
+	return arr;
+}
+
+std::vector<unique_ptr<Expression>>
+Parser::parse_expression_list(TokenType end) {
+	std::vector<unique_ptr<Expression>> expressions;
+	if (peek_token_is(end)) {
+		next_token();
+		return expressions;
+	}
+
+	next_token();
+	expressions.push_back(std::move(parse_expression(LOWEST)));
+	while (peek_token_is(tokentypes::COMMA)) {
+		next_token();
+		next_token();
+
+		expressions.push_back(std::move(parse_expression(LOWEST)));
+	}
+
+	if (!expect_peek(end))
+		return std::vector<unique_ptr<Expression>>();
+
+	return expressions;
 }
 
 std::vector<unique_ptr<Expression>> Parser::parse_call_arguments() {

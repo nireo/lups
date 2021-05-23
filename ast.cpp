@@ -59,3 +59,12 @@ std::string CallExpression::String() {
 
 	return func->String() + "(" + argstring + ")";
 }
+
+std::string ArrayLiteral::String() {
+	std::string res = "[";
+	for (const auto& exp : elements)
+		res += exp->String();
+	res += "]";
+
+	return res;
+}

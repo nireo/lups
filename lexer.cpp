@@ -62,6 +62,14 @@ Token Lexer::next_token() {
 		tok = new_token(tokentypes::RPAREN, m_ch);
 		read_char();
 		break;
+	case '[':
+		tok = new_token(tokentypes::LBRACKET, m_ch);
+		read_char();
+		break;
+	case ']':
+		tok = new_token(tokentypes::RBRACKET, m_ch);
+		read_char();
+		break;
 	case ',':
 		tok = new_token(tokentypes::COMMA, m_ch);
 		read_char();
