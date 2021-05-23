@@ -31,6 +31,7 @@ Object *eval_call_expression(Node *node, Environment *env);
 Object *apply_function(Object *func, std::vector<Object *> &args);
 Environment *extend_function_env(Object *func, std::vector<Object *> &args);
 Object *unwrap_return(Object *obj);
+	Object *eval_string_infix(const std::string &opr, Object *right, Object* left);
 } // namespace eval
 
 #endif

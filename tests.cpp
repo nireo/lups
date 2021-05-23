@@ -94,9 +94,8 @@ TEST(LexerTest, Variables) {
 }
 
 TEST(LexerTest, Strings) {
-	std::string input =
-		"\"foobar\""
-		"\"foo bar\"";
+	std::string input = "\"foobar\""
+											"\"foo bar\"";
 
 	std::vector<std::pair<TokenType, std::string>> expected;
 	expected.push_back(std::make_pair(tokentypes::STRING, "foobar"));
@@ -643,7 +642,7 @@ TEST(ParserTest, StringLiteralTest) {
 			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
 	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
 
-	EXPECT_EQ(((StringLiteral*)expstmt)->String(), "hello world");
+	EXPECT_EQ(((StringLiteral *)expstmt)->String(), "hello world");
 }
 
 bool test_integer_object(Object *obj, int expected) {
@@ -923,12 +922,28 @@ TEST(EvalTest, FunctionUsage) {
 			{"func(x) { x; }(5)", 5},
 	};
 
-	for (const auto& tc : test_cases) {
+	for (const auto &tc : test_cases) {
 		auto obj = eval_test(tc.input);
 		EXPECT_NE(obj, nullptr);
 
-		auto res = dynamic_cast<Integer*>(obj);
+		auto res = dynamic_cast<Integer *>(obj);
 		EXPECT_NE(res, nullptr) << "The object is not an integer";
-		// EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
+		EXPECT_EQ(res->value, tc.expected) << "The values are not equal";
+	}
+}
+
+TEST(EvalTest, StringLiteralTest) {
+	std::vector<std::string> inputs{
+			"\"Hello world!\"",
+			"\"Hello\" + \" \" + \"world!\"",
+	};
+
+	for (const auto &input : inputs) {
+		auto obj = eval_test(input);
+		EXPECT_NE(obj, nullptr);
+
+		auto res = dynamic_cast<String *>(obj);
+		EXPECT_NE(res, nullptr);
+		EXPECT_EQ(res->value, "Hello world!");
 	}
 }

@@ -56,6 +56,9 @@ Object *eval::Eval(Node *node, Environment *env) {
 		return eval::eval_function_literal(node, env);
 	} else if (type == "CallExpression") {
 		return eval::eval_call_expression(node, env);
+	} else if (type == "StringLiteral") {
+		// for some reason the value doesn't work but the function literal works
+		return new String(((StringLiteral*)node)->TokenLiteral());
 	}
 
 	return nullptr;
@@ -117,6 +120,8 @@ Object *eval::eval_infix_exp(std::string opr, Object *right, Object *left) {
 	else if (left->Type() != right->Type()) {
 		return new Error("wrong types: " + left->Type() + " " + opr + " " +
 										 right->Type());
+	} else if (left->Type() == objecttypes::STRING && right->Type() == objecttypes::STRING) {
+		return eval::eval_string_infix(opr, right, left);
 	} else if (opr == "==") {
 		return eval::boolean_to_object(left == right);
 	} else if (opr == "!=") {
@@ -286,4 +291,16 @@ Object *eval::unwrap_return(Object *obj) {
 	if (obj->Type() == objecttypes::RETURN)
 		return (((Return *)obj)->value);
 	return obj;
+}
+
+Object *eval::eval_string_infix(const std::string &opr, Object *right,
+																Object *left) {
+	if (opr != "+") {
+		return new Error("unknown operation: " + left->Type() + " " + opr + " " + right->Type());
+	}
+
+	auto left_val = ((String *)left)->value;
+	auto right_val = ((String *)right)->value;
+
+	return new String(left_val + right_val);
 }

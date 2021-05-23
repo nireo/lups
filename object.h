@@ -17,6 +17,7 @@ const ObjectType NULLOBJ = "NULL";
 const ObjectType RETURN = "RETURN";
 const ObjectType ERROR = "ERROR";
 	const ObjectType FUNCTION = "FUNCTION";
+	const ObjectType STRING = "STRING";
 } // namespace objecttypes
 
 class Object {
@@ -74,6 +75,7 @@ public:
 		m_store = std::unordered_map<std::string, Object *>();
 		m_outer = nullptr;
 	}
+
 	Environment(Environment *outer) {
 		m_store = std::unordered_map<std::string, Object *>();
 		m_outer = outer;
@@ -108,6 +110,15 @@ public:
 	Environment *env;
 	std::vector<Identifier*> params;
 	BlockStatement *body;
+};
+
+class String : public Object {
+public:
+	String(const std::string &str) : Object(), value(str) {}
+	ObjectType Type() { return objecttypes::STRING; }
+	std::string Inspect() { return value; }
+
+	std::string value;
 };
 
 #endif
