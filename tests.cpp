@@ -93,6 +93,25 @@ TEST(LexerTest, Variables) {
 	}
 }
 
+TEST(LexerTest, Strings) {
+	std::string input =
+		"\"foobar\""
+		"\"foo bar\"";
+
+	std::vector<std::pair<TokenType, std::string>> expected;
+	expected.push_back(std::make_pair(tokentypes::STRING, "foobar"));
+	expected.push_back(std::make_pair(tokentypes::STRING, "foo bar"));
+
+	auto lexer = Lexer(input);
+	for (int i = 0; i < (int)expected.size(); ++i) {
+		auto token = lexer.next_token();
+
+		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
+		EXPECT_EQ(expected[i].second, token.literal)
+				<< "token literals don't match";
+	}
+}
+
 TEST(LexerTest, FunctionDeclaration) {
 	std::string input = "let add = func(x, y) {"
 											"    return x + y;"
@@ -609,6 +628,22 @@ TEST(ParserTest, CallExpressionParsing) {
 	EXPECT_EQ("+", exp2->opr);
 	EXPECT_TRUE(test_integer_literal(4, std::move(exp2->left)));
 	EXPECT_TRUE(test_integer_literal(5, std::move(exp2->right)));
+}
+
+TEST(ParserTest, StringLiteralTest) {
+	std::string input = "\"hello world\";";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
+
+	EXPECT_EQ(((StringLiteral*)expstmt)->String(), "hello world");
 }
 
 bool test_integer_object(Object *obj, int expected) {

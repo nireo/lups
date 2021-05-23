@@ -42,6 +42,7 @@ const TokenType FALSE = "FALSE";
 const TokenType IF = "IF";
 const TokenType ELSE = "ELSE";
 const TokenType RETURN = "RETURN";
+const TokenType STRING = "STRING";
 
 const std::unordered_map<std::string, TokenType> KEYWORDS = {
 		{"func", FUNCTION}, {"let", LET},   {"true", TRUE},     {"false", FALSE},

@@ -17,6 +17,8 @@ private:
 
 	std::string read_ident();
 	std::string read_number();
+	std::string read_string();
+
 	void read_char();
 	void skip_whitespace();
 

@@ -107,6 +107,11 @@ Token Lexer::next_token() {
 		tok = new_token(tokentypes::RBRACE, m_ch);
 		read_char();
 		break;
+	case '"':
+		tok.type = tokentypes::STRING;
+		tok.literal = read_string();
+		read_char();
+		break;
 	case 0:
 		tok.literal = "";
 		tok.type = tokentypes::EOFF;
@@ -129,7 +134,17 @@ Token Lexer::next_token() {
 	return tok;
 }
 
+std::string Lexer::read_string() {
+	int start_pos = m_pos + 1;
+	for (;;) {
+		read_char();
+		if (m_ch == '"' || m_ch == 0) {
+			break;
+		}
+	}
 
+	return m_input.substr(start_pos, m_pos-start_pos);
+}
 
 void Lexer::skip_whitespace() {
 	while (m_ch == ' ' || m_ch == '\t' || m_ch == '\n' || m_ch == '\r')

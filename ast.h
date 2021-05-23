@@ -185,4 +185,15 @@ public:
 	std::unique_ptr<Expression> func;
 };
 
+class StringLiteral : public Expression {
+public:
+	~StringLiteral() {}
+	std::string String() { return value; }
+	std::string TokenLiteral() { return token.literal; }
+	std::string Type() { return "StringLiteral"; }
+
+	Token token;
+	std::string value;
+};
+
 #endif

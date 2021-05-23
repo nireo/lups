@@ -35,6 +35,8 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	m_lx = std::move(lx);
 
 	m_prefix_parse_fns = std::unordered_map<TokenType, PrefixParseFn>();
+
+	// TODO: place straight into map
 	add_prefix_parse(tokentypes::IDENT, &Parser::parse_identifier);
 	add_prefix_parse(tokentypes::INT, &Parser::parse_integer_literal);
 	add_prefix_parse(tokentypes::BANG, &Parser::parse_prefix_expression);
@@ -44,6 +46,7 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	add_prefix_parse(tokentypes::LPAREN, &Parser::parse_grouped_expression);
 	add_prefix_parse(tokentypes::IF, &Parser::parse_if_expression);
 	add_prefix_parse(tokentypes::FUNCTION, &Parser::parse_function_literal);
+	add_prefix_parse(tokentypes::STRING, &Parser::parse_string_literal);
 
 	m_infix_parse_fns = std::unordered_map<TokenType, InfixParseFn>();
 	add_infix_parse(tokentypes::PLUS, &Parser::parse_infix_expression);
@@ -341,6 +344,14 @@ unique_ptr<Expression> Parser::parse_call_expression(unique_ptr<Expression> func
 	exp->arguments = parse_call_arguments();
 
 	return exp;
+}
+
+unique_ptr<Expression> Parser::parse_string_literal() {
+	auto strlit = std::make_unique<StringLiteral>();
+	strlit->token = m_current;
+	strlit->value = m_current.literal;
+
+	return strlit;
 }
 
 std::vector<unique_ptr<Expression>> Parser::parse_call_arguments() {
