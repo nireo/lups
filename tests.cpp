@@ -947,3 +947,31 @@ TEST(EvalTest, StringLiteralTest) {
 		EXPECT_EQ(res->value, "Hello world!");
 	}
 }
+
+TEST(EvalTest, BuiltInFunction) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+			{"len(\"\")", 0},
+			{"len(\"four\")", 4},
+			{"len(\"hello world\")", 11},
+			// -1 just means that it should return an error
+			{"len(1)", -1},
+			{"len(\"one\", \"two\")", -1}};
+
+	for (const auto& tc : test_cases) {
+		auto obj = eval_test(tc.input);
+		EXPECT_NE(obj, nullptr);
+
+		if (tc.expected == -1) {
+			EXPECT_EQ(obj->Type(), objecttypes::ERROR);
+		} else {
+			auto res = dynamic_cast<Integer *>(obj);
+			EXPECT_NE(res, nullptr);
+			EXPECT_EQ(res->value, tc.expected);
+		}
+	}
+}

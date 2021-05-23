@@ -11,6 +11,24 @@ Boolean *TRUE_OBJ = new Boolean(true);
 Boolean *FALSE_OBJ = new Boolean(false);
 } // namespace object_constant
 
+Object *eval::len(std::vector<Object *> &objs) {
+	if (objs.size() != 1) {
+		return new Error("wrong number of arguments. want 1");
+	}
+
+	if (objs[0]->Type() != objecttypes::STRING) {
+		return new Error("len function is not supported for type: " +
+										 objs[0]->Type());
+	}
+
+	int length = ((String *)objs[0])->value.size();
+	return new Integer(length);
+}
+
+std::unordered_map<std::string, Builtin *> builtin_functions = {
+		{"len", new Builtin(*eval::len)},
+};
+
 Object *eval::Eval(Node *node, Environment *env) {
 	auto type = node->Type();
 	if (type == "IntegerLiteral") {
@@ -58,7 +76,7 @@ Object *eval::Eval(Node *node, Environment *env) {
 		return eval::eval_call_expression(node, env);
 	} else if (type == "StringLiteral") {
 		// for some reason the value doesn't work but the function literal works
-		return new String(((StringLiteral*)node)->TokenLiteral());
+		return new String(((StringLiteral *)node)->TokenLiteral());
 	}
 
 	return nullptr;
@@ -120,7 +138,8 @@ Object *eval::eval_infix_exp(std::string opr, Object *right, Object *left) {
 	else if (left->Type() != right->Type()) {
 		return new Error("wrong types: " + left->Type() + " " + opr + " " +
 										 right->Type());
-	} else if (left->Type() == objecttypes::STRING && right->Type() == objecttypes::STRING) {
+	} else if (left->Type() == objecttypes::STRING &&
+						 right->Type() == objecttypes::STRING) {
 		return eval::eval_string_infix(opr, right, left);
 	} else if (opr == "==") {
 		return eval::boolean_to_object(left == right);
@@ -206,8 +225,9 @@ Object *eval::eval_identifier(Node *ident, Environment *env) {
 	auto id = dynamic_cast<Identifier *>(ident);
 
 	auto value = env->get(id->value);
-	if (value == nullptr) {
-		return new Error("identifier not found: " + id->value);
+	if (value->Type() == objecttypes::ERROR &&
+			builtin_functions.find(id->value) != builtin_functions.end()) {
+		return builtin_functions[id->value];
 	}
 
 	return value;
@@ -267,6 +287,9 @@ Object *eval::eval_call_expression(Node *node, Environment *env) {
 }
 
 Object *eval::apply_function(Object *func, std::vector<Object *> &args) {
+	if (func->Type() == objecttypes::BUILTIN)
+		return ((Builtin *)func)->func(args);
+
 	if (func->Type() != objecttypes::FUNCTION)
 		return new Error("not a function, got: " + func->Type());
 
@@ -296,7 +319,8 @@ Object *eval::unwrap_return(Object *obj) {
 Object *eval::eval_string_infix(const std::string &opr, Object *right,
 																Object *left) {
 	if (opr != "+") {
-		return new Error("unknown operation: " + left->Type() + " " + opr + " " + right->Type());
+		return new Error("unknown operation: " + left->Type() + " " + opr + " " +
+										 right->Type());
 	}
 
 	auto left_val = ((String *)left)->value;

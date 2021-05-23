@@ -18,7 +18,9 @@ const ObjectType RETURN = "RETURN";
 const ObjectType ERROR = "ERROR";
 	const ObjectType FUNCTION = "FUNCTION";
 	const ObjectType STRING = "STRING";
+	const ObjectType BUILTIN = "BUILTIN";
 } // namespace objecttypes
+
 
 class Object {
 public:
@@ -26,6 +28,8 @@ public:
 	virtual ObjectType Type() = 0;
 	virtual std::string Inspect() = 0;
 };
+
+typedef Object* (*built_in)(std::vector<Object*>&);
 
 class Integer : public Object {
 public:
@@ -119,6 +123,15 @@ public:
 	std::string Inspect() { return value; }
 
 	std::string value;
+};
+
+class Builtin : public Object {
+public:
+	Builtin(built_in fn) : Object(), func(fn) {}
+	ObjectType Type() { return objecttypes::BUILTIN; }
+	std::string Inspect() { return "builtin function"; }
+
+	built_in func;
 };
 
 #endif
