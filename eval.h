@@ -33,6 +33,7 @@ Environment *extend_function_env(Object *func, std::vector<Object *> &args);
 Object *unwrap_return(Object *obj);
 Object *eval_string_infix(const std::string &opr, Object *right, Object *left);
 Object *len(std::vector<Object *> &objs);
+Object *eval_array_literal(Node *node, Environment *env);
 } // namespace eval
 
 #endif

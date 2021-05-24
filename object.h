@@ -16,11 +16,11 @@ const ObjectType BOOLEAN = "BOOLEAN";
 const ObjectType NULLOBJ = "NULL";
 const ObjectType RETURN = "RETURN";
 const ObjectType ERROR = "ERROR";
-	const ObjectType FUNCTION = "FUNCTION";
-	const ObjectType STRING = "STRING";
-	const ObjectType BUILTIN = "BUILTIN";
+const ObjectType FUNCTION = "FUNCTION";
+const ObjectType STRING = "STRING";
+const ObjectType BUILTIN = "BUILTIN";
+const ObjectType ARRAY = "ARRAY";
 } // namespace objecttypes
-
 
 class Object {
 public:
@@ -29,7 +29,7 @@ public:
 	virtual std::string Inspect() = 0;
 };
 
-typedef Object* (*built_in)(std::vector<Object*>&);
+typedef Object *(*built_in)(std::vector<Object *> &);
 
 class Integer : public Object {
 public:
@@ -85,7 +85,7 @@ public:
 		m_outer = outer;
 	}
 
-	Object* set(std::string name, Object* val) {
+	Object *set(std::string name, Object *val) {
 		m_store[name] = val;
 		return nullptr;
 	}
@@ -108,11 +108,11 @@ public:
 
 class Function : public Object {
 public:
-	ObjectType Type() { return objecttypes::FUNCTION;	}
+	ObjectType Type() { return objecttypes::FUNCTION; }
 	std::string Inspect() { return "function :D"; }
 
 	Environment *env;
-	std::vector<Identifier*> params;
+	std::vector<Identifier *> params;
 	BlockStatement *body;
 };
 
@@ -132,6 +132,15 @@ public:
 	std::string Inspect() { return "builtin function"; }
 
 	built_in func;
+};
+
+class Array : public Object {
+public:
+	Array(std::vector<Object*>& elems) : Object(), elements(elems) {}
+	ObjectType Type() { return objecttypes::ARRAY; }
+	std::string Inspect() { return "array object"; }
+
+	std::vector<Object*> elements;
 };
 
 #endif

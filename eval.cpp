@@ -77,6 +77,8 @@ Object *eval::Eval(Node *node, Environment *env) {
 	} else if (type == "StringLiteral") {
 		// for some reason the value doesn't work but the function literal works
 		return new String(((StringLiteral *)node)->TokenLiteral());
+	} else if (type == "ArrayLiteral") {
+		return eval::eval_array_literal(node, env);
 	}
 
 	return nullptr;
@@ -327,4 +329,15 @@ Object *eval::eval_string_infix(const std::string &opr, Object *right,
 	auto right_val = ((String *)right)->value;
 
 	return new String(left_val + right_val);
+}
+
+Object *eval::eval_array_literal(Node *node, Environment *env) {
+	auto arrlit = dynamic_cast<ArrayLiteral*>(node);
+
+	std::vector<Expression*> elements;
+	for (const auto& elem : arrlit->elements)
+		elements.push_back(elem.get());
+
+	auto evaluated_elems = eval::eval_expressions(elements, env);
+	return new Array(evaluated_elems);
 }

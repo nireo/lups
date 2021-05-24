@@ -1056,3 +1056,16 @@ TEST(EvalTest, BuiltInFunction) {
 		}
 	}
 }
+
+TEST(EvalTest, ArrayLiteralEvaluation) {
+	std::string input = "[1, 2 * 2, 3 + 3]";
+	auto obj = eval_test(input);
+	EXPECT_NE(obj, nullptr);
+
+	auto arr = dynamic_cast<Array*>(obj);
+	EXPECT_NE(arr, nullptr);
+
+	EXPECT_TRUE(test_integer_object(arr->elements[0], 1)) << "first value is not 1";
+	EXPECT_TRUE(test_integer_object(arr->elements[1], 4)) << "second value is not 4";
+	EXPECT_TRUE(test_integer_object(arr->elements[2], 6)) << "third value is not 6";
+}
