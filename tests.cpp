@@ -1065,7 +1065,7 @@ TEST(EvalTest, ArrayLiteralEvaluation) {
 	auto arr = dynamic_cast<Array *>(obj);
 	EXPECT_NE(arr, nullptr);
 
-	EXPECT_EQ(arr->Type(), objecttypes::ARR);
+	EXPECT_EQ(arr->Type(), objecttypes::ARRAY_OBJ);
 
 	EXPECT_TRUE(test_integer_object(arr->elements[0], 1))
 			<< "first value is not 1";

@@ -102,12 +102,11 @@ Object *eval::Eval(Node *node, Environment *env) {
 		return eval::eval_array_literal(node, env);
 	} else if (type == "IndexExpression") {
 		auto array = eval::Eval(((IndexExpression*)node)->left.get(), env);
-		if(eval::is_error(array)) {
+		if (eval::is_error(array)) {
 			return array;
 		}
-
 		auto index = eval::Eval(((IndexExpression*)node)->index.get(), env);
-		if(eval::is_error(index)) {
+		if (eval::is_error(index)) {
 			return index;
 		}
 
@@ -376,21 +375,20 @@ Object *eval::eval_array_literal(Node *node, Environment *env) {
 }
 
 Object *eval::eval_index_expression(Object *left, Object *index) {
-	if (left->Type() == objecttypes::ARR && index->Type() == objecttypes::INTEGER) {
-		return eval::eval_index_expression(left, index);
+	if (left->Type() == objecttypes::ARRAY_OBJ && index->Type() == objecttypes::INTEGER) {
+		return eval::eval_array_index_expression((Array*)left, (Integer*)index);
 	}
 
 	return new Error("index operation not found: " + left->Type());
 }
 
-Object *eval::eval_array_index_expression(Object *arr, Object *index) {
-	auto ar = dynamic_cast<Array*>(arr);
-	auto idx = ((Integer*)index)->value;
-	auto max = ar->elements.size()-1;
+Object *eval::eval_array_index_expression(Array *arr, Integer *index) {
+	auto idx = index->value;
+	auto max = arr->elements.size()-1;
 
 	if (idx < 0 || idx > max) {
 		return object_constant::null;
 	}
 
-	return ar->elements[idx];
+	return arr->elements[idx];
 }

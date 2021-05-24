@@ -386,7 +386,30 @@ CMakeFiles/lups_test.dir/eval.cpp.o: ../eval.cpp \
   /usr/include/c++/11.1.0/bits/stl_bvector.h \
   /usr/include/c++/11.1.0/bits/vector.tcc \
   ../object.h \
-  /usr/include/c++/11.1.0/stdexcept
+  /usr/include/c++/11.1.0/iostream \
+  /usr/include/c++/11.1.0/ostream \
+  /usr/include/c++/11.1.0/ios \
+  /usr/include/c++/11.1.0/bits/ios_base.h \
+  /usr/include/c++/11.1.0/bits/locale_classes.h \
+  /usr/include/c++/11.1.0/bits/locale_classes.tcc \
+  /usr/include/c++/11.1.0/system_error \
+  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/error_constants.h \
+  /usr/include/c++/11.1.0/stdexcept \
+  /usr/include/c++/11.1.0/streambuf \
+  /usr/include/c++/11.1.0/bits/streambuf.tcc \
+  /usr/include/c++/11.1.0/bits/basic_ios.h \
+  /usr/include/c++/11.1.0/bits/locale_facets.h \
+  /usr/include/c++/11.1.0/cwctype \
+  /usr/include/wctype.h \
+  /usr/include/bits/wctype-wchar.h \
+  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/ctype_base.h \
+  /usr/include/c++/11.1.0/bits/streambuf_iterator.h \
+  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+  /usr/include/c++/11.1.0/bits/locale_facets.tcc \
+  /usr/include/c++/11.1.0/bits/basic_ios.tcc \
+  /usr/include/c++/11.1.0/bits/ostream.tcc \
+  /usr/include/c++/11.1.0/istream \
+  /usr/include/c++/11.1.0/bits/istream.tcc
 
 CMakeFiles/lups_test.dir/lexer.cpp.o: ../lexer.cpp \
   /usr/include/stdc-predef.h \
@@ -1416,6 +1439,10 @@ _deps/googletest-src/googletest/include/gtest/gtest-matchers.h:
 
 /usr/include/c++/11.1.0/debug/debug.h:
 
+/usr/include/bits/statx-generic.h:
+
+/usr/include/c++/11.1.0/string:
+
 /usr/include/locale.h:
 
 /usr/include/c++/11.1.0/bits/exception.h:
@@ -1426,9 +1453,9 @@ _deps/googletest-src/googletest/include/gtest/gtest-matchers.h:
 
 /usr/include/bits/types/wint_t.h:
 
-/usr/include/c++/11.1.0/bits/std_function.h:
-
 /usr/include/c++/11.1.0/bits/streambuf.tcc:
+
+/usr/include/c++/11.1.0/bits/std_function.h:
 
 /usr/include/c++/11.1.0/limits:
 
@@ -1483,10 +1510,6 @@ _deps/googletest-src/googletest/include/gtest/gtest-matchers.h:
 /usr/include/c++/11.1.0/bits/codecvt.h:
 
 /usr/include/bits/libc-header-start.h:
-
-/usr/include/c++/11.1.0/iostream:
-
-/usr/include/c++/11.1.0/bits/locale_classes.tcc:
 
 /usr/include/c++/11.1.0/bits/stl_multiset.h:
 
@@ -1708,19 +1731,35 @@ _deps/googletest-src/googletest/include/gtest/gtest.h:
 
 ../object.h:
 
-../lexer.h:
+/usr/include/c++/11.1.0/bits/locale_classes.tcc:
+
+/usr/include/c++/11.1.0/iostream:
+
+/usr/include/c++/11.1.0/ios:
+
+/usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/ctype_base.h:
 
 /usr/include/c++/11.1.0/streambuf:
 
 ../parser.cpp:
-
-/usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/ctype_base.h:
 
 /usr/include/bits/types/FILE.h:
 
 /usr/include/c++/11.1.0/bits/allocator.h:
 
 /usr/include/linux/posix_types.h:
+
+/usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/ctype_inline.h:
+
+/usr/include/bits/signal_ext.h:
+
+/usr/include/bits/types/mbstate_t.h:
+
+_deps/googletest-src/googletest/include/gtest/internal/gtest-internal.h:
+
+/usr/include/c++/11.1.0/bits/locale_facets.tcc:
+
+../lexer.h:
 
 _deps/googletest-src/googletest/include/gtest/internal/gtest-string.h:
 
@@ -1750,18 +1789,6 @@ _deps/googletest-src/googletest/include/gtest/internal/gtest-string.h:
 
 /usr/include/c++/11.1.0/sstream:
 
-/usr/include/c++/11.1.0/ios:
-
-/usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/ctype_inline.h:
-
-/usr/include/bits/signal_ext.h:
-
-/usr/include/bits/types/mbstate_t.h:
-
-_deps/googletest-src/googletest/include/gtest/internal/gtest-internal.h:
-
-/usr/include/c++/11.1.0/bits/locale_facets.tcc:
-
 /usr/include/c++/11.1.0/bits/enable_special_members.h:
 
 /usr/include/c++/11.1.0/cstddef:
@@ -1785,7 +1812,3 @@ _deps/googletest-src/googletest/include/gtest/internal/gtest-internal.h:
 /usr/include/asm-generic/int-ll64.h:
 
 /usr/include/asm/posix_types_64.h:
-
-/usr/include/c++/11.1.0/string:
-
-/usr/include/bits/statx-generic.h:

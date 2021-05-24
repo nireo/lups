@@ -19,7 +19,7 @@ const ObjectType ERROR = "ERROR";
 const ObjectType FUNCTION = "FUNCTION";
 const ObjectType STRING = "STRING";
 const ObjectType BUILTIN = "BUILTIN";
-const ObjectType ARR = "OBJAR";
+const ObjectType ARRAY_OBJ    = "ARRAY";
 } // namespace objecttypes
 
 class Object {
@@ -58,6 +58,9 @@ public:
 class Return : public Object {
 public:
 	Return(Object *v) : Object(), value(v) {}
+	~Return() {
+		delete value;
+	}
 	ObjectType Type() { return objecttypes::RETURN; }
 	std::string Inspect() { return value->Inspect(); }
 
@@ -85,6 +88,10 @@ public:
 		m_outer = outer;
 	}
 
+	~Environment() {
+		delete m_outer;
+	}
+
 	Object *set(std::string name, Object *val) {
 		m_store[name] = val;
 		return nullptr;
@@ -108,6 +115,12 @@ public:
 
 class Function : public Object {
 public:
+	~Function() {
+		delete env;
+		delete body;
+		for (auto pr : params)
+			delete pr;
+	}
 	ObjectType Type() { return objecttypes::FUNCTION; }
 	std::string Inspect() { return "function :D"; }
 
@@ -132,7 +145,7 @@ public:
 		for (auto elem : elements)
 			delete elem;
 	}
-	ObjectType Type() { return objecttypes::ARR; }
+	ObjectType Type() { return objecttypes::ARRAY_OBJ; }
 	std::string Inspect() {
 		std::string res = "[";
 		for (auto elem : elements) {
