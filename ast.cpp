@@ -68,3 +68,7 @@ std::string ArrayLiteral::String() {
 
 	return res;
 }
+
+std::string IndexExpression::String() {
+	return "(" + left->String() + "[" + index->String() + "])";
+}

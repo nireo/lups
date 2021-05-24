@@ -59,6 +59,7 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	add_infix_parse(tokentypes::LT, &Parser::parse_infix_expression);
 	add_infix_parse(tokentypes::GT, &Parser::parse_infix_expression);
 	add_infix_parse(tokentypes::LPAREN, &Parser::parse_call_expression);
+	add_infix_parse(tokentypes::LBRACKET, &Parser::parse_index_expression);
 
 	next_token();
 	next_token();
@@ -408,6 +409,20 @@ std::vector<unique_ptr<Expression>> Parser::parse_call_arguments() {
 		return std::vector<unique_ptr<Expression>>();
 
 	return args;
+}
+
+std::unique_ptr<Expression>
+Parser::parse_index_expression(std::unique_ptr<Expression> left) {
+	auto exp = std::make_unique<IndexExpression>();
+	exp->token = m_current;
+	exp->left = std::move(left);
+
+	next_token();
+	exp->index = parse_expression(LOWEST);
+	if (!expect_peek(tokentypes::RBRACKET))
+		return nullptr;
+
+	return exp;
 }
 
 std::vector<std::string> Parser::errors() const { return m_errors; }

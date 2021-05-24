@@ -192,4 +192,15 @@ public:
 	Token token;
 };
 
+class IndexExpression : public Expression {
+public:
+	std::string String();
+	std::string TokenLiteral() { return token.literal; }
+	std::string Type() { return "IndexExpression"; }
+
+	Token token;
+	std::unique_ptr<Expression> left;
+	std::unique_ptr<Expression> index;
+};
+
 #endif

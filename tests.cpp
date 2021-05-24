@@ -699,6 +699,33 @@ TEST(ParserTest, ArrayLiteralParsing) {
 	EXPECT_TRUE(test_integer_literal(3, std::move(exp2->right)));
 }
 
+TEST(ParserTest, IndexExpression) {
+	std::string input = "myArray[1 + 1]";
+
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
+
+	auto idexp = dynamic_cast<IndexExpression *>(expstmt->expression.get());
+	EXPECT_NE(idexp, nullptr);
+
+	auto ident = dynamic_cast<Identifier *>(idexp->left.get());
+	EXPECT_NE(ident, nullptr);
+
+	auto infexp = dynamic_cast<InfixExpression *>(idexp->index.get());
+	EXPECT_NE(infexp, nullptr) << "Statement is not a infix expression";
+
+	EXPECT_EQ("+", infexp->opr);
+	EXPECT_TRUE(test_integer_literal(1, std::move(infexp->left)));
+	EXPECT_TRUE(test_integer_literal(1, std::move(infexp->right)));
+}
+
 bool test_integer_object(Object *obj, int expected) {
 	auto res = dynamic_cast<Integer *>(obj);
 	if (res == nullptr)

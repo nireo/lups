@@ -22,6 +22,7 @@ enum Precedence {
 	PRODUCT,
 	PREFIX,
 	CALL,
+	INDEX,
 };
 
 const std::unordered_map<TokenType, Precedence> precedences = {
@@ -34,6 +35,7 @@ const std::unordered_map<TokenType, Precedence> precedences = {
 		{tokentypes::SLASH, PRODUCT},
 		{tokentypes::ASTERISK, PRODUCT},
 		{tokentypes::LPAREN, CALL},
+		{tokentypes::LBRACKET, INDEX},
 };
 
 class Parser {
@@ -71,6 +73,7 @@ private:
 	std::unique_ptr<Expression> parse_string_literal();
 	std::unique_ptr<Expression> parse_call_expression(std::unique_ptr<Expression> func);
 	std::unique_ptr<Expression> parse_array_literal();
+	std::unique_ptr<Expression> parse_index_expression(std::unique_ptr<Expression> left);
 	std::vector<std::unique_ptr<Expression>> parse_expression_list(TokenType end);
 
 	std::vector<std::unique_ptr<Identifier>> parse_function_params();
