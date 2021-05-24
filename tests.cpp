@@ -678,7 +678,7 @@ TEST(ParserTest, ArrayLiteralParsing) {
 			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
 	EXPECT_NE(expstmt, nullptr) << "The statement wasn't a expression statement";
 
-	auto arraylit = dynamic_cast<ArrayLiteral*>(expstmt->expression.get());
+	auto arraylit = dynamic_cast<ArrayLiteral *>(expstmt->expression.get());
 	EXPECT_NE(arraylit, nullptr);
 
 	EXPECT_EQ(arraylit->elements.size(), 3);
@@ -1062,10 +1062,45 @@ TEST(EvalTest, ArrayLiteralEvaluation) {
 	auto obj = eval_test(input);
 	EXPECT_NE(obj, nullptr);
 
-	auto arr = dynamic_cast<Array*>(obj);
+	auto arr = dynamic_cast<Array *>(obj);
 	EXPECT_NE(arr, nullptr);
 
-	EXPECT_TRUE(test_integer_object(arr->elements[0], 1)) << "first value is not 1";
-	EXPECT_TRUE(test_integer_object(arr->elements[1], 4)) << "second value is not 4";
-	EXPECT_TRUE(test_integer_object(arr->elements[2], 6)) << "third value is not 6";
+	EXPECT_EQ(arr->Type(), objecttypes::ARR);
+
+	EXPECT_TRUE(test_integer_object(arr->elements[0], 1))
+			<< "first value is not 1";
+	EXPECT_TRUE(test_integer_object(arr->elements[1], 4))
+			<< "second value is not 4";
+	EXPECT_TRUE(test_integer_object(arr->elements[2], 6))
+			<< "third value is not 6";
+}
+
+TEST(EvalTest, ArrayIndexExpressions) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+		{"[1, 2, 3][0]", 1},
+			{"[1, 2, 3][1]", 2},
+			{"[1, 2, 3][2]", 3},
+			{"let i = 0; [1][i]", 1},
+			{"[1, 2, 3][1+1]", 3},
+			{"let arr = [1, 2, 3]; arr[2];", 3},
+			{"let myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];", 6},
+			{"let myArray = [1, 2, 3]; let i = myArray[0]; myArray[i]", 2},
+			{"[1, 2, 3][3]", -1},
+			{"[1, 2, 3][-1]", -1}};
+
+	for (const auto& tc : test_cases) {
+		auto obj = eval_test(tc.input);
+		EXPECT_NE(obj, nullptr);
+
+		if (tc.expected == -1) {
+			EXPECT_EQ(objecttypes::NULLOBJ, obj->Type()) << "The object isn't of type null";
+		} else {
+			EXPECT_TRUE(test_integer_object(obj, tc.expected)) << "The value don't match";
+		}
+	}
 }

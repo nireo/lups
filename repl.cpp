@@ -37,7 +37,7 @@ int main() {
 	//		}
 	//	}
 
-	std::string input = "len(\"four\")";
+	std::string input{"[1, 2, 3][0]"};
 	auto obj = eval_input(input, env);
 	std::cout << obj->Type() << '\n';
 	std::cout << obj->Inspect() << '\n';

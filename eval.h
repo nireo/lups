@@ -34,6 +34,10 @@ Object *unwrap_return(Object *obj);
 Object *eval_string_infix(const std::string &opr, Object *right, Object *left);
 Object *len(std::vector<Object *> &objs);
 Object *eval_array_literal(Node *node, Environment *env);
+Object *eval_index_expression(Object *left, Object *index);
+Object *eval_array_index_expression(Object *arr, Object *index);
+bool is_error(Object *obj);
+	Object *print(std::vector<Object*> &objs);
 } // namespace eval
 
 #endif

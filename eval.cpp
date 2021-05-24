@@ -1,6 +1,7 @@
 #include "eval.h"
 #include "ast.h"
 #include "object.h"
+#include <iostream>
 #include <stdexcept>
 
 // TODO: start using unique pointers for more safety
@@ -10,6 +11,13 @@ Null *null = new Null();
 Boolean *TRUE_OBJ = new Boolean(true);
 Boolean *FALSE_OBJ = new Boolean(false);
 } // namespace object_constant
+
+bool eval::is_error(Object *obj) {
+	if(obj != nullptr) {
+		return obj->Type() == objecttypes::ERROR;
+	}
+	return true;
+}
 
 Object *eval::len(std::vector<Object *> &objs) {
 	if (objs.size() != 1) {
@@ -25,8 +33,21 @@ Object *eval::len(std::vector<Object *> &objs) {
 	return new Integer(length);
 }
 
+Object* eval::print(std::vector<Object*>& objs) {
+	for (auto obj : objs) {
+		if (eval::is_error(obj))
+			return obj;
+		std::cout << obj->Inspect() << " ";
+	}
+	std::cout << std::endl;
+
+	return object_constant::null;
+}
+
+
 std::unordered_map<std::string, Builtin *> builtin_functions = {
 		{"len", new Builtin(*eval::len)},
+		{"print", new Builtin(*eval::print)}
 };
 
 Object *eval::Eval(Node *node, Environment *env) {
@@ -62,7 +83,7 @@ Object *eval::Eval(Node *node, Environment *env) {
 		return eval::eval_if_expression(ifexp, env);
 	} else if (type == "LetStatement") {
 		auto value = eval::Eval(((LetStatement *)node)->value.get(), env);
-		if (value->Type() == objecttypes::ERROR)
+		if (eval::is_error(value))
 			return value;
 		env->set(((LetStatement *)node)->name->value, value);
 	} else if (type == "ReturnStatement") {
@@ -79,6 +100,18 @@ Object *eval::Eval(Node *node, Environment *env) {
 		return new String(((StringLiteral *)node)->TokenLiteral());
 	} else if (type == "ArrayLiteral") {
 		return eval::eval_array_literal(node, env);
+	} else if (type == "IndexExpression") {
+		auto array = eval::Eval(((IndexExpression*)node)->left.get(), env);
+		if(eval::is_error(array)) {
+			return array;
+		}
+
+		auto index = eval::Eval(((IndexExpression*)node)->index.get(), env);
+		if(eval::is_error(index)) {
+			return index;
+		}
+
+		return eval_index_expression(array, index);
 	}
 
 	return nullptr;
@@ -340,4 +373,24 @@ Object *eval::eval_array_literal(Node *node, Environment *env) {
 
 	auto evaluated_elems = eval::eval_expressions(elements, env);
 	return new Array(evaluated_elems);
+}
+
+Object *eval::eval_index_expression(Object *left, Object *index) {
+	if (left->Type() == objecttypes::ARR && index->Type() == objecttypes::INTEGER) {
+		return eval::eval_index_expression(left, index);
+	}
+
+	return new Error("index operation not found: " + left->Type());
+}
+
+Object *eval::eval_array_index_expression(Object *arr, Object *index) {
+	auto ar = dynamic_cast<Array*>(arr);
+	auto idx = ((Integer*)index)->value;
+	auto max = ar->elements.size()-1;
+
+	if (idx < 0 || idx > max) {
+		return object_constant::null;
+	}
+
+	return ar->elements[idx];
 }

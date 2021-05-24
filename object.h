@@ -19,7 +19,7 @@ const ObjectType ERROR = "ERROR";
 const ObjectType FUNCTION = "FUNCTION";
 const ObjectType STRING = "STRING";
 const ObjectType BUILTIN = "BUILTIN";
-const ObjectType ARRAY = "ARRAY";
+const ObjectType ARR = "OBJAR";
 } // namespace objecttypes
 
 class Object {
@@ -125,6 +125,26 @@ public:
 	std::string value;
 };
 
+class Array : public Object {
+public:
+	Array(std::vector<Object *> &elems) : Object(), elements(elems) {}
+	~Array() {
+		for (auto elem : elements)
+			delete elem;
+	}
+	ObjectType Type() { return objecttypes::ARR; }
+	std::string Inspect() {
+		std::string res = "[";
+		for (auto elem : elements) {
+			res += elem->Inspect() + ", ";
+		}
+		res += "]";
+		return res;
+	}
+
+	std::vector<Object *> elements;
+};
+
 class Builtin : public Object {
 public:
 	Builtin(built_in fn) : Object(), func(fn) {}
@@ -132,15 +152,6 @@ public:
 	std::string Inspect() { return "builtin function"; }
 
 	built_in func;
-};
-
-class Array : public Object {
-public:
-	Array(std::vector<Object*>& elems) : Object(), elements(elems) {}
-	ObjectType Type() { return objecttypes::ARRAY; }
-	std::string Inspect() { return "array object"; }
-
-	std::vector<Object*> elements;
 };
 
 #endif
