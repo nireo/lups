@@ -26,6 +26,7 @@ const TokenType COMMA = ",";
 const TokenType SEMICOLON = ";";
 const TokenType EQ = "==";
 const TokenType NEQ = "!=";
+const TokenType COLON = ":";
 
 const TokenType LPAREN = "(";
 const TokenType RPAREN = ")";

@@ -189,6 +189,26 @@ TEST(LexerTest, ArrayTest) {
 	}
 }
 
+TEST(LexerTest, HashTest) {
+	std::string input = "{\"foo\": \"bar\"}";
+	std::vector<std::pair<TokenType, std::string>> expected;
+	expected.push_back(std::make_pair(tokentypes::LBRACE, "{"));
+	expected.push_back(std::make_pair(tokentypes::STRING, "foo"));
+	expected.push_back(std::make_pair(tokentypes::COLON, ":"));
+	expected.push_back(std::make_pair(tokentypes::STRING, "bar"));
+	expected.push_back(std::make_pair(tokentypes::RBRACE, "}"));
+
+	auto lexer = Lexer(input);
+	for (int i = 0; i < (int)expected.size(); ++i) {
+		auto token = lexer.next_token();
+
+		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
+		EXPECT_EQ(expected[i].second, token.literal)
+				<< "token literals don't match";
+	}
+}
+
+
 TEST(ParserTest, LetStatements) {
 	std::string input = "let x = 5;"
 											"let y = 10;"
@@ -371,6 +391,36 @@ bool test_bool_literal(bool expected, std::unique_ptr<Expression> exp) {
 		return false;
 
 	return true;
+}
+
+TEST(ParserTest, HashLiteralStrings) {
+	std::string input = "{\"one\": 1, \"two\": 2, \"three\": 3}";
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+	auto expstmt = dynamic_cast<ExpressionStatement*>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr) << "The first statement is not an expression statement";
+
+	auto hash = dynamic_cast<HashLiteral*>(expstmt->expression.get());
+	EXPECT_NE(hash, nullptr) << "The expression statement is not an hash literal";
+
+	std::map<std::string, int> expected {
+		{"one", 1},
+		{"two", 2},
+		{"three", 3},
+	};
+
+	for (const auto &pr : hash->pairs) {
+		auto keystring = dynamic_cast<StringLiteral*>(pr.first.get());
+		EXPECT_NE(keystring, nullptr);
+
+		auto expected_value = expected[keystring->TokenLiteral()];
+		auto integer = dynamic_cast<IntegerLiteral*>(pr.second.get());
+		EXPECT_EQ(expected_value, integer->value);
+	}
 }
 
 TEST(ParserTest, InfixExpressionTest) {

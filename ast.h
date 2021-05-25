@@ -4,6 +4,7 @@
 #include "token.h"
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 class Node {
@@ -126,7 +127,6 @@ public:
 	bool value;
 };
 
-
 class BlockStatement : public Statement {
 public:
 	void statementNode() {}
@@ -201,6 +201,17 @@ public:
 	Token token;
 	std::unique_ptr<Expression> left;
 	std::unique_ptr<Expression> index;
+};
+
+class HashLiteral : public Expression {
+public:
+	std::string String() { return "hashliteral string"; };
+	std::string TokenLiteral() { return token.literal; }
+	std::string Type() { return "HashLiteral"; }
+
+	Token token;
+	std::unordered_map<std::unique_ptr<Expression>, std::unique_ptr<Expression>>
+			pairs;
 };
 
 #endif

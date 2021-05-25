@@ -54,6 +54,10 @@ Token Lexer::next_token() {
 		tok = new_token(tokentypes::SEMICOLON, m_ch);
 		read_char();
 		break;
+	case ':':
+		tok = new_token(tokentypes::COLON, m_ch);
+		read_char();
+		break;
 	case '(':
 		tok = new_token(tokentypes::LPAREN, m_ch);
 		read_char();
