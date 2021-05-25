@@ -13,7 +13,7 @@ Boolean *FALSE_OBJ = new Boolean(false);
 } // namespace object_constant
 
 bool eval::is_error(Object *obj) {
-	if(obj != nullptr) {
+	if (obj != nullptr) {
 		return obj->Type() == objecttypes::ERROR;
 	}
 	return true;
@@ -33,7 +33,7 @@ Object *eval::len(std::vector<Object *> &objs) {
 	return new Integer(length);
 }
 
-Object* eval::print(std::vector<Object*>& objs) {
+Object *eval::print(std::vector<Object *> &objs) {
 	for (auto obj : objs) {
 		if (eval::is_error(obj))
 			return obj;
@@ -44,10 +44,88 @@ Object* eval::print(std::vector<Object*>& objs) {
 	return object_constant::null;
 }
 
+Object *eval::array_first(std::vector<Object *> &objs) {
+	if (objs.size() != 1) {
+		return new Error("wrong number of arguments. want 1");
+	}
+
+	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
+		return new Error("the argument must be of type array, got: " +
+										 objs[0]->Type());
+	}
+
+	auto elements = ((Array *)objs[0])->elements;
+	if (elements.size() > 0) {
+		return elements[0];
+	}
+
+	return object_constant::null;
+}
+
+Object *eval::array_last(std::vector<Object *> &objs) {
+	if (objs.size() != 1) {
+		return new Error("wrong number of arguments. want 1");
+	}
+
+	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
+		return new Error("the argument must be of type array, got: " +
+										 objs[0]->Type());
+	}
+
+	auto elements = ((Array *)objs[0])->elements;
+	auto size = elements.size();
+	if (size > 0) {
+		return elements[size - 1];
+	}
+
+	return object_constant::null;
+}
+
+Object *eval::array_tail(std::vector<Object *> &objs) {
+	if (objs.size() != 1) {
+		return new Error("wrong number of arguments. want 1");
+	}
+
+	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
+		return new Error("the argument must be of type array, got: " +
+										 objs[0]->Type());
+	}
+
+	auto elements = ((Array *)objs[0])->elements;
+	auto size = elements.size();
+	if (size > 0) {
+		std::vector<Object *> tailed_elements(elements.begin() + 1, elements.end());
+		return new Array(tailed_elements);
+	}
+
+	return object_constant::null;
+}
+
+Object *eval::array_push(std::vector<Object *> &objs) {
+	if (objs.size() != 2) {
+		return new Error("wrong number of arguments. want 2");
+	}
+
+	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
+		return new Error("the argument must be of type array, got: " +
+										 objs[0]->Type());
+	}
+
+	auto array = (Array *)objs[0];
+	auto length = array->elements.size();
+	std::vector<Object *> new_elements = array->elements;
+	new_elements.push_back(objs[1]);
+
+	return new Array(new_elements);
+}
 
 std::unordered_map<std::string, Builtin *> builtin_functions = {
 		{"len", new Builtin(*eval::len)},
-		{"print", new Builtin(*eval::print)}
+		{"print", new Builtin(*eval::print)},
+		{"last", new Builtin(*eval::array_last)},
+		{"first", new Builtin(*eval::array_first)},
+		{"tail", new Builtin(*eval::array_tail)},
+		{"push", new Builtin(*eval::array_push)},
 };
 
 Object *eval::Eval(Node *node, Environment *env) {
@@ -101,11 +179,11 @@ Object *eval::Eval(Node *node, Environment *env) {
 	} else if (type == "ArrayLiteral") {
 		return eval::eval_array_literal(node, env);
 	} else if (type == "IndexExpression") {
-		auto array = eval::Eval(((IndexExpression*)node)->left.get(), env);
+		auto array = eval::Eval(((IndexExpression *)node)->left.get(), env);
 		if (eval::is_error(array)) {
 			return array;
 		}
-		auto index = eval::Eval(((IndexExpression*)node)->index.get(), env);
+		auto index = eval::Eval(((IndexExpression *)node)->index.get(), env);
 		if (eval::is_error(index)) {
 			return index;
 		}
@@ -364,10 +442,10 @@ Object *eval::eval_string_infix(const std::string &opr, Object *right,
 }
 
 Object *eval::eval_array_literal(Node *node, Environment *env) {
-	auto arrlit = dynamic_cast<ArrayLiteral*>(node);
+	auto arrlit = dynamic_cast<ArrayLiteral *>(node);
 
-	std::vector<Expression*> elements;
-	for (const auto& elem : arrlit->elements)
+	std::vector<Expression *> elements;
+	for (const auto &elem : arrlit->elements)
 		elements.push_back(elem.get());
 
 	auto evaluated_elems = eval::eval_expressions(elements, env);
@@ -375,8 +453,9 @@ Object *eval::eval_array_literal(Node *node, Environment *env) {
 }
 
 Object *eval::eval_index_expression(Object *left, Object *index) {
-	if (left->Type() == objecttypes::ARRAY_OBJ && index->Type() == objecttypes::INTEGER) {
-		return eval::eval_array_index_expression((Array*)left, (Integer*)index);
+	if (left->Type() == objecttypes::ARRAY_OBJ &&
+			index->Type() == objecttypes::INTEGER) {
+		return eval::eval_array_index_expression((Array *)left, (Integer *)index);
 	}
 
 	return new Error("index operation not found: " + left->Type());
@@ -384,7 +463,7 @@ Object *eval::eval_index_expression(Object *left, Object *index) {
 
 Object *eval::eval_array_index_expression(Array *arr, Integer *index) {
 	auto idx = index->value;
-	auto max = arr->elements.size()-1;
+	auto max = arr->elements.size() - 1;
 
 	if (idx < 0 || idx > max) {
 		return object_constant::null;

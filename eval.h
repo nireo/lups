@@ -37,7 +37,11 @@ Object *eval_array_literal(Node *node, Environment *env);
 Object *eval_index_expression(Object *left, Object *index);
 Object *eval_array_index_expression(Array *arr, Integer *index);
 bool is_error(Object *obj);
-Object *print(std::vector<Object*> &objs);
+Object *print(std::vector<Object *> &objs);
+Object *array_first(std::vector<Object *> &objs);
+Object *array_tail(std::vector<Object *> &objs);
+Object *array_last(std::vector<Object *> &objs);
+Object *array_push(std::vector<Object *> &objs);
 } // namespace eval
 
 #endif
