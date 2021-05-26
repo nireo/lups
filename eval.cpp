@@ -486,7 +486,6 @@ Object *eval::eval_hash_literal(Node *node, Environment *env) {
 		if (eval::is_error(key_object))
 			return key_object;
 
-		std::cout << "evaluated the key object";
 		// check that the key is of an hashable type.
 		if (!(key_object->Type() == objecttypes::INTEGER ||
 				key_object->Type() == objecttypes::STRING ||
@@ -498,7 +497,6 @@ Object *eval::eval_hash_literal(Node *node, Environment *env) {
 		if (eval::is_error(value_object))
 			return value_object;
 
-		// TODO: rework this
 		HashKey res;
 		// we only need to check these types since the previous if expressions guarantees that the
 		// object is one of them.

@@ -52,5 +52,7 @@ int main() {
 		std::cout << "obj is not null" << '\n';
 		std::cout << obj->Type() << '\n';
 		std::cout << obj->Inspect() << '\n';
+
+		std::cout << ((Hash*)obj)->pairs[((new String("two"))->hash_key().value)]->value->Inspect() << '\n';
 	}
 }
