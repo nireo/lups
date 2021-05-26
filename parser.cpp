@@ -6,6 +6,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
 template <typename T> T FromString(const std::string &str) {
 	std::istringstream ss(str);
@@ -48,6 +49,7 @@ Parser::Parser(unique_ptr<Lexer> lx) {
 	add_prefix_parse(tokentypes::FUNCTION, &Parser::parse_function_literal);
 	add_prefix_parse(tokentypes::STRING, &Parser::parse_string_literal);
 	add_prefix_parse(tokentypes::LBRACKET, &Parser::parse_array_literal);
+	add_prefix_parse(tokentypes::LBRACE, &Parser::parse_hash_literal);
 
 	m_infix_parse_fns = std::unordered_map<TokenType, InfixParseFn>();
 	add_infix_parse(tokentypes::PLUS, &Parser::parse_infix_expression);
@@ -423,6 +425,31 @@ Parser::parse_index_expression(std::unique_ptr<Expression> left) {
 		return nullptr;
 
 	return exp;
+}
+
+unique_ptr<Expression> Parser::parse_hash_literal() {
+	auto hash = std::make_unique<HashLiteral>();
+	std::unordered_map<unique_ptr<Expression>, unique_ptr<Expression>> pairs;
+
+	while (!peek_token_is(tokentypes::RBRACE)) {
+		next_token();
+		auto key = parse_expression(LOWEST);
+		if (!expect_peek(tokentypes::COLON)) {
+			return nullptr;
+		}
+
+		next_token();
+		auto value = parse_expression(LOWEST);
+		pairs.insert(std::make_pair(std::move(key), std::move(value)));
+
+		if (!peek_token_is(tokentypes::RBRACE) && !expect_peek(tokentypes::COMMA))
+			return nullptr;
+	}
+
+	if (!expect_peek(tokentypes::RBRACE))
+		return nullptr;
+
+	return hash;
 }
 
 std::vector<std::string> Parser::errors() const { return m_errors; }

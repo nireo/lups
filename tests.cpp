@@ -208,7 +208,6 @@ TEST(LexerTest, HashTest) {
 	}
 }
 
-
 TEST(ParserTest, LetStatements) {
 	std::string input = "let x = 5;"
 											"let y = 10;"
@@ -401,26 +400,76 @@ TEST(ParserTest, HashLiteralStrings) {
 	auto program = parser.parse_program();
 	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
 
-	auto expstmt = dynamic_cast<ExpressionStatement*>(program->statements[0].get());
-	EXPECT_NE(expstmt, nullptr) << "The first statement is not an expression statement";
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr)
+			<< "The first statement is not an expression statement";
 
-	auto hash = dynamic_cast<HashLiteral*>(expstmt->expression.get());
+	auto hash = dynamic_cast<HashLiteral *>(expstmt->expression.get());
 	EXPECT_NE(hash, nullptr) << "The expression statement is not an hash literal";
 
-	std::map<std::string, int> expected {
-		{"one", 1},
-		{"two", 2},
-		{"three", 3},
+	std::map<std::string, int> expected{
+			{"one", 1},
+			{"two", 2},
+			{"three", 3},
 	};
 
 	for (const auto &pr : hash->pairs) {
-		auto keystring = dynamic_cast<StringLiteral*>(pr.first.get());
+		auto keystring = dynamic_cast<StringLiteral *>(pr.first.get());
 		EXPECT_NE(keystring, nullptr);
 
 		auto expected_value = expected[keystring->TokenLiteral()];
-		auto integer = dynamic_cast<IntegerLiteral*>(pr.second.get());
+		auto integer = dynamic_cast<IntegerLiteral *>(pr.second.get());
 		EXPECT_EQ(expected_value, integer->value);
 	}
+}
+
+TEST(ParserTest, EmptyHashLiteral) {
+	std::string input = "{}";
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr)
+			<< "The first statement is not an expression statement";
+
+	auto hash = dynamic_cast<HashLiteral *>(expstmt->expression.get());
+	EXPECT_NE(hash, nullptr) << "The expression statement is not an hash literal";
+	EXPECT_EQ(hash->pairs.size(), 0);
+}
+
+TEST(ParserTest, HashLiteralWithExpressions) {
+	std::string input = "{\"one\": 0 + 1, \"two\": 10 - 8, \"three\": 15 / 5}";
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	auto program = parser.parse_program();
+	EXPECT_NE(program, nullptr) << "Parsing program returns a nullptr";
+
+	auto expstmt =
+			dynamic_cast<ExpressionStatement *>(program->statements[0].get());
+	EXPECT_NE(expstmt, nullptr)
+			<< "The first statement is not an expression statement";
+
+	auto hash = dynamic_cast<HashLiteral *>(expstmt->expression.get());
+	EXPECT_NE(hash, nullptr) << "The expression statement is not an hash literal";
+
+	struct ExpectedInfixes {
+		std::string key;
+		std::string opr;
+		int left;
+		int right;
+	};
+
+	std::vector<ExpectedInfixes> expected{
+			{"one", "+", 0, 1},
+			{"two", "-", 10, 8},
+			{"three", "/", 15, 5},
+	};
 }
 
 TEST(ParserTest, InfixExpressionTest) {
@@ -1132,7 +1181,7 @@ TEST(EvalTest, ArrayIndexExpressions) {
 	};
 
 	std::vector<Testcase> test_cases{
-		{"[1, 2, 3][0]", 1},
+			{"[1, 2, 3][0]", 1},
 			{"[1, 2, 3][1]", 2},
 			{"[1, 2, 3][2]", 3},
 			{"let i = 0; [1][i]", 1},
@@ -1143,14 +1192,16 @@ TEST(EvalTest, ArrayIndexExpressions) {
 			{"[1, 2, 3][3]", -1},
 			{"[1, 2, 3][-1]", -1}};
 
-	for (const auto& tc : test_cases) {
+	for (const auto &tc : test_cases) {
 		auto obj = eval_test(tc.input);
 		EXPECT_NE(obj, nullptr);
 
 		if (tc.expected == -1) {
-			EXPECT_EQ(objecttypes::NULLOBJ, obj->Type()) << "The object isn't of type null";
+			EXPECT_EQ(objecttypes::NULLOBJ, obj->Type())
+					<< "The object isn't of type null";
 		} else {
-			EXPECT_TRUE(test_integer_object(obj, tc.expected)) << "The value don't match";
+			EXPECT_TRUE(test_integer_object(obj, tc.expected))
+					<< "The value don't match";
 		}
 	}
 }
