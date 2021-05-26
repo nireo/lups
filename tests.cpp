@@ -1205,3 +1205,14 @@ TEST(EvalTest, ArrayIndexExpressions) {
 		}
 	}
 }
+
+TEST(ObjectTest, HashKeyTest) {
+	auto hello1 = new String("hello world");
+	auto hello2 = new String("hello world");
+	auto value1 = new String("world hello");
+	auto value2 = new String("world hello");
+
+	EXPECT_EQ(hello1->hash_key().value, hello2->hash_key().value) << "Strings with same content have different hash keys";
+	EXPECT_EQ(value1->hash_key().value, value2->hash_key().value) << "Strings with same content have different hash keys";
+	EXPECT_NE(hello1->hash_key().value, value1->hash_key().value) << "Strings with different content have same hash keys";
+}

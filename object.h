@@ -2,6 +2,7 @@
 #define LUPS_OBJECT_H
 
 #include "eval.h"
+#include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -22,6 +23,11 @@ const ObjectType BUILTIN = "BUILTIN";
 const ObjectType ARRAY_OBJ    = "ARRAY";
 } // namespace objecttypes
 
+struct HashKey {
+	ObjectType type;
+	long long value;
+};
+
 class Object {
 public:
 	virtual ~Object() {}
@@ -37,6 +43,10 @@ public:
 	ObjectType Type() { return objecttypes::INTEGER; }
 	std::string Inspect() { return std::to_string(value); }
 
+	HashKey hash_key() {
+		return HashKey{Type(), (long long)value};
+	}
+
 	int value;
 };
 
@@ -45,6 +55,12 @@ public:
 	Boolean(bool b) : Object(), value(b) {}
 	ObjectType Type() { return objecttypes::BOOLEAN; }
 	std::string Inspect() { return value ? "true" : "false"; }
+
+	HashKey hash_key() {
+		long long value;
+		value = (value ? 1 : 0);
+		return HashKey{Type(), value};
+	}
 
 	bool value;
 };
@@ -135,6 +151,10 @@ public:
 	ObjectType Type() { return objecttypes::STRING; }
 	std::string Inspect() { return value; }
 
+	HashKey hash_key() {
+		return HashKey{Type(), (long long)std::hash<std::string>{}(value)};
+	}
+
 	std::string value;
 };
 
@@ -166,5 +186,6 @@ public:
 
 	built_in func;
 };
+
 
 #endif
