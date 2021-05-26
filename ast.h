@@ -210,8 +210,10 @@ public:
 	std::string Type() { return "HashLiteral"; }
 
 	Token token;
-	std::unordered_map<std::unique_ptr<Expression>, std::unique_ptr<Expression>>
-			pairs;
+
+	// we can use maps put there i found some errors for iterating them when it consists only of
+	// unique pointers. That is why it is a vector and we don't need to query anything so it just works.
+	std::vector<std::pair<std::unique_ptr<Expression>, std::unique_ptr<Expression>>> pairs;
 };
 
 #endif

@@ -21,11 +21,13 @@ const ObjectType FUNCTION = "FUNCTION";
 const ObjectType STRING = "STRING";
 const ObjectType BUILTIN = "BUILTIN";
 const ObjectType ARRAY_OBJ    = "ARRAY";
+const ObjectType HASH = "HASH";
 } // namespace objecttypes
 
+typedef long long HashValue;
 struct HashKey {
 	ObjectType type;
-	long long value;
+	HashValue value;
 };
 
 class Object {
@@ -44,7 +46,7 @@ public:
 	std::string Inspect() { return std::to_string(value); }
 
 	HashKey hash_key() {
-		return HashKey{Type(), (long long)value};
+		return HashKey{Type(), (HashValue)value};
 	}
 
 	int value;
@@ -57,9 +59,7 @@ public:
 	std::string Inspect() { return value ? "true" : "false"; }
 
 	HashKey hash_key() {
-		long long value;
-		value = (value ? 1 : 0);
-		return HashKey{Type(), value};
+		return HashKey{Type(), (HashValue)(value ? 1 : 0)};
 	}
 
 	bool value;
@@ -152,7 +152,7 @@ public:
 	std::string Inspect() { return value; }
 
 	HashKey hash_key() {
-		return HashKey{Type(), (long long)std::hash<std::string>{}(value)};
+		return HashKey{Type(), (HashValue)std::hash<std::string>{}(value)};
 	}
 
 	std::string value;
@@ -187,5 +187,41 @@ public:
 	built_in func;
 };
 
+struct HashPair {
+	~HashPair() {
+		delete key;
+		delete value;
+	}
+
+	Object *key;
+	Object *value;
+};
+
+class Hash : public Object {
+public:
+	Hash() {
+		pairs = std::unordered_map<HashValue, HashPair*>();
+	}
+
+	~Hash() {
+		for (auto pr : pairs)
+			delete pr.second;
+	}
+
+	ObjectType Type() { return objecttypes::HASH; }
+	std::string Inspect() {
+		std::string result;
+		result += "{";
+		for (const auto& pr : pairs) {
+			result += pr.second->key->Inspect() + ": " + pr.second->value->Inspect();
+		}
+
+		result += "}";
+
+		return result;
+	}
+
+	std::unordered_map<HashValue, HashPair*> pairs;
+};
 
 #endif

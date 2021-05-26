@@ -414,7 +414,7 @@ TEST(ParserTest, HashLiteralStrings) {
 			{"three", 3},
 	};
 
-	for (const auto &pr : hash->pairs) {
+	for (const auto& pr : hash->pairs) {
 		auto keystring = dynamic_cast<StringLiteral *>(pr.first.get());
 		EXPECT_NE(keystring, nullptr);
 
@@ -1212,7 +1212,51 @@ TEST(ObjectTest, HashKeyTest) {
 	auto value1 = new String("world hello");
 	auto value2 = new String("world hello");
 
-	EXPECT_EQ(hello1->hash_key().value, hello2->hash_key().value) << "Strings with same content have different hash keys";
-	EXPECT_EQ(value1->hash_key().value, value2->hash_key().value) << "Strings with same content have different hash keys";
-	EXPECT_NE(hello1->hash_key().value, value1->hash_key().value) << "Strings with different content have same hash keys";
+	EXPECT_EQ(hello1->hash_key().value, hello2->hash_key().value)
+			<< "Strings with same content have different hash keys";
+	EXPECT_EQ(value1->hash_key().value, value2->hash_key().value)
+			<< "Strings with same content have different hash keys";
+	EXPECT_NE(hello1->hash_key().value, value1->hash_key().value)
+			<< "Strings with different content have same hash keys";
+}
+
+TEST(EvalTest, HashEvaluationTest) {
+	std::string input =
+		"let two = \"two\";"
+		"{"
+		"\"one\": 10 - 9,"
+		"two: 1 + 1,"
+		"\"the\" + \"ee\": 6 / 2,"
+		"4: 4,"
+		"true: 5,"
+		"false: 6"
+		"}";
+
+	auto obj = eval_test(input);
+	EXPECT_NE(obj, nullptr);
+
+	auto hash = dynamic_cast<Hash*>(obj);
+	EXPECT_NE(hash, nullptr);
+
+	struct Testcase {
+		HashKey hk;
+		int expected;
+	};
+
+	std::vector<Testcase> expected {
+		{(new String("one"))->hash_key(), 1},
+		{(new String("two"))->hash_key(), 2},
+		{(new String("three"))->hash_key(), 3},
+		{(new Integer(4))->hash_key(), 4},
+		{(new Boolean(true))->hash_key(), 5},
+		{(new Boolean(false))->hash_key(), 6},
+	};
+
+	EXPECT_EQ(expected.size(), hash->pairs.size()) << "The is a wrong amount of pairs in the hashtable";
+	for (const auto& tc : expected) {
+		auto pair = hash->pairs[tc.hk.value];
+		EXPECT_NE(pair, nullptr) << "the pair shouldn't be a null pointer";
+
+		EXPECT_TRUE(test_integer_object(pair->value, tc.expected));
+	}
 }

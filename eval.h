@@ -42,6 +42,7 @@ Object *array_first(std::vector<Object *> &objs);
 Object *array_tail(std::vector<Object *> &objs);
 Object *array_last(std::vector<Object *> &objs);
 Object *array_push(std::vector<Object *> &objs);
+	Object *eval_hash_literal(Node *node, Environment *env);
 } // namespace eval
 
 #endif

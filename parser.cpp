@@ -429,7 +429,7 @@ Parser::parse_index_expression(std::unique_ptr<Expression> left) {
 
 unique_ptr<Expression> Parser::parse_hash_literal() {
 	auto hash = std::make_unique<HashLiteral>();
-	std::unordered_map<unique_ptr<Expression>, unique_ptr<Expression>> pairs;
+	std::vector<std::pair<unique_ptr<Expression>, unique_ptr<Expression>>> pairs;
 
 	while (!peek_token_is(tokentypes::RBRACE)) {
 		next_token();
@@ -440,7 +440,7 @@ unique_ptr<Expression> Parser::parse_hash_literal() {
 
 		next_token();
 		auto value = parse_expression(LOWEST);
-		pairs.insert(std::make_pair(std::move(key), std::move(value)));
+		pairs.push_back(std::make_pair(std::move(key), std::move(value)));
 
 		if (!peek_token_is(tokentypes::RBRACE) && !expect_peek(tokentypes::COMMA))
 			return nullptr;
@@ -448,6 +448,8 @@ unique_ptr<Expression> Parser::parse_hash_literal() {
 
 	if (!expect_peek(tokentypes::RBRACE))
 		return nullptr;
+
+	hash->pairs = std::move(pairs);
 
 	return hash;
 }

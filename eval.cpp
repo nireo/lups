@@ -16,7 +16,8 @@ bool eval::is_error(Object *obj) {
 	if (obj != nullptr) {
 		return obj->Type() == objecttypes::ERROR;
 	}
-	return true;
+
+	return false;
 }
 
 Object *eval::len(std::vector<Object *> &objs) {
@@ -189,6 +190,8 @@ Object *eval::Eval(Node *node, Environment *env) {
 		}
 
 		return eval_index_expression(array, index);
+	} else if (type == "HashLiteral") {
+		return eval::eval_hash_literal(node, env);
 	}
 
 	return nullptr;
@@ -470,4 +473,44 @@ Object *eval::eval_array_index_expression(Array *arr, Integer *index) {
 	}
 
 	return arr->elements[idx];
+}
+
+Object *eval::eval_hash_literal(Node *node, Environment *env) {
+	// convert the types
+	auto hashtable = dynamic_cast<HashLiteral *>(node);
+
+	auto result_table = new Hash();
+	for (const auto &pr : hashtable->pairs) {
+		// We need to evaluate the key since it is an expression.
+		auto key_object = eval::Eval(pr.first.get(), env);
+		if (eval::is_error(key_object))
+			return key_object;
+
+		std::cout << "evaluated the key object";
+		// check that the key is of an hashable type.
+		if (!(key_object->Type() == objecttypes::INTEGER ||
+				key_object->Type() == objecttypes::STRING ||
+				 key_object->Type() == objecttypes::BOOLEAN))
+			return new Error("unsuable as a hash key");
+
+		// evaluate the value expression.
+		auto value_object = eval::Eval(pr.second.get(), env);
+		if (eval::is_error(value_object))
+			return value_object;
+
+		// TODO: rework this
+		HashKey res;
+		// we only need to check these types since the previous if expressions guarantees that the
+		// object is one of them.
+		if (key_object->Type() == objecttypes::INTEGER)
+			res = ((Integer*)key_object)->hash_key();
+		else if (key_object->Type() == objecttypes::STRING)
+			res = ((String*)key_object)->hash_key();
+		else if (key_object->Type() == objecttypes::BOOLEAN)
+			res = ((Boolean*)key_object)->hash_key();
+
+		result_table->pairs[res.value] = new HashPair{key_object, value_object};
+	}
+
+	return result_table;
 }
