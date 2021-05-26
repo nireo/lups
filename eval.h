@@ -34,7 +34,7 @@ Object *unwrap_return(Object *obj);
 Object *eval_string_infix(const std::string &opr, Object *right, Object *left);
 Object *len(std::vector<Object *> &objs);
 Object *eval_array_literal(Node *node, Environment *env);
-Object *eval_index_expression(Object *left, Object *index);
+	Object *eval_index_expression(Object *left, Object *index, Environment *env);
 Object *eval_array_index_expression(Array *arr, Integer *index);
 bool is_error(Object *obj);
 Object *print(std::vector<Object *> &objs);
@@ -43,6 +43,7 @@ Object *array_tail(std::vector<Object *> &objs);
 Object *array_last(std::vector<Object *> &objs);
 Object *array_push(std::vector<Object *> &objs);
 	Object *eval_hash_literal(Node *node, Environment *env);
+	Object *eval_hash_index_expression(Object *left, Object *index, Environment *env);
 } // namespace eval
 
 #endif

@@ -189,7 +189,7 @@ Object *eval::Eval(Node *node, Environment *env) {
 			return index;
 		}
 
-		return eval_index_expression(array, index);
+		return eval_index_expression(array, index, env);
 	} else if (type == "HashLiteral") {
 		return eval::eval_hash_literal(node, env);
 	}
@@ -455,10 +455,13 @@ Object *eval::eval_array_literal(Node *node, Environment *env) {
 	return new Array(evaluated_elems);
 }
 
-Object *eval::eval_index_expression(Object *left, Object *index) {
+Object *eval::eval_index_expression(Object *left, Object *index,
+																		Environment *env) {
 	if (left->Type() == objecttypes::ARRAY_OBJ &&
 			index->Type() == objecttypes::INTEGER) {
 		return eval::eval_array_index_expression((Array *)left, (Integer *)index);
+	} else if (left->Type() == objecttypes::HASH) {
+		return eval::eval_hash_index_expression(left, index, env);
 	}
 
 	return new Error("index operation not found: " + left->Type());
@@ -488,8 +491,8 @@ Object *eval::eval_hash_literal(Node *node, Environment *env) {
 
 		// check that the key is of an hashable type.
 		if (!(key_object->Type() == objecttypes::INTEGER ||
-				key_object->Type() == objecttypes::STRING ||
-				 key_object->Type() == objecttypes::BOOLEAN))
+					key_object->Type() == objecttypes::STRING ||
+					key_object->Type() == objecttypes::BOOLEAN))
 			return new Error("unsuable as a hash key");
 
 		// evaluate the value expression.
@@ -498,17 +501,48 @@ Object *eval::eval_hash_literal(Node *node, Environment *env) {
 			return value_object;
 
 		HashKey res;
-		// we only need to check these types since the previous if expressions guarantees that the
-		// object is one of them.
+		// we only need to check these types since the previous if expressions
+		// guarantees that the object is one of them.
 		if (key_object->Type() == objecttypes::INTEGER)
-			res = ((Integer*)key_object)->hash_key();
+			res = ((Integer *)key_object)->hash_key();
 		else if (key_object->Type() == objecttypes::STRING)
-			res = ((String*)key_object)->hash_key();
+			res = ((String *)key_object)->hash_key();
 		else if (key_object->Type() == objecttypes::BOOLEAN)
-			res = ((Boolean*)key_object)->hash_key();
+			res = ((Boolean *)key_object)->hash_key();
 
 		result_table->pairs[res.value] = new HashPair{key_object, value_object};
 	}
 
 	return result_table;
+}
+
+Object *eval::eval_hash_index_expression(Object *left, Object *index,
+																	 Environment *env) {
+	auto hashtable = dynamic_cast<Hash *>(left);
+	if (hashtable == nullptr) {
+		return new Error("the type doesn't match");
+	}
+
+	// check that the key is of an hashable type.
+	if (!(index->Type() == objecttypes::INTEGER ||
+				index->Type() == objecttypes::STRING ||
+				index->Type() == objecttypes::BOOLEAN))
+		return new Error("unsuable as a hash key");
+
+	HashKey res;
+	// we only need to check these types since the previous if expressions
+	// guarantees that the object is one of them.
+	if (index->Type() == objecttypes::INTEGER)
+		res = ((Integer *)index)->hash_key();
+	else if (index->Type() == objecttypes::STRING)
+		res = ((String *)index)->hash_key();
+	else if (index->Type() == objecttypes::BOOLEAN)
+		res = ((Boolean *)index)->hash_key();
+
+	auto pr = hashtable->pairs[res.value];
+	if (pr == nullptr) {
+		return object_constant::null;
+	}
+
+	return pr->value;
 }

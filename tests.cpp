@@ -1260,3 +1260,32 @@ TEST(EvalTest, HashEvaluationTest) {
 		EXPECT_TRUE(test_integer_object(pair->value, tc.expected));
 	}
 }
+
+TEST(EvalTest, HashIndexExpressions) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases {
+		// -1 means an null return
+		{"{\"foo\": 5}[\"foo\"]", 5},
+		{"{\"foo\": 5}[\"bar\"]", -1},
+		{"let key = \"foo\"; {\"foo\": 5}[key]", 5},
+		{"{}[\"foo\"]", -1},
+		{"{5: 5}[5]", 5},
+		{"{true: 5}[true]", 5},
+		{"{false: 5}[false]", 5},
+	};
+
+	for (auto const& tc : test_cases) {
+		auto obj = eval_test(tc.input);
+		EXPECT_NE(obj, nullptr);
+
+		if (tc.expected == -1) {
+			EXPECT_EQ(objecttypes::NULLOBJ, obj->Type());
+		} else {
+			EXPECT_TRUE(test_integer_object(obj, tc.expected));
+		}
+	}
+}
