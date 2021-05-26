@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "code.h"
 #include "eval.h"
 #include "lexer.h"
 #include "object.h"
@@ -1286,6 +1287,27 @@ TEST(EvalTest, HashIndexExpressions) {
 			EXPECT_EQ(objecttypes::NULLOBJ, obj->Type());
 		} else {
 			EXPECT_TRUE(test_integer_object(obj, tc.expected));
+		}
+	}
+}
+
+TEST(CodeTest, Make) {
+	struct Testcase {
+		code::Opcode op;
+		std::vector<int> operands;
+		std::vector<char> expected;
+	};
+
+	std::vector<Testcase> test_cases {
+		{code::OpConstant, std::vector<int>{65534}, std::vector<char>{code::OpConstant, (char)255, (char)254}},
+	};
+
+	for (auto& tc : test_cases) {
+		auto instructions = code::Make(tc.op, tc.operands);
+
+		EXPECT_EQ(instructions.size(), tc.expected.size()) << "instruction has wrong length";
+		for (int i = 0; i < (int)instructions.size(); ++i) {
+			EXPECT_EQ(instructions[i], tc.expected[i]) << "wrong byte as position: " << i;
 		}
 	}
 }
