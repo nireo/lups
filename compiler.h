@@ -17,7 +17,9 @@ public:
 	}
 
 	// int is the statuscode
-	int compile(Node *node);
+	int compile(Node *node) {
+		return 0;
+	}
 	Bytecode *bytecode() {
 		return new Bytecode{m_instructions, m_constants};
 	}

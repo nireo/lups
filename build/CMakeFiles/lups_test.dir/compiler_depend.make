@@ -1180,6 +1180,7 @@ CMakeFiles/lups_test.dir/tests.cpp.o: ../tests.cpp \
   /usr/include/c++/11.1.0/bits/uniform_int_dist.h \
   ../lexer.h \
   ../parser.h \
+  ../compiler.h \
   _deps/googletest-src/googletest/include/gtest/gtest.h \
   /usr/include/c++/11.1.0/cstddef \
   /usr/include/c++/11.1.0/limits \
@@ -1449,6 +1450,10 @@ _deps/googletest-src/googletest/include/gtest/internal/custom/gtest-printers.h:
 
 /usr/include/bits/types/struct_timeval.h:
 
+/usr/include/asm/posix_types.h:
+
+/usr/include/bits/time.h:
+
 _deps/googletest-src/googletest/include/gtest/gtest-matchers.h:
 
 /usr/include/bits/types/__mbstate_t.h:
@@ -1547,10 +1552,6 @@ _deps/googletest-src/googletest/include/gtest/gtest-matchers.h:
 
 /usr/include/c++/11.1.0/pstl/pstl_config.h:
 
-/usr/include/bits/time.h:
-
-/usr/include/asm/posix_types.h:
-
 /usr/include/bits/long-double.h:
 
 /usr/include/c++/11.1.0/bits/stl_algobase.h:
@@ -1578,6 +1579,8 @@ _deps/googletest-src/googletest/include/gtest/gtest-matchers.h:
 /usr/include/regex.h:
 
 /usr/include/c++/11.1.0/ext/aligned_buffer.h:
+
+../compiler.h:
 
 /usr/include/c++/11.1.0/string_view:
 

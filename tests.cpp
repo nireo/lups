@@ -1378,3 +1378,42 @@ TEST(CompilerTest, IntegerArithmetic) {
 		}
 	}
 }
+
+TEST(CodeTest, InstructionString) {
+	std::vector<code::Instructions> instructions {
+		{code::make(code::OpConstant, std::vector<int>{1})},
+		{code::make(code::OpConstant, std::vector<int>{2})},
+		{code::make(code::OpConstant, std::vector<int>{65535})}
+	};
+
+	std::string expected = "0000 OpConstant 1\n0003 OpConstant 2\n0006 OpConstant 65535\n";
+	auto concatted = concat_instructions(instructions);
+
+	EXPECT_EQ(code::instructions_to_string(concatted), expected);
+}
+
+TEST(CodeTest, ReadOperands) {
+	struct Testcase {
+		code::Opcode op;
+		std::vector<int> operands;
+		int bytes_read;
+	};
+
+	std::vector<Testcase> test_cases {
+		{code::OpConstant, std::vector<int>{65535}, 2},
+	};
+
+	for (const auto& tc : test_cases) {
+		auto instructions = code::make(tc.op, tc.operands);
+
+		auto def = code::look_up(tc.op);
+		EXPECT_NE(def, nullptr);
+
+		auto res = code::read_operands(def, code::Instructions(instructions.begin()+1, instructions.end()));
+		EXPECT_EQ(res.second, tc.bytes_read);
+
+		for (int i = 0; i < (int)tc.operands.size(); ++i) {
+			EXPECT_EQ(res.first[i], tc.operands[i]) << "operands wrong got " << res.first[i] << " want " << tc.operands[i];
+		}
+	}
+}
