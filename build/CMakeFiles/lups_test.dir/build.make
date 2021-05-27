@@ -139,13 +139,28 @@ CMakeFiles/lups_test.dir/eval.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lups_test.dir/eval.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/eemil/dev/c++/lups/eval.cpp -o CMakeFiles/lups_test.dir/eval.cpp.s
 
+CMakeFiles/lups_test.dir/code.cpp.o: CMakeFiles/lups_test.dir/flags.make
+CMakeFiles/lups_test.dir/code.cpp.o: ../code.cpp
+CMakeFiles/lups_test.dir/code.cpp.o: CMakeFiles/lups_test.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/eemil/dev/c++/lups/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/lups_test.dir/code.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/lups_test.dir/code.cpp.o -MF CMakeFiles/lups_test.dir/code.cpp.o.d -o CMakeFiles/lups_test.dir/code.cpp.o -c /home/eemil/dev/c++/lups/code.cpp
+
+CMakeFiles/lups_test.dir/code.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lups_test.dir/code.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/eemil/dev/c++/lups/code.cpp > CMakeFiles/lups_test.dir/code.cpp.i
+
+CMakeFiles/lups_test.dir/code.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lups_test.dir/code.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/eemil/dev/c++/lups/code.cpp -o CMakeFiles/lups_test.dir/code.cpp.s
+
 # Object files for target lups_test
 lups_test_OBJECTS = \
 "CMakeFiles/lups_test.dir/tests.cpp.o" \
 "CMakeFiles/lups_test.dir/lexer.cpp.o" \
 "CMakeFiles/lups_test.dir/parser.cpp.o" \
 "CMakeFiles/lups_test.dir/ast.cpp.o" \
-"CMakeFiles/lups_test.dir/eval.cpp.o"
+"CMakeFiles/lups_test.dir/eval.cpp.o" \
+"CMakeFiles/lups_test.dir/code.cpp.o"
 
 # External object files for target lups_test
 lups_test_EXTERNAL_OBJECTS =
@@ -155,11 +170,12 @@ lups_test: CMakeFiles/lups_test.dir/lexer.cpp.o
 lups_test: CMakeFiles/lups_test.dir/parser.cpp.o
 lups_test: CMakeFiles/lups_test.dir/ast.cpp.o
 lups_test: CMakeFiles/lups_test.dir/eval.cpp.o
+lups_test: CMakeFiles/lups_test.dir/code.cpp.o
 lups_test: CMakeFiles/lups_test.dir/build.make
 lups_test: lib/libgtest_main.a
 lups_test: lib/libgtest.a
 lups_test: CMakeFiles/lups_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/eemil/dev/c++/lups/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable lups_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/eemil/dev/c++/lups/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable lups_test"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/lups_test.dir/link.txt --verbose=$(VERBOSE)
 	/usr/bin/cmake -D TEST_TARGET=lups_test -D TEST_EXECUTABLE=/home/eemil/dev/c++/lups/build/lups_test -D TEST_EXECUTOR= -D TEST_WORKING_DIR=/home/eemil/dev/c++/lups/build -D TEST_EXTRA_ARGS= -D TEST_PROPERTIES= -D TEST_PREFIX= -D TEST_SUFFIX= -D NO_PRETTY_TYPES=FALSE -D NO_PRETTY_VALUES=FALSE -D TEST_LIST=lups_test_TESTS -D CTEST_FILE=/home/eemil/dev/c++/lups/build/lups_test[1]_tests.cmake -D TEST_DISCOVERY_TIMEOUT=5 -D TEST_XML_OUTPUT_DIR= -P /usr/share/cmake-3.20/Modules/GoogleTestAddTests.cmake
 

@@ -5,10 +5,12 @@
 #include "object.h"
 #include "parser.h"
 #include "token.h"
+#include "compiler.h"
 #include <gtest/gtest.h>
 #include <memory>
 #include <tuple>
 #include <utility>
+#include <vector>
 
 TEST(LexerTest, TestNextToken) {
 	std::string input = "=+(){},;";
@@ -415,7 +417,7 @@ TEST(ParserTest, HashLiteralStrings) {
 			{"three", 3},
 	};
 
-	for (const auto& pr : hash->pairs) {
+	for (const auto &pr : hash->pairs) {
 		auto keystring = dynamic_cast<StringLiteral *>(pr.first.get());
 		EXPECT_NE(keystring, nullptr);
 
@@ -1222,21 +1224,20 @@ TEST(ObjectTest, HashKeyTest) {
 }
 
 TEST(EvalTest, HashEvaluationTest) {
-	std::string input =
-		"let two = \"two\";"
-		"{"
-		"\"one\": 10 - 9,"
-		"two: 1 + 1,"
-		"\"thr\" + \"ee\": 6 / 2,"
-		"4: 4,"
-		"true: 5,"
-		"false: 6"
-		"}";
+	std::string input = "let two = \"two\";"
+											"{"
+											"\"one\": 10 - 9,"
+											"two: 1 + 1,"
+											"\"thr\" + \"ee\": 6 / 2,"
+											"4: 4,"
+											"true: 5,"
+											"false: 6"
+											"}";
 
 	auto obj = eval_test(input);
 	EXPECT_NE(obj, nullptr);
 
-	auto hash = dynamic_cast<Hash*>(obj);
+	auto hash = dynamic_cast<Hash *>(obj);
 	EXPECT_NE(hash, nullptr);
 
 	struct Testcase {
@@ -1244,17 +1245,18 @@ TEST(EvalTest, HashEvaluationTest) {
 		int expected;
 	};
 
-	std::vector<Testcase> expected {
-		{(new String("one"))->hash_key(), 1},
-		{(new String("two"))->hash_key(), 2},
-		{(new String("three"))->hash_key(), 3},
-		{(new Integer(4))->hash_key(), 4},
-		{(new Boolean(true))->hash_key(), 5},
-		{(new Boolean(false))->hash_key(), 6},
+	std::vector<Testcase> expected{
+			{(new String("one"))->hash_key(), 1},
+			{(new String("two"))->hash_key(), 2},
+			{(new String("three"))->hash_key(), 3},
+			{(new Integer(4))->hash_key(), 4},
+			{(new Boolean(true))->hash_key(), 5},
+			{(new Boolean(false))->hash_key(), 6},
 	};
 
-	EXPECT_EQ(expected.size(), hash->pairs.size()) << "The is a wrong amount of pairs in the hashtable";
-	for (const auto& tc : expected) {
+	EXPECT_EQ(expected.size(), hash->pairs.size())
+			<< "The is a wrong amount of pairs in the hashtable";
+	for (const auto &tc : expected) {
 		auto pair = hash->pairs[tc.hk.value];
 		EXPECT_NE(pair, nullptr) << "the pair shouldn't be a null pointer";
 
@@ -1268,18 +1270,18 @@ TEST(EvalTest, HashIndexExpressions) {
 		int expected;
 	};
 
-	std::vector<Testcase> test_cases {
-		// -1 means an null return
-		{"{\"foo\": 5}[\"foo\"]", 5},
-		{"{\"foo\": 5}[\"bar\"]", -1},
-		{"let key = \"foo\"; {\"foo\": 5}[key]", 5},
-		{"{}[\"foo\"]", -1},
-		{"{5: 5}[5]", 5},
-		{"{true: 5}[true]", 5},
-		{"{false: 5}[false]", 5},
+	std::vector<Testcase> test_cases{
+			// -1 means an null return
+			{"{\"foo\": 5}[\"foo\"]", 5},
+			{"{\"foo\": 5}[\"bar\"]", -1},
+			{"let key = \"foo\"; {\"foo\": 5}[key]", 5},
+			{"{}[\"foo\"]", -1},
+			{"{5: 5}[5]", 5},
+			{"{true: 5}[true]", 5},
+			{"{false: 5}[false]", 5},
 	};
 
-	for (auto const& tc : test_cases) {
+	for (auto const &tc : test_cases) {
 		auto obj = eval_test(tc.input);
 		EXPECT_NE(obj, nullptr);
 
@@ -1298,16 +1300,81 @@ TEST(CodeTest, Make) {
 		std::vector<char> expected;
 	};
 
-	std::vector<Testcase> test_cases {
-		{code::OpConstant, std::vector<int>{65534}, std::vector<char>{code::OpConstant, (char)255, (char)254}},
+	std::vector<Testcase> test_cases{
+			{code::OpConstant, std::vector<int>{65534},
+			 std::vector<char>{code::OpConstant, (char)255, (char)254}},
 	};
 
-	for (auto& tc : test_cases) {
-		auto instructions = code::Make(tc.op, tc.operands);
+	for (auto &tc : test_cases) {
+		auto instructions = code::make(tc.op, tc.operands);
 
-		EXPECT_EQ(instructions.size(), tc.expected.size()) << "instruction has wrong length";
+		EXPECT_EQ(instructions.size(), tc.expected.size())
+				<< "instruction has wrong length";
 		for (int i = 0; i < (int)instructions.size(); ++i) {
-			EXPECT_EQ(instructions[i], tc.expected[i]) << "wrong byte as position: " << i;
+			EXPECT_EQ(instructions[i], tc.expected[i])
+					<< "wrong byte as position: " << i;
+		}
+	}
+}
+
+std::unique_ptr<Program> parse_compiler_program_helper(std::string input) {
+	auto lexer = Lexer(input);
+	auto parser = Parser(std::make_unique<Lexer>(lexer));
+
+	return parser.parse_program();
+}
+
+code::Instructions concat_instructions(std::vector<code::Instructions> &instr) {
+	auto out = code::Instructions();
+	for (auto i : instr) {
+		out.insert(out.end(), i.begin(), i.end());
+	}
+
+	return out;
+}
+
+bool test_instructions(std::vector<code::Instructions> inst, code::Instructions actual) {
+	auto concatted = concat_instructions(inst);
+
+	if (concatted.size() != actual.size())
+		return false;
+
+	for (int i = 0; i < (int)concatted.size(); ++i) {
+		if (actual[i] != concatted[i]) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+TEST(CompilerTest, IntegerArithmetic) {
+	struct CompilerTestCaseInteger {
+		std::string input;
+		std::vector<int> expected_constants;
+		std::vector<code::Instructions> expected_instructions;
+	};
+
+	std::vector<CompilerTestCaseInteger> test_cases{
+			{"1 + 2",
+			 std::vector<int>{1, 2},
+			 {{code::make(code::OpConstant, std::vector<int>{0}),
+				 code::make(code::OpConstant, std::vector<int>{1})}}}};
+
+	for (const auto& tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+
+		auto compiler = new Compiler();
+		auto status = compiler->compile(program.get());
+		EXPECT_EQ(status, 0) << "The compilation was successful";
+
+		auto bytecode = compiler->bytecode();
+		EXPECT_TRUE(test_instructions(tt.expected_instructions, bytecode->instructions));
+
+		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
+
+		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
+			EXPECT_TRUE(test_integer_object(bytecode->constants[i], tt.expected_constants[i]));
 		}
 	}
 }

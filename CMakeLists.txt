@@ -28,6 +28,8 @@ add_executable(
 	object.h
 	eval.cpp
 	eval.h
+	code.h
+	code.cpp
 )
 target_link_libraries(
 	lups_test

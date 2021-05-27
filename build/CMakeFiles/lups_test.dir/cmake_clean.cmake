@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/lups_test.dir/ast.cpp.o"
   "CMakeFiles/lups_test.dir/ast.cpp.o.d"
+  "CMakeFiles/lups_test.dir/code.cpp.o"
+  "CMakeFiles/lups_test.dir/code.cpp.o.d"
   "CMakeFiles/lups_test.dir/eval.cpp.o"
   "CMakeFiles/lups_test.dir/eval.cpp.o.d"
   "CMakeFiles/lups_test.dir/lexer.cpp.o"
