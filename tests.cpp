@@ -1,11 +1,12 @@
 #include "ast.h"
 #include "code.h"
+#include "compiler.h"
+#include "vm.h"
 #include "eval.h"
 #include "lexer.h"
 #include "object.h"
 #include "parser.h"
 #include "token.h"
-#include "compiler.h"
 #include <gtest/gtest.h>
 #include <memory>
 #include <tuple>
@@ -1333,7 +1334,8 @@ code::Instructions concat_instructions(std::vector<code::Instructions> &instr) {
 	return out;
 }
 
-bool test_instructions(std::vector<code::Instructions> inst, code::Instructions actual) {
+bool test_instructions(std::vector<code::Instructions> inst,
+											 code::Instructions actual) {
 	auto concatted = concat_instructions(inst);
 
 	if (concatted.size() != actual.size())
@@ -1361,7 +1363,7 @@ TEST(CompilerTest, IntegerArithmetic) {
 			 {{code::make(code::OpConstant, std::vector<int>{0}),
 				 code::make(code::OpConstant, std::vector<int>{1})}}}};
 
-	for (const auto& tt : test_cases) {
+	for (const auto &tt : test_cases) {
 		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
 
 		auto compiler = new Compiler();
@@ -1369,24 +1371,26 @@ TEST(CompilerTest, IntegerArithmetic) {
 		EXPECT_EQ(status, 0) << "The compilation was successful";
 
 		auto bytecode = compiler->bytecode();
-		EXPECT_TRUE(test_instructions(tt.expected_instructions, bytecode->instructions));
+		EXPECT_TRUE(
+				test_instructions(tt.expected_instructions, bytecode->instructions));
 
 		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
 
 		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(test_integer_object(bytecode->constants[i], tt.expected_constants[i]));
+			EXPECT_TRUE(test_integer_object(bytecode->constants[i],
+																			tt.expected_constants[i]));
 		}
 	}
 }
 
 TEST(CodeTest, InstructionString) {
-	std::vector<code::Instructions> instructions {
-		{code::make(code::OpConstant, std::vector<int>{1})},
-		{code::make(code::OpConstant, std::vector<int>{2})},
-		{code::make(code::OpConstant, std::vector<int>{65535})}
-	};
+	std::vector<code::Instructions> instructions{
+			{code::make(code::OpConstant, std::vector<int>{1})},
+			{code::make(code::OpConstant, std::vector<int>{2})},
+			{code::make(code::OpConstant, std::vector<int>{65535})}};
 
-	std::string expected = "0000 OpConstant 1\n0003 OpConstant 2\n0006 OpConstant 65535\n";
+	std::string expected =
+			"0000 OpConstant 1\n0003 OpConstant 2\n0006 OpConstant 65535\n";
 	auto concatted = concat_instructions(instructions);
 
 	EXPECT_EQ(code::instructions_to_string(concatted), expected);
@@ -1399,21 +1403,53 @@ TEST(CodeTest, ReadOperands) {
 		int bytes_read;
 	};
 
-	std::vector<Testcase> test_cases {
-		{code::OpConstant, std::vector<int>{65535}, 2},
+	std::vector<Testcase> test_cases{
+			{code::OpConstant, std::vector<int>{65535}, 2},
 	};
 
-	for (const auto& tc : test_cases) {
+	for (const auto &tc : test_cases) {
 		auto instructions = code::make(tc.op, tc.operands);
 
 		auto def = code::look_up(tc.op);
 		EXPECT_NE(def, nullptr);
 
-		auto res = code::read_operands(def, code::Instructions(instructions.begin()+1, instructions.end()));
+		auto res = code::read_operands(
+				def, code::Instructions(instructions.begin() + 1, instructions.end()));
 		EXPECT_EQ(res.second, tc.bytes_read);
 
 		for (int i = 0; i < (int)tc.operands.size(); ++i) {
-			EXPECT_EQ(res.first[i], tc.operands[i]) << "operands wrong got " << res.first[i] << " want " << tc.operands[i];
+			EXPECT_EQ(res.first[i], tc.operands[i])
+					<< "operands wrong got " << res.first[i] << " want "
+					<< tc.operands[i];
 		}
+	}
+}
+
+TEST(VMTest, VMIntegerArithmetic) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+		{"1", 1},
+		{"2", 2},
+		{"1 + 2", 2},
+	};
+
+	for (auto const& tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+		auto comp = new Compiler();
+		auto status = comp->compile(program.get());
+		EXPECT_EQ(status, 0);
+
+		auto vm = new VM(comp->bytecode());
+		auto vm_status = vm->run();
+		EXPECT_EQ(vm_status, 0);
+
+		auto stack_elem = vm->stack_top();
+		EXPECT_NE(stack_elem, nullptr);
+
+		EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));
 	}
 }

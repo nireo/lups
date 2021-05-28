@@ -30,6 +30,10 @@ add_executable(
 	eval.h
 	code.h
 	code.cpp
+	compiler.h
+	compiler.cpp
+	vm.h
+	vm.cpp
 )
 target_link_libraries(
 	lups_test

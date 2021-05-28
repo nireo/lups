@@ -284,6 +284,30 @@ code.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/code.cpp.s
 .PHONY : code.cpp.s
 
+compiler.o: compiler.cpp.o
+.PHONY : compiler.o
+
+# target to build an object file
+compiler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/compiler.cpp.o
+.PHONY : compiler.cpp.o
+
+compiler.i: compiler.cpp.i
+.PHONY : compiler.i
+
+# target to preprocess a source file
+compiler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/compiler.cpp.i
+.PHONY : compiler.cpp.i
+
+compiler.s: compiler.cpp.s
+.PHONY : compiler.s
+
+# target to generate assembly for a file
+compiler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/compiler.cpp.s
+.PHONY : compiler.cpp.s
+
 eval.o: eval.cpp.o
 .PHONY : eval.o
 
@@ -380,6 +404,30 @@ tests.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/tests.cpp.s
 .PHONY : tests.cpp.s
 
+vm.o: vm.cpp.o
+.PHONY : vm.o
+
+# target to build an object file
+vm.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/vm.cpp.o
+.PHONY : vm.cpp.o
+
+vm.i: vm.cpp.i
+.PHONY : vm.i
+
+# target to preprocess a source file
+vm.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/vm.cpp.i
+.PHONY : vm.cpp.i
+
+vm.s: vm.cpp.s
+.PHONY : vm.s
+
+# target to generate assembly for a file
+vm.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lups_test.dir/build.make CMakeFiles/lups_test.dir/vm.cpp.s
+.PHONY : vm.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -404,6 +452,9 @@ help:
 	@echo "... code.o"
 	@echo "... code.i"
 	@echo "... code.s"
+	@echo "... compiler.o"
+	@echo "... compiler.i"
+	@echo "... compiler.s"
 	@echo "... eval.o"
 	@echo "... eval.i"
 	@echo "... eval.s"
@@ -416,6 +467,9 @@ help:
 	@echo "... tests.o"
 	@echo "... tests.i"
 	@echo "... tests.s"
+	@echo "... vm.o"
+	@echo "... vm.i"
+	@echo "... vm.s"
 .PHONY : help
 
 

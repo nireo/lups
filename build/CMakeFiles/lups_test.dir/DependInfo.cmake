@@ -10,10 +10,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/eemil/dev/c++/lups/ast.cpp" "CMakeFiles/lups_test.dir/ast.cpp.o" "gcc" "CMakeFiles/lups_test.dir/ast.cpp.o.d"
   "/home/eemil/dev/c++/lups/code.cpp" "CMakeFiles/lups_test.dir/code.cpp.o" "gcc" "CMakeFiles/lups_test.dir/code.cpp.o.d"
+  "/home/eemil/dev/c++/lups/compiler.cpp" "CMakeFiles/lups_test.dir/compiler.cpp.o" "gcc" "CMakeFiles/lups_test.dir/compiler.cpp.o.d"
   "/home/eemil/dev/c++/lups/eval.cpp" "CMakeFiles/lups_test.dir/eval.cpp.o" "gcc" "CMakeFiles/lups_test.dir/eval.cpp.o.d"
   "/home/eemil/dev/c++/lups/lexer.cpp" "CMakeFiles/lups_test.dir/lexer.cpp.o" "gcc" "CMakeFiles/lups_test.dir/lexer.cpp.o.d"
   "/home/eemil/dev/c++/lups/parser.cpp" "CMakeFiles/lups_test.dir/parser.cpp.o" "gcc" "CMakeFiles/lups_test.dir/parser.cpp.o.d"
   "/home/eemil/dev/c++/lups/tests.cpp" "CMakeFiles/lups_test.dir/tests.cpp.o" "gcc" "CMakeFiles/lups_test.dir/tests.cpp.o.d"
+  "/home/eemil/dev/c++/lups/vm.cpp" "CMakeFiles/lups_test.dir/vm.cpp.o" "gcc" "CMakeFiles/lups_test.dir/vm.cpp.o.d"
   )
 
 # Targets to which this target links.

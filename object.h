@@ -1,14 +1,14 @@
 #ifndef LUPS_OBJECT_H
 #define LUPS_OBJECT_H
 
-#include "eval.h"
 #include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
+#include "ast.h"
 
 typedef std::string ObjectType;
-
 class Boolean;
 
 namespace objecttypes {
