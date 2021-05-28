@@ -110,6 +110,8 @@ std::string code::fmt_instructions(Definition *def, std::vector<int> operands) {
 		return "ERROR operand len does not match defined\n";
 
 	switch (operand_count) {
+	case 0:
+		return def->name;
 	case 1:
 		return def->name + " " + std::to_string(operands[0]);
 		break;

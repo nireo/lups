@@ -1386,10 +1386,10 @@ CMakeFiles/lups_test.dir/tests.cpp.o
  /usr/include/c++/11.1.0/bits/algorithmfwd.h
  /usr/include/c++/11.1.0/bits/stl_heap.h
  /usr/include/c++/11.1.0/bits/uniform_int_dist.h
- /home/eemil/dev/c++/lups/vm.h
  /home/eemil/dev/c++/lups/eval.h
  /home/eemil/dev/c++/lups/lexer.h
  /home/eemil/dev/c++/lups/parser.h
+ /home/eemil/dev/c++/lups/vm.h
  /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/include/gtest/gtest.h
  /usr/include/c++/11.1.0/cstddef
  /usr/include/c++/11.1.0/limits

@@ -16,6 +16,7 @@ int Compiler::compile(Node *node) {
 		auto status = compile(((ExpressionStatement*)node)->expression.get());
 		if (status != 0)
 			return status;
+		emit(code::OpPop, std::vector<int>{});
 	} else if (type == "InfixExpression") {
 		auto status = compile(((InfixExpression*)node)->left.get());
 		if (status != 0)
@@ -24,6 +25,11 @@ int Compiler::compile(Node *node) {
 		status = compile(((InfixExpression*)node)->right.get());
 		if (status != 0)
 			return status;
+
+		if (((InfixExpression*)node)->opr == "+")
+			emit(code::OpAdd, std::vector<int>{});
+		else
+			return -1;
 	} else if (type == "IntegerLiteral") {
 		auto integer = new Integer(((IntegerLiteral*)node)->value);
 		emit(code::OpConstant, std::vector<int>{add_constant(integer)});

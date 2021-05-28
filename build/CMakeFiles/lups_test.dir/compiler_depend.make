@@ -1379,10 +1379,10 @@ CMakeFiles/lups_test.dir/tests.cpp.o: ../tests.cpp \
   /usr/include/c++/11.1.0/bits/algorithmfwd.h \
   /usr/include/c++/11.1.0/bits/stl_heap.h \
   /usr/include/c++/11.1.0/bits/uniform_int_dist.h \
-  ../vm.h \
   ../eval.h \
   ../lexer.h \
   ../parser.h \
+  ../vm.h \
   _deps/googletest-src/googletest/include/gtest/gtest.h \
   /usr/include/c++/11.1.0/cstddef \
   /usr/include/c++/11.1.0/limits \

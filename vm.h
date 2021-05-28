@@ -11,6 +11,7 @@ public:
 	Object *stack_top();
 	int run();
 	int push(Object *obj);
+	Object *pop();
 
 private:
 	int m_sp;

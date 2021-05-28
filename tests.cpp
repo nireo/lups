@@ -1,12 +1,12 @@
 #include "ast.h"
 #include "code.h"
 #include "compiler.h"
-#include "vm.h"
 #include "eval.h"
 #include "lexer.h"
 #include "object.h"
 #include "parser.h"
 #include "token.h"
+#include "vm.h"
 #include <gtest/gtest.h>
 #include <memory>
 #include <tuple>
@@ -1304,6 +1304,7 @@ TEST(CodeTest, Make) {
 	std::vector<Testcase> test_cases{
 			{code::OpConstant, std::vector<int>{65534},
 			 std::vector<char>{code::OpConstant, (char)255, (char)254}},
+			{code::OpAdd, std::vector<int>{}, std::vector<char>{code::OpAdd}},
 	};
 
 	for (auto &tc : test_cases) {
@@ -1360,8 +1361,21 @@ TEST(CompilerTest, IntegerArithmetic) {
 	std::vector<CompilerTestCaseInteger> test_cases{
 			{"1 + 2",
 			 std::vector<int>{1, 2},
-			 {{code::make(code::OpConstant, std::vector<int>{0}),
-				 code::make(code::OpConstant, std::vector<int>{1})}}}};
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpAdd, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+				 }}},
+			{"1; 2",
+			 std::vector<int>{1, 2},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpPop, std::vector<int>{}),
+				 }}},
+	};
 
 	for (const auto &tt : test_cases) {
 		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
@@ -1385,12 +1399,12 @@ TEST(CompilerTest, IntegerArithmetic) {
 
 TEST(CodeTest, InstructionString) {
 	std::vector<code::Instructions> instructions{
-			{code::make(code::OpConstant, std::vector<int>{1})},
+			{code::make(code::OpAdd, std::vector<int>{})},
 			{code::make(code::OpConstant, std::vector<int>{2})},
 			{code::make(code::OpConstant, std::vector<int>{65535})}};
 
 	std::string expected =
-			"0000 OpConstant 1\n0003 OpConstant 2\n0006 OpConstant 65535\n";
+			"0000 OpAdd\n0001 OpConstant 2\n0004 OpConstant 65535\n";
 	auto concatted = concat_instructions(instructions);
 
 	EXPECT_EQ(code::instructions_to_string(concatted), expected);
@@ -1432,12 +1446,12 @@ TEST(VMTest, VMIntegerArithmetic) {
 	};
 
 	std::vector<Testcase> test_cases{
-		{"1", 1},
-		{"2", 2},
-		{"1 + 2", 2},
+			{"1", 1},
+			{"2", 2},
+			{"1 + 2", 3},
 	};
 
-	for (auto const& tt : test_cases) {
+	for (auto const &tt : test_cases) {
 		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
 		auto comp = new Compiler();
 		auto status = comp->compile(program.get());

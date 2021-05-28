@@ -1,6 +1,7 @@
 #include "vm.h"
 #include "code.h"
 #include "compiler.h"
+#include "object.h"
 
 VM::VM(Bytecode *bytecode) {
 	m_sp = 0;
@@ -21,7 +22,18 @@ int VM::run() {
 		code::Opcode op = m_instructions[ip];
 
 		switch (op) {
-		case code::OpConstant:
+		case code::OpAdd: {
+			auto right = pop();
+			auto left = pop();
+
+			auto left_value = ((Integer *)left)->value;
+			auto right_value = ((Integer *)right)->value;
+			auto res = left_value + right_value;
+
+			push(new Integer(res));
+			break;
+		}
+		case code::OpConstant: {
 			auto const_index = code::decode_uint16(code::Instructions(
 					m_instructions.begin() + ip + 1, m_instructions.end()));
 			ip += 2;
@@ -29,6 +41,9 @@ int VM::run() {
 			int status = push(m_constants[const_index]);
 			if (status != 0)
 				return status;
+
+			break;
+		}
 		}
 	}
 
@@ -44,4 +59,11 @@ int VM::push(Object *obj) {
 	++m_sp;
 
 	return 0;
+}
+
+Object *VM::pop() {
+	auto obj = m_stack[m_sp - 1];
+	m_sp--;
+
+	return obj;
 }
