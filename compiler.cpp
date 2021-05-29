@@ -7,26 +7,26 @@
 int Compiler::compile(Node *node) {
 	auto type = node->Type();
 	if (type == "Program") {
-		for (const auto& statement : ((Program*)node)->statements) {
+		for (const auto &statement : ((Program *)node)->statements) {
 			auto status = compile(statement.get());
 			if (status != 0)
 				return status;
 		}
 	} else if (type == "ExpressionStatement") {
-		auto status = compile(((ExpressionStatement*)node)->expression.get());
+		auto status = compile(((ExpressionStatement *)node)->expression.get());
 		if (status != 0)
 			return status;
 		emit(code::OpPop, std::vector<int>{});
 	} else if (type == "InfixExpression") {
-		auto status = compile(((InfixExpression*)node)->left.get());
+		auto status = compile(((InfixExpression *)node)->left.get());
 		if (status != 0)
 			return status;
 
-		status = compile(((InfixExpression*)node)->right.get());
+		status = compile(((InfixExpression *)node)->right.get());
 		if (status != 0)
 			return status;
 
-		auto opr = ((InfixExpression*)node)->opr;
+		auto opr = ((InfixExpression *)node)->opr;
 		if (opr == "+")
 			emit(code::OpAdd, std::vector<int>{});
 		else if (opr == "-")
@@ -38,8 +38,14 @@ int Compiler::compile(Node *node) {
 		else
 			return -1;
 	} else if (type == "IntegerLiteral") {
-		auto integer = new Integer(((IntegerLiteral*)node)->value);
+		auto integer = new Integer(((IntegerLiteral *)node)->value);
 		emit(code::OpConstant, std::vector<int>{add_constant(integer)});
+	} else if (type == "BooleanExpression") {
+		auto value = ((BooleanExpression *)node)->value;
+		if (value)
+			emit(code::OpTrue, std::vector<int>{});
+		else
+			emit(code::OpFalse, std::vector<int>{});
 	}
 
 	return 0;

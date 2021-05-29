@@ -1715,7 +1715,31 @@ CMakeFiles/lups_test.dir/vm.cpp.o: ../vm.cpp \
   /usr/include/c++/11.1.0/pstl/glue_memory_defs.h \
   /usr/include/c++/11.1.0/pstl/execution_defs.h \
   ../ast.h \
-  ../token.h
+  ../token.h \
+  /usr/include/c++/11.1.0/iostream \
+  /usr/include/c++/11.1.0/ostream \
+  /usr/include/c++/11.1.0/ios \
+  /usr/include/c++/11.1.0/bits/ios_base.h \
+  /usr/include/c++/11.1.0/bits/locale_classes.h \
+  /usr/include/c++/11.1.0/bits/locale_classes.tcc \
+  /usr/include/c++/11.1.0/system_error \
+  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/error_constants.h \
+  /usr/include/c++/11.1.0/stdexcept \
+  /usr/include/c++/11.1.0/streambuf \
+  /usr/include/c++/11.1.0/bits/streambuf.tcc \
+  /usr/include/c++/11.1.0/bits/basic_ios.h \
+  /usr/include/c++/11.1.0/bits/locale_facets.h \
+  /usr/include/c++/11.1.0/cwctype \
+  /usr/include/wctype.h \
+  /usr/include/bits/wctype-wchar.h \
+  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/ctype_base.h \
+  /usr/include/c++/11.1.0/bits/streambuf_iterator.h \
+  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+  /usr/include/c++/11.1.0/bits/locale_facets.tcc \
+  /usr/include/c++/11.1.0/bits/basic_ios.tcc \
+  /usr/include/c++/11.1.0/bits/ostream.tcc \
+  /usr/include/c++/11.1.0/istream \
+  /usr/include/c++/11.1.0/bits/istream.tcc
 
 
 ../vm.cpp:

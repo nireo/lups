@@ -10,7 +10,7 @@ namespace code {
 typedef std::vector<char> Instructions;
 typedef char Opcode;
 
-enum Opcodes { OpConstant, OpAdd, OpPop, OpSub, OpMul, OpDiv };
+enum Opcodes { OpConstant, OpAdd, OpPop, OpSub, OpMul, OpDiv, OpTrue, OpFalse };
 
 struct Definition {
 	std::string name;
@@ -23,8 +23,9 @@ const std::unordered_map<Opcode, Definition *> definitions{
 		{Opcodes::OpPop, new Definition{"OpPop", std::vector<int>{}}},
 		{Opcodes::OpSub, new Definition{"OpSub", std::vector<int>{}}},
 		{Opcodes::OpMul, new Definition{"OpMul", std::vector<int>{}}},
-		{Opcodes::OpDiv, new Definition{"OpDiv", std::vector<int>{}}}
-};
+		{Opcodes::OpDiv, new Definition{"OpDiv", std::vector<int>{}}},
+		{Opcodes::OpTrue, new Definition{"OpTrue", std::vector<int>{}}},
+		{Opcodes::OpFalse, new Definition{"OpFalse", std::vector<int>{}}}};
 
 Definition *look_up(char op_code);
 std::vector<char> make(Opcode op, std::vector<int> operands);
