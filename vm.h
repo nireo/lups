@@ -12,6 +12,10 @@ public:
 	int run();
 	int push(Object *obj);
 	Object *pop();
+	Object *last_popped_stack_elem();
+
+	int execute_binary_operation(code::Opcode op);
+	int execute_binary_integer_operation(code::Opcode op, Object *left, Object *right);
 
 private:
 	int m_sp;

@@ -1366,7 +1366,7 @@ TEST(CompilerTest, IntegerArithmetic) {
 					 code::make(code::OpConstant, std::vector<int>{1}),
 					 code::make(code::OpAdd, std::vector<int>{}),
 					 code::make(code::OpPop, std::vector<int>{}),
-				 }}},
+			 }}},
 			{"1; 2",
 			 std::vector<int>{1, 2},
 			 {{
@@ -1374,7 +1374,32 @@ TEST(CompilerTest, IntegerArithmetic) {
 					 code::make(code::OpPop, std::vector<int>{}),
 					 code::make(code::OpConstant, std::vector<int>{1}),
 					 code::make(code::OpPop, std::vector<int>{}),
-				 }}},
+			 }}},
+
+			{"1 * 2",
+			 std::vector<int>{1, 2},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpMul, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"1 - 2",
+			 std::vector<int>{1, 2},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpSub, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"2 / 1",
+			 std::vector<int>{2, 1},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpDiv, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
 	};
 
 	for (const auto &tt : test_cases) {
@@ -1449,6 +1474,14 @@ TEST(VMTest, VMIntegerArithmetic) {
 			{"1", 1},
 			{"2", 2},
 			{"1 + 2", 3},
+			{"4 / 2", 2},
+			{"50 / 2 * 2 + 10 - 5", 55},
+			{"5 * (2 + 10)", 60},
+			{"5 + 5 + 5 + 5 - 10", 10},
+			{"2 * 2 * 2 * 2 * 2", 32},
+			{"5 * 2 + 10", 20},
+			{"5 + 2 * 10", 25},
+			{"5 * (2 + 10)", 60},
 	};
 
 	for (auto const &tt : test_cases) {
@@ -1461,7 +1494,7 @@ TEST(VMTest, VMIntegerArithmetic) {
 		auto vm_status = vm->run();
 		EXPECT_EQ(vm_status, 0);
 
-		auto stack_elem = vm->stack_top();
+		auto stack_elem = vm->last_popped_stack_elem();
 		EXPECT_NE(stack_elem, nullptr);
 
 		EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));

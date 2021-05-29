@@ -26,8 +26,15 @@ int Compiler::compile(Node *node) {
 		if (status != 0)
 			return status;
 
-		if (((InfixExpression*)node)->opr == "+")
+		auto opr = ((InfixExpression*)node)->opr;
+		if (opr == "+")
 			emit(code::OpAdd, std::vector<int>{});
+		else if (opr == "-")
+			emit(code::OpSub, std::vector<int>{});
+		else if (opr == "*")
+			emit(code::OpMul, std::vector<int>{});
+		else if (opr == "/")
+			emit(code::OpDiv, std::vector<int>{});
 		else
 			return -1;
 	} else if (type == "IntegerLiteral") {
