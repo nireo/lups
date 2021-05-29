@@ -18,6 +18,22 @@ int Compiler::compile(Node *node) {
 			return status;
 		emit(code::OpPop, std::vector<int>{});
 	} else if (type == "InfixExpression") {
+		if (((InfixExpression *)node)->opr == "<") {
+			// this is the same as the code below, but it adds the infix expressions
+			// in a different order such that we only need one type of greater than
+			// opcode.
+			auto status = compile(((InfixExpression *)node)->right.get());
+			if (status != 0)
+				return status;
+
+			status = compile(((InfixExpression *)node)->left.get());
+			if (status != 0)
+				return status;
+
+			emit(code::OpGreaterThan, std::vector<int>{});
+			return 0;
+		}
+
 		auto status = compile(((InfixExpression *)node)->left.get());
 		if (status != 0)
 			return status;
@@ -35,7 +51,13 @@ int Compiler::compile(Node *node) {
 			emit(code::OpMul, std::vector<int>{});
 		else if (opr == "/")
 			emit(code::OpDiv, std::vector<int>{});
-		else
+		else if (opr == ">") {
+			emit(code::OpGreaterThan, std::vector<int>{});
+		} else if (opr == "==") {
+			emit(code::OpEqual, std::vector<int>{});
+		} else if (opr == "!=") {
+			emit(code::OpNotEqual, std::vector<int>{});
+		} else
 			return -1;
 	} else if (type == "IntegerLiteral") {
 		auto integer = new Integer(((IntegerLiteral *)node)->value);

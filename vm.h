@@ -17,6 +17,9 @@ public:
 	int execute_binary_operation(code::Opcode op);
 	int execute_binary_integer_operation(code::Opcode op, Object *left, Object *right);
 
+	int execute_comparison(code::Opcode op);
+	int execute_integer_comparison(code::Opcode op, Object *left, Object *right);
+
 private:
 	int m_sp;
 	code::Instructions m_instructions;

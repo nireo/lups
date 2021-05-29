@@ -48,21 +48,29 @@ int main() {
 
 	struct Testcase {
 		std::string input;
-		int expected;
+		bool expected;
 	};
 
 	std::vector<Testcase> test_cases{
-			{"1", 1},
-			{"2", 2},
-			{"1 + 2", 3},
-			{"4 / 2", 2},
-			{"50 / 2 * 2 + 10 - 5", 55},
-			{"5 * (2 + 10)", 60},
-			{"5 + 5 + 5 + 5 - 10", 10},
-			{"2 * 2 * 2 * 2 * 2", 32},
-			{"5 * 2 + 10", 20},
-			{"5 + 2 * 10", 25},
-			{"5 * (2 + 10)", 60},
+			{"true", true},
+			{"false", false},
+			{"1 < 2", true},
+			{"1 > 2", false},
+			{"1 < 1", false},
+			{"1 > 1", false},
+			{"1 == 1", true},
+			{"1 != 1", false},
+			{"1 == 2", false},
+			{"1 != 2", true},
+			{"true == true", true},
+			{"false == false", true},
+			{"true == false", false},
+			{"true != false", true},
+			{"false != true", true},
+			{"(1 < 2) == true", true},
+			{"(1 < 2) == false", false},
+			{"(1 > 2) == true", false},
+			{"(1 > 2) == false", true},
 	};
 
 	for (auto const &tt : test_cases) {

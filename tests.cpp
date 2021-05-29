@@ -1442,6 +1442,54 @@ TEST(CompilerTest, BooleanExpressions) {
 					 code::make(code::OpFalse, std::vector<int>{}),
 					 code::make(code::OpPop, std::vector<int>{}),
 			 }}},
+			{"1 > 2",
+			 std::vector<int>{1, 2},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpGreaterThan, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"1 < 2",
+			 std::vector<int>{2, 1},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpGreaterThan, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"1 == 2",
+			 std::vector<int>{1, 2},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpEqual, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"1 != 2",
+			 std::vector<int>{1, 2},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpNotEqual, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"true == false",
+			 std::vector<int>{},
+			 {{
+					 code::make(code::OpTrue, std::vector<int>{}),
+					 code::make(code::OpFalse, std::vector<int>{}),
+					 code::make(code::OpEqual, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"true != false",
+			 std::vector<int>{},
+			 {{
+					 code::make(code::OpTrue, std::vector<int>{}),
+					 code::make(code::OpFalse, std::vector<int>{}),
+					 code::make(code::OpNotEqual, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
 	};
 
 	for (const auto &tt : test_cases) {
@@ -1458,8 +1506,8 @@ TEST(CompilerTest, BooleanExpressions) {
 		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
 
 		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(test_boolean_object(bytecode->constants[i],
-																			tt.expected_constants[i]));
+			EXPECT_TRUE(test_integer_object(bytecode->constants[i],
+																			tt.expected_constants[i])) << "object evaluation fails with input " << tt.input;
 		}
 	}
 }
@@ -1550,8 +1598,25 @@ TEST(VmTest, VMBooleanTest) {
 	};
 
 	std::vector<Testcase> test_cases{
-		{"true", true},
-		{"false", false},
+			{"true", true},
+			{"false", false},
+			{"1 < 2", true},
+			{"1 > 2", false},
+			{"1 < 1", false},
+			{"1 > 1", false},
+			{"1 == 1", true},
+			{"1 != 1", false},
+			{"1 == 2", false},
+			{"1 != 2", true},
+			{"true == true", true},
+			{"false == false", true},
+			{"true == false", false},
+			{"true != false", true},
+			{"false != true", true},
+			{"(1 < 2) == true", true},
+			{"(1 < 2) == false", false},
+			{"(1 > 2) == true", false},
+			{"(1 > 2) == false", true},
 	};
 
 	for (auto const &tt : test_cases) {
