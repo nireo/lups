@@ -85,7 +85,8 @@ int Compiler::compile(Node *node) {
 		auto status = compile(ifx->cond.get());
 		if (status != 0)
 			return status;
-		auto jump_not_truthy_pos = emit(code::OpJumpNotTruthy, std::vector<int>{9999});
+		auto jump_not_truthy_pos =
+				emit(code::OpJumpNotTruthy, std::vector<int>{9999});
 
 		status = compile(ifx->after.get());
 		if (status != 0)
@@ -94,8 +95,25 @@ int Compiler::compile(Node *node) {
 		if (is_last_inst_pop())
 			remove_last_pop();
 
-		auto after_conq_pos = m_instructions.size();
-		change_operand(jump_not_truthy_pos, after_conq_pos);
+		if (ifx->other == nullptr) {
+			auto after_conq_pos = m_instructions.size();
+			change_operand(jump_not_truthy_pos, after_conq_pos);
+		} else {
+			auto jump_pos = emit(code::OpJump, std::vector<int>{9999});
+
+			auto after_conq_pos = m_instructions.size();
+			change_operand(jump_not_truthy_pos, after_conq_pos);
+
+			status = compile(ifx->other.get());
+			if (status != 0)
+				return status;
+
+			if (is_last_inst_pop())
+				remove_last_pop();
+
+			auto after_other_pos = m_instructions.size();
+			change_operand(jump_pos, after_other_pos);
+		}
 	} else if (type == "BlockExpression") {
 		for (auto &st : ((BlockStatement *)node)->statements) {
 			auto status = compile(st.get());
@@ -146,7 +164,8 @@ void Compiler::set_last_instruction(code::Opcode op, int pos) {
 bool Compiler::is_last_inst_pop() { return last_inst->op == code::OpPop; }
 
 void Compiler::remove_last_pop() {
-	m_instructions = code::Instructions(m_instructions.begin(), m_instructions.begin()+last_inst->pos);
+	m_instructions = code::Instructions(m_instructions.begin(),
+																			m_instructions.begin() + last_inst->pos);
 
 	last_inst = prev_inst;
 }
@@ -160,6 +179,6 @@ void Compiler::change_operand(int op_pos, int operand) {
 
 void Compiler::replace_instructions(int pos, code::Instructions inst) {
 	for (int i = 0; i < (int)inst.size(); ++i) {
-		m_instructions[pos+i] = inst[i];
+		m_instructions[pos + i] = inst[i];
 	}
 }

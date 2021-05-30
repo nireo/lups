@@ -8,6 +8,7 @@
 #include "token.h"
 #include "vm.h"
 #include <gtest/gtest.h>
+#include <iostream>
 #include <memory>
 #include <tuple>
 #include <utility>
@@ -1338,6 +1339,8 @@ code::Instructions concat_instructions(std::vector<code::Instructions> &instr) {
 bool test_instructions(std::vector<code::Instructions> inst,
 											 code::Instructions actual) {
 	auto concatted = concat_instructions(inst);
+	std::cerr << code::instructions_to_string(concatted) << '\n';
+	std::cerr << code::instructions_to_string(actual) << '\n';
 
 	if (concatted.size() != actual.size())
 		return false;
@@ -1437,14 +1440,24 @@ TEST(CompilerTest, ConditionalTest) {
 	};
 
 	std::vector<CompilerTestCaseConditional> test_cases{
-			{"if (true) { 10 }; 3333;",
-			 std::vector<int>{10, 3333},
+			{"if (true) { 10 } else { 20 }; 3333;",
+			 std::vector<int>{10, 20, 3333},
 			 {{
+					 // 0000
 					 code::make(code::OpTrue, std::vector<int>{}),
-					 code::make(code::OpJumpNotTruthy, std::vector<int>{7}),
+					 // 0001
+					 code::make(code::OpJumpNotTruthy, std::vector<int>{10}),
+					 // 0004
 					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 // 0007
+					 code::make(code::OpJump, std::vector<int>{13}),
+					 // 0010
 					 code::make(code::OpConstant, std::vector<int>{1}),
+					 // 0013
+					 code::make(code::OpPop, std::vector<int>{}),
+					 // 0014
+					 code::make(code::OpConstant, std::vector<int>{2}),
+					 // 0017
 					 code::make(code::OpPop, std::vector<int>{}),
 			 }}},
 	};
@@ -1463,8 +1476,9 @@ TEST(CompilerTest, ConditionalTest) {
 		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
 
 		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(test_integer_object(bytecode->constants[i],
-																			tt.expected_constants[i]));
+			EXPECT_TRUE(
+					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
+					<< code::instructions_to_string(bytecode->instructions);
 		}
 	}
 }
@@ -1475,7 +1489,6 @@ TEST(CompilerTest, BooleanExpressions) {
 		std::vector<int> expected_constants;
 		std::vector<code::Instructions> expected_instructions;
 	};
-
 
 	std::vector<CompilerTestCaseBoolean> test_cases{
 			{"true",
@@ -1699,5 +1712,38 @@ TEST(VmTest, VMBooleanTest) {
 		EXPECT_NE(stack_elem, nullptr);
 
 		EXPECT_TRUE(test_boolean_object(stack_elem, tt.expected));
+	}
+}
+
+TEST(VmTest, Conditionals) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+			{"if (true) { 10 }", 10},
+			{"if (true) { 10 } else { 20 }", 10},
+			{"if (false) { 10 } else { 20 } ", 20},
+			{"if (1) { 10 }", 10},
+			{"if (1 < 2) { 10 }", 10},
+			{"if (1 < 2) { 10 } else { 20 }", 10},
+			{"if (1 > 2) { 10 } else { 20 }", 20},
+	};
+
+	for (auto const &tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+		auto comp = new Compiler();
+		auto status = comp->compile(program.get());
+		EXPECT_EQ(status, 0);
+
+		auto vm = new VM(comp->bytecode());
+		auto vm_status = vm->run();
+		EXPECT_EQ(vm_status, 0);
+
+		auto stack_elem = vm->last_popped_stack_elem();
+		EXPECT_NE(stack_elem, nullptr);
+
+		EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));
 	}
 }
