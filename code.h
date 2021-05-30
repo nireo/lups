@@ -24,6 +24,8 @@ enum Opcodes {
 	OpGreaterThan,
 	OpMinus,
 	OpBang,
+	OpJumpNotTruthy,
+	OpJump
 };
 
 struct Definition {
@@ -45,7 +47,9 @@ const std::unordered_map<Opcode, Definition *> definitions{
 		{Opcodes::OpGreaterThan,
 		 new Definition{"OpGreaterThan", std::vector<int>{}}},
 		{Opcodes::OpMinus, new Definition{"OpMinus", std::vector<int>{}}},
-		{Opcodes::OpBang, new Definition{"OpBang", std::vector<int>{}}}};
+		{Opcodes::OpBang, new Definition{"OpBang", std::vector<int>{}}},
+		{Opcodes::OpJumpNotTruthy, new Definition{"OpJumpNotTruthy", std::vector<int>{2}}},
+		{Opcodes::OpJump, new Definition{"OpJump", std::vector<int>{2}}}};
 
 Definition *look_up(char op_code);
 std::vector<char> make(Opcode op, std::vector<int> operands);

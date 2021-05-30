@@ -69,7 +69,7 @@ int Compiler::compile(Node *node) {
 		else
 			emit(code::OpFalse);
 	} else if (type == "PrefixExpression") {
-		auto prex = dynamic_cast<PrefixExpression*>(node);
+		auto prex = dynamic_cast<PrefixExpression *>(node);
 		auto status = compile(prex->right.get());
 		if (status != 0)
 			return status;
@@ -80,6 +80,28 @@ int Compiler::compile(Node *node) {
 			emit(code::OpMinus);
 		else
 			return -1;
+	} else if (type == "IfExpression") {
+		auto ifx = dynamic_cast<IfExpression *>(node);
+		auto status = compile(ifx->cond.get());
+		if (status != 0)
+			return status;
+		auto jump_not_truthy_pos = emit(code::OpJumpNotTruthy, std::vector<int>{9999});
+
+		status = compile(ifx->after.get());
+		if (status != 0)
+			return status;
+
+		if (is_last_inst_pop())
+			remove_last_pop();
+
+		auto after_conq_pos = m_instructions.size();
+		change_operand(jump_not_truthy_pos, after_conq_pos);
+	} else if (type == "BlockExpression") {
+		for (auto &st : ((BlockStatement *)node)->statements) {
+			auto status = compile(st.get());
+			if (status != 0)
+				return status;
+		}
 	}
 
 	return 0;
@@ -93,18 +115,51 @@ int Compiler::add_constant(Object *obj) {
 int Compiler::emit(code::Opcode op, std::vector<int> operands) {
 	auto inst = code::make(op, operands);
 	auto pos = add_instruction(inst);
+	set_last_instruction(op, pos);
+
 	return pos;
 }
 
 int Compiler::emit(code::Opcode op) {
 	auto inst = code::make(op, std::vector<int>{});
 	auto pos = add_instruction(inst);
+	set_last_instruction(op, pos);
+
 	return pos;
 }
-
 
 int Compiler::add_instruction(std::vector<char> inst) {
 	auto new_inst_pos = m_instructions.size();
 	m_instructions.insert(m_instructions.end(), inst.begin(), inst.end());
+
 	return new_inst_pos;
+}
+
+void Compiler::set_last_instruction(code::Opcode op, int pos) {
+	auto prev = last_inst;
+	auto last = new EmittedInstruction{op, pos};
+
+	prev_inst = prev;
+	last_inst = last;
+}
+
+bool Compiler::is_last_inst_pop() { return last_inst->op == code::OpPop; }
+
+void Compiler::remove_last_pop() {
+	m_instructions = code::Instructions(m_instructions.begin(), m_instructions.begin()+last_inst->pos);
+
+	last_inst = prev_inst;
+}
+
+void Compiler::change_operand(int op_pos, int operand) {
+	auto op = m_instructions[op_pos];
+	auto new_inst = code::make(op, std::vector<int>{operand});
+
+	replace_instructions(op_pos, new_inst);
+}
+
+void Compiler::replace_instructions(int pos, code::Instructions inst) {
+	for (int i = 0; i < (int)inst.size(); ++i) {
+		m_instructions[pos+i] = inst[i];
+	}
 }
