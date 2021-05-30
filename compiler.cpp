@@ -16,7 +16,7 @@ int Compiler::compile(Node *node) {
 		auto status = compile(((ExpressionStatement *)node)->expression.get());
 		if (status != 0)
 			return status;
-		emit(code::OpPop, std::vector<int>{});
+		emit(code::OpPop);
 	} else if (type == "InfixExpression") {
 		if (((InfixExpression *)node)->opr == "<") {
 			// this is the same as the code below, but it adds the infix expressions
@@ -30,7 +30,7 @@ int Compiler::compile(Node *node) {
 			if (status != 0)
 				return status;
 
-			emit(code::OpGreaterThan, std::vector<int>{});
+			emit(code::OpGreaterThan);
 			return 0;
 		}
 
@@ -44,19 +44,19 @@ int Compiler::compile(Node *node) {
 
 		auto opr = ((InfixExpression *)node)->opr;
 		if (opr == "+")
-			emit(code::OpAdd, std::vector<int>{});
+			emit(code::OpAdd);
 		else if (opr == "-")
-			emit(code::OpSub, std::vector<int>{});
+			emit(code::OpSub);
 		else if (opr == "*")
-			emit(code::OpMul, std::vector<int>{});
+			emit(code::OpMul);
 		else if (opr == "/")
-			emit(code::OpDiv, std::vector<int>{});
+			emit(code::OpDiv);
 		else if (opr == ">") {
-			emit(code::OpGreaterThan, std::vector<int>{});
+			emit(code::OpGreaterThan);
 		} else if (opr == "==") {
-			emit(code::OpEqual, std::vector<int>{});
+			emit(code::OpEqual);
 		} else if (opr == "!=") {
-			emit(code::OpNotEqual, std::vector<int>{});
+			emit(code::OpNotEqual);
 		} else
 			return -1;
 	} else if (type == "IntegerLiteral") {
@@ -65,9 +65,21 @@ int Compiler::compile(Node *node) {
 	} else if (type == "BooleanExpression") {
 		auto value = ((BooleanExpression *)node)->value;
 		if (value)
-			emit(code::OpTrue, std::vector<int>{});
+			emit(code::OpTrue);
 		else
-			emit(code::OpFalse, std::vector<int>{});
+			emit(code::OpFalse);
+	} else if (type == "PrefixExpression") {
+		auto prex = dynamic_cast<PrefixExpression*>(node);
+		auto status = compile(prex->right.get());
+		if (status != 0)
+			return status;
+
+		if (prex->opr == "!")
+			emit(code::OpBang);
+		else if (prex->opr == "-")
+			emit(code::OpMinus);
+		else
+			return -1;
 	}
 
 	return 0;
@@ -83,6 +95,13 @@ int Compiler::emit(code::Opcode op, std::vector<int> operands) {
 	auto pos = add_instruction(inst);
 	return pos;
 }
+
+int Compiler::emit(code::Opcode op) {
+	auto inst = code::make(op, std::vector<int>{});
+	auto pos = add_instruction(inst);
+	return pos;
+}
+
 
 int Compiler::add_instruction(std::vector<char> inst) {
 	auto new_inst_pos = m_instructions.size();

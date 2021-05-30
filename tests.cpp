@@ -1400,6 +1400,13 @@ TEST(CompilerTest, IntegerArithmetic) {
 					 code::make(code::OpDiv, std::vector<int>{}),
 					 code::make(code::OpPop, std::vector<int>{}),
 			 }}},
+			{"-1",
+			 std::vector<int>{1},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpMinus, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
 	};
 
 	for (const auto &tt : test_cases) {
@@ -1490,6 +1497,13 @@ TEST(CompilerTest, BooleanExpressions) {
 					 code::make(code::OpNotEqual, std::vector<int>{}),
 					 code::make(code::OpPop, std::vector<int>{}),
 			 }}},
+			{"!true",
+			 std::vector<int>{},
+			 {{
+					 code::make(code::OpTrue, std::vector<int>{}),
+					 code::make(code::OpBang, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
 	};
 
 	for (const auto &tt : test_cases) {
@@ -1506,8 +1520,9 @@ TEST(CompilerTest, BooleanExpressions) {
 		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
 
 		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(test_integer_object(bytecode->constants[i],
-																			tt.expected_constants[i])) << "object evaluation fails with input " << tt.input;
+			EXPECT_TRUE(
+					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
+					<< "object evaluation fails with input " << tt.input;
 		}
 	}
 }
@@ -1572,6 +1587,10 @@ TEST(VMTest, VMIntegerArithmetic) {
 			{"5 * 2 + 10", 20},
 			{"5 + 2 * 10", 25},
 			{"5 * (2 + 10)", 60},
+			{"-5", -5},
+			{"-10", -10},
+			{"-50 + 100 + -50", 0},
+			{"(5 + 10 * 2 + 15 / 3) * 2 + -10", 50},
 	};
 
 	for (auto const &tt : test_cases) {
@@ -1617,6 +1636,12 @@ TEST(VmTest, VMBooleanTest) {
 			{"(1 < 2) == false", false},
 			{"(1 > 2) == true", false},
 			{"(1 > 2) == false", true},
+			{"!true", false},
+			{"!false", true},
+			{"!5", false},
+			{"!!true", true},
+			{"!!false", false},
+			{"!!5", true},
 	};
 
 	for (auto const &tt : test_cases) {

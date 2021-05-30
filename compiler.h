@@ -22,6 +22,7 @@ public:
 
 	int add_constant(Object *obj);
 	int emit(code::Opcode op, std::vector<int> operands);
+	int emit(code::Opcode op);
 	int add_instruction(std::vector<char> inst);
 
 	Bytecode *bytecode() {

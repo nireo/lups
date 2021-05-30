@@ -75,6 +75,18 @@ int VM::run() {
 				return status;
 			break;
 		}
+		case code::OpBang: {
+			auto status = execute_bang_operator();
+			if (status != 0)
+				return status;
+			break;
+		}
+		case code::OpMinus: {
+			auto status = execute_minus_operator();
+			if (status != 0)
+				return status;
+			break;
+		}
 		}
 	}
 
@@ -179,4 +191,24 @@ int VM::execute_integer_comparison(code::Opcode op, Object *left,
 	}
 
 	return -1;
+}
+
+int VM::execute_bang_operator() {
+	auto oper = pop();
+	if (oper == object_constant::TRUE_OBJ)
+		return push(object_constant::FALSE_OBJ);
+	else if (oper == object_constant::FALSE_OBJ)
+		return push(object_constant::TRUE_OBJ);
+
+	return push(object_constant::FALSE_OBJ);
+}
+
+int VM::execute_minus_operator() {
+	auto oper = pop();
+	if (oper->Type() != objecttypes::INTEGER)
+		// type cannot be used in conjunction with integer type
+		return -1;
+
+	auto value = ((Integer*)oper)->value;
+	return push(new Integer(-value));
 }

@@ -14,12 +14,17 @@ public:
 	Object *pop();
 	Object *last_popped_stack_elem();
 
+	// binary operations
 	int execute_binary_operation(code::Opcode op);
 	int execute_binary_integer_operation(code::Opcode op, Object *left, Object *right);
 
+	// comparisons
 	int execute_comparison(code::Opcode op);
 	int execute_integer_comparison(code::Opcode op, Object *left, Object *right);
 
+	// prefix expressions
+	int execute_bang_operator();
+	int execute_minus_operator();
 private:
 	int m_sp;
 	code::Instructions m_instructions;
