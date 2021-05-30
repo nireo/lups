@@ -85,6 +85,7 @@ int Compiler::compile(Node *node) {
 		auto status = compile(ifx->cond.get());
 		if (status != 0)
 			return status;
+
 		auto jump_not_truthy_pos =
 				emit(code::OpJumpNotTruthy, std::vector<int>{9999});
 
@@ -95,25 +96,22 @@ int Compiler::compile(Node *node) {
 		if (is_last_inst_pop())
 			remove_last_pop();
 
+		auto jump_pos = emit(code::OpJump, std::vector<int>{9999});
+		auto after_conq_pos = m_instructions.size();
+		change_operand(jump_not_truthy_pos, after_conq_pos);
+
 		if (ifx->other == nullptr) {
-			auto after_conq_pos = m_instructions.size();
-			change_operand(jump_not_truthy_pos, after_conq_pos);
+			emit(code::OpNull);
 		} else {
-			auto jump_pos = emit(code::OpJump, std::vector<int>{9999});
-
-			auto after_conq_pos = m_instructions.size();
-			change_operand(jump_not_truthy_pos, after_conq_pos);
-
 			status = compile(ifx->other.get());
 			if (status != 0)
 				return status;
 
 			if (is_last_inst_pop())
 				remove_last_pop();
-
-			auto after_other_pos = m_instructions.size();
-			change_operand(jump_pos, after_other_pos);
 		}
+		auto after_other_pos = m_instructions.size();
+		change_operand(jump_pos, after_other_pos);
 	} else if (type == "BlockExpression") {
 		for (auto &st : ((BlockStatement *)node)->statements) {
 			auto status = compile(st.get());

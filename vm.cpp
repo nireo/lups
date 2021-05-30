@@ -16,6 +16,8 @@ bool is_truthy(Object *obj) {
 
 	if (obj->Type() == objecttypes::BOOLEAN)
 		return ((Boolean*)obj)->value;
+	else if (obj->Type() == objecttypes::NULLOBJ)
+		return false;
 
 	return true;
 }
@@ -110,6 +112,12 @@ int VM::run() {
 			auto condition = pop();
 			if (!is_truthy(condition))
 				ip = pos - 1;
+			break;
+		}
+		case code::OpNull: {
+			auto status = push(object_constant::null);
+			if (status != 0)
+				return status;
 		}
 		}
 	}
@@ -223,6 +231,8 @@ int VM::execute_bang_operator() {
 	if (oper == object_constant::TRUE_OBJ)
 		return push(object_constant::FALSE_OBJ);
 	else if (oper == object_constant::FALSE_OBJ)
+		return push(object_constant::TRUE_OBJ);
+	else if (oper == object_constant::null)
 		return push(object_constant::TRUE_OBJ);
 
 	return push(object_constant::FALSE_OBJ);

@@ -1460,6 +1460,26 @@ TEST(CompilerTest, ConditionalTest) {
 					 // 0017
 					 code::make(code::OpPop, std::vector<int>{}),
 			 }}},
+			{"if (true) { 10 }; 3333;",
+			 std::vector<int>{10, 3333},
+			 {{
+					 // 0000
+					 code::make(code::OpTrue, std::vector<int>{}),
+					 // 0001
+					 code::make(code::OpJumpNotTruthy, std::vector<int>{10}),
+					 // 0004
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 // 0007
+					 code::make(code::OpJump, std::vector<int>{11}),
+					 // 0010
+					 code::make(code::OpNull, std::vector<int>{}),
+					 // 0011
+					 code::make(code::OpPop, std::vector<int>{}),
+					 // 0012
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 // 0015
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
 	};
 
 	for (const auto &tt : test_cases) {
@@ -1729,7 +1749,12 @@ TEST(VmTest, Conditionals) {
 			{"if (1 < 2) { 10 }", 10},
 			{"if (1 < 2) { 10 } else { 20 }", 10},
 			{"if (1 > 2) { 10 } else { 20 }", 20},
-	};
+			{"if ((if (false) { 10 })) { 10 } else { 20 }", 20},
+
+			// -1 just means that the returned value should be null in the context of
+			// this test.
+			{"if (1 > 2) { 10 }", -1},
+			{"if (false) { 10 }", -1}};
 
 	for (auto const &tt : test_cases) {
 		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
@@ -1744,6 +1769,10 @@ TEST(VmTest, Conditionals) {
 		auto stack_elem = vm->last_popped_stack_elem();
 		EXPECT_NE(stack_elem, nullptr);
 
-		EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));
+		if (tt.expected == -1) {
+			EXPECT_EQ(stack_elem->Type(), objecttypes::NULLOBJ);
+		} else {
+			EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));
+		}
 	}
 }
