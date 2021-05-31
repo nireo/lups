@@ -118,6 +118,11 @@ int Compiler::compile(Node *node) {
 			if (status != 0)
 				return status;
 		}
+	} else if (type == "LetStatement") {
+		auto letexp = dynamic_cast<LetStatement*>(node);
+		auto status = compile(letexp->value.get());
+		if (status != 0)
+			return status;
 	}
 
 	return 0;
@@ -179,4 +184,19 @@ void Compiler::replace_instructions(int pos, code::Instructions inst) {
 	for (int i = 0; i < (int)inst.size(); ++i) {
 		m_instructions[pos + i] = inst[i];
 	}
+}
+
+Symbol *SymbolTable::define(const std::string &name) {
+	auto symbol = new Symbol{name, scopes::GlobalScope, m_definition_num};
+	m_store[name] = symbol;
+	++m_definition_num;
+
+	return symbol;
+}
+
+Symbol *SymbolTable::resolve(const std::string &name) {
+	if (m_store.count(name) == 0)
+		return nullptr;
+
+	return m_store[name];
 }

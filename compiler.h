@@ -3,6 +3,13 @@
 
 #include "code.h"
 #include "object.h"
+#include <unordered_map>
+
+typedef std::string SymbolScope;
+
+namespace scopes {
+const SymbolScope GlobalScope = "GLOBAL";
+}
 
 struct Bytecode {
 	code::Instructions instructions;
@@ -12,6 +19,32 @@ struct Bytecode {
 struct EmittedInstruction {
 	code::Opcode op;
 	int pos;
+};
+
+struct Symbol {
+	std::string name;
+	SymbolScope scope;
+	int index;
+};
+
+class SymbolTable {
+public:
+	~SymbolTable() {
+		for (auto pr : m_store)
+			delete pr.second;
+	}
+
+	SymbolTable() {
+		m_definition_num = 0;
+		m_store = std::unordered_map<std::string, Symbol*>();
+	}
+
+	Symbol *define(const std::string &name);
+	Symbol *resolve(const std::string &name);
+
+private:
+	int m_definition_num;
+	std::unordered_map<std::string, Symbol*> m_store;
 };
 
 class Compiler {
@@ -26,7 +59,6 @@ public:
 	// int is the statuscode
 	int compile(Node *node);
 
-
 	int add_constant(Object *obj);
 	int emit(code::Opcode op, std::vector<int> operands);
 	int emit(code::Opcode op);
@@ -38,9 +70,7 @@ public:
 	void replace_instructions(int pos, code::Instructions new_inst);
 	void change_operand(int op_pos, int operand);
 
-	Bytecode *bytecode() {
-		return new Bytecode{m_instructions, m_constants};
-	}
+	Bytecode *bytecode() { return new Bytecode{m_instructions, m_constants}; }
 
 private:
 	code::Instructions m_instructions;

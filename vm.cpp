@@ -4,7 +4,9 @@
 #include "eval.h"
 #include "object.h"
 
-// TODO: add better error handling rather than just returning integers.
+// TODO: add better error handling rather than just returning integers. Probably by making
+// some kind of error class or something since enums aren't different from integers.
+
 
 Object *native_bool_to_obj(bool val) {
 	return (val ? object_constant::TRUE_OBJ : object_constant::FALSE_OBJ);
@@ -27,7 +29,7 @@ VM::VM(Bytecode *bytecode) {
 	m_sp = 0;
 	m_instructions = bytecode->instructions;
 	m_constants = bytecode->constants;
-	m_stack = std::vector<Object *>(2048, nullptr);
+	m_stack = std::vector<Object *>(StackSize, nullptr);
 }
 
 // return the topmost element in stack.

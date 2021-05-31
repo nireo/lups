@@ -1776,3 +1776,85 @@ TEST(VmTest, Conditionals) {
 		}
 	}
 }
+
+TEST(CompilerTest, GlobalLetStatements) {
+	struct CompilerTestCaseLetStatement {
+		std::string input;
+		std::vector<int> expected_constants;
+		std::vector<code::Instructions> expected_instructions;
+	};
+
+	std::vector<CompilerTestCaseLetStatement> test_cases{
+			{
+				"let one = 1;"
+				"let two = 2",
+				std::vector<int>{1, 2},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpSetGlobal, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpSetGlobal, std::vector<int>{1}),
+			 }}},
+			{
+				"let one = 1;"
+				"one;",
+				std::vector<int>{1},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpSetGlobal, std::vector<int>{0}),
+					 code::make(code::OpGetGlobal, std::vector<int>{0}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{
+				"let one = 1;"
+				"let two = one;"
+				"two;",
+				std::vector<int>{1},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpSetGlobal, std::vector<int>{0}),
+					 code::make(code::OpGetGlobal, std::vector<int>{0}),
+					 code::make(code::OpSetGlobal, std::vector<int>{1}),
+					 code::make(code::OpGetGlobal, std::vector<int>{1}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+	};
+}
+
+TEST(SymbolTableTest, TestDefine) {
+	auto global = new SymbolTable();
+
+	auto a = global->define("a");
+	EXPECT_NE(a, nullptr);
+
+	EXPECT_EQ(a->name, "a");
+	EXPECT_EQ(a->scope, scopes::GlobalScope);
+	EXPECT_EQ(a->index, 0);
+
+	auto b = global->define("b");
+	EXPECT_NE(b, nullptr);
+
+	EXPECT_EQ(b->name, "b");
+	EXPECT_EQ(b->scope, scopes::GlobalScope);
+	EXPECT_EQ(b->index, 1);
+}
+
+TEST(SymbolTableTest, TestResolveGlobal) {
+	auto global = new SymbolTable();
+	auto a = global->define("a");
+	auto b = global->define("b");
+
+	std::vector<Symbol> expected{
+		{"a", scopes::GlobalScope, 0},
+		{"b", scopes::GlobalScope, 1},
+	};
+
+	for (const auto& tt : expected) {
+		auto res = global->resolve(tt.name);
+		EXPECT_NE(res, nullptr);
+
+		EXPECT_EQ(res->name, tt.name);
+		EXPECT_EQ(res->scope, tt.scope);
+		EXPECT_EQ(res->index, tt.index);
+	}
+}
