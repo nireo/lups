@@ -123,6 +123,14 @@ int Compiler::compile(Node *node) {
 		auto status = compile(letexp->value.get());
 		if (status != 0)
 			return status;
+
+		auto symbol = m_symbol_table->define(letexp->name->value);
+		emit(code::OpSetGlobal, std::vector<int>{symbol->index});
+	} else if (type == "Identifier") {
+		auto symbol = m_symbol_table->define(((Identifier*)node)->value);
+		if (symbol == nullptr)
+			return -1;
+		emit(code::OpGetGlobal, std::vector<int>{symbol->index});
 	}
 
 	return 0;

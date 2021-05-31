@@ -54,6 +54,7 @@ public:
 		m_constants = std::vector<Object *>();
 		last_inst = nullptr;
 		prev_inst = nullptr;
+		m_symbol_table = new SymbolTable();
 	}
 
 	// int is the statuscode
@@ -78,6 +79,8 @@ private:
 
 	EmittedInstruction *last_inst;
 	EmittedInstruction *prev_inst;
+
+	SymbolTable *m_symbol_table;
 };
 
 #endif
