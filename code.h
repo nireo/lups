@@ -54,7 +54,7 @@ const std::unordered_map<Opcode, Definition *> definitions{
 		{Opcodes::OpJumpNotTruthy, new Definition{"OpJumpNotTruthy", std::vector<int>{2}}},
 		{Opcodes::OpJump, new Definition{"OpJump", std::vector<int>{2}}},
 		{Opcodes::OpNull, new Definition{"OpNull", std::vector<int>{}}},
-		{Opcodes::OpGetGlobal, new Definition{"OpSetGlobal", std::vector<int>{2}}},
+		{Opcodes::OpGetGlobal, new Definition{"OpGetGlobal", std::vector<int>{2}}},
 		{Opcodes::OpSetGlobal, new Definition{"OpSetGlobal", std::vector<int>{2}}}};
 
 Definition *look_up(char op_code);

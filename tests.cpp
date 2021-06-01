@@ -1339,8 +1339,8 @@ code::Instructions concat_instructions(std::vector<code::Instructions> &instr) {
 bool test_instructions(std::vector<code::Instructions> inst,
 											 code::Instructions actual) {
 	auto concatted = concat_instructions(inst);
-	std::cerr << code::instructions_to_string(concatted) << '\n';
-	std::cerr << code::instructions_to_string(actual) << '\n';
+	std::cerr << "result: " << code::instructions_to_string(concatted) << '\n';
+	std::cerr << "expected: " << code::instructions_to_string(actual) << '\n';
 
 	if (concatted.size() != actual.size())
 		return false;
@@ -1787,7 +1787,7 @@ TEST(CompilerTest, GlobalLetStatements) {
 	std::vector<CompilerTestCaseLetStatement> test_cases{
 			{
 				"let one = 1;"
-				"let two = 2",
+				"let two = 2;",
 				std::vector<int>{1, 2},
 			 {{
 					 code::make(code::OpConstant, std::vector<int>{0}),
@@ -1819,6 +1819,28 @@ TEST(CompilerTest, GlobalLetStatements) {
 					 code::make(code::OpPop, std::vector<int>{}),
 			 }}},
 	};
+
+	int test_index = 0;
+	for (const auto &tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+
+		auto compiler = new Compiler();
+		auto status = compiler->compile(program.get());
+		EXPECT_EQ(status, 0) << "The compilation was successful";
+
+		auto bytecode = compiler->bytecode();
+		EXPECT_TRUE(
+								test_instructions(tt.expected_instructions, bytecode->instructions)) << "Instructions incorrect for test" << test_index << '\n';
+		++test_index;
+
+		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
+
+		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
+			EXPECT_TRUE(
+					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
+					<< "object evaluation fails with input " << tt.input;
+		}
+	}
 }
 
 TEST(SymbolTableTest, TestDefine) {
@@ -1856,5 +1878,35 @@ TEST(SymbolTableTest, TestResolveGlobal) {
 		EXPECT_EQ(res->name, tt.name);
 		EXPECT_EQ(res->scope, tt.scope);
 		EXPECT_EQ(res->index, tt.index);
+	}
+}
+
+TEST(VMTest, GlobalLetStatements) {
+	struct Testcase {
+		std::string input;
+		int expected;
+	};
+
+	std::vector<Testcase> test_cases{
+	};
+
+	for (const auto& tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+		auto comp = new Compiler();
+		auto status = comp->compile(program.get());
+		EXPECT_EQ(status, 0);
+
+		auto vm = new VM(comp->bytecode());
+		auto vm_status = vm->run();
+		EXPECT_EQ(vm_status, 0);
+
+		auto stack_elem = vm->last_popped_stack_elem();
+		EXPECT_NE(stack_elem, nullptr);
+
+		if (tt.expected == -1) {
+			EXPECT_EQ(stack_elem->Type(), objecttypes::NULLOBJ);
+		} else {
+			EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));
+		}
 	}
 }
