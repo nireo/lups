@@ -29,6 +29,7 @@ enum Opcodes {
 	OpNull,
 	OpGetGlobal,
 	OpSetGlobal,
+	OpArray,
 };
 
 struct Definition {
@@ -36,7 +37,7 @@ struct Definition {
 	std::vector<int> operand_widths;
 };
 
-const std::unordered_map<Opcode, Definition *> definitions{
+static const std::unordered_map<Opcode, Definition *> definitions{
 		{Opcodes::OpConstant, new Definition{"OpConstant", std::vector<int>{2}}},
 		{Opcodes::OpAdd, new Definition{"OpAdd", std::vector<int>{}}},
 		{Opcodes::OpPop, new Definition{"OpPop", std::vector<int>{}}},
@@ -55,7 +56,8 @@ const std::unordered_map<Opcode, Definition *> definitions{
 		{Opcodes::OpJump, new Definition{"OpJump", std::vector<int>{2}}},
 		{Opcodes::OpNull, new Definition{"OpNull", std::vector<int>{}}},
 		{Opcodes::OpGetGlobal, new Definition{"OpGetGlobal", std::vector<int>{2}}},
-		{Opcodes::OpSetGlobal, new Definition{"OpSetGlobal", std::vector<int>{2}}}};
+		{Opcodes::OpSetGlobal, new Definition{"OpSetGlobal", std::vector<int>{2}}},
+		{Opcodes::OpArray, new Definition{"OpArray", std::vector<int>{2}}}};
 
 Definition *look_up(char op_code);
 std::vector<char> make(Opcode op, std::vector<int> operands);

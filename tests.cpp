@@ -1795,26 +1795,21 @@ TEST(CompilerTest, StringExpressions) {
 		std::vector<code::Instructions> expected_instructions;
 	};
 
-	std::vector<CompilerTestCaseStringExpression> test_cases {
-		{
-			"\"lups\"",
-			std::vector<std::string>{"lups"},
-			{{
-					code::make(code::OpConstant, std::vector<int>{0}),
-					code::make(code::OpPop, std::vector<int>{}),
-				}}
-		},
-		{
-			"\"lu\" + \"ps\"",
-			std::vector<std::string>{"lu", "ps"},
-			{{
-					code::make(code::OpConstant, std::vector<int>{0}),
-					code::make(code::OpConstant, std::vector<int>{1}),
-					code::make(code::OpAdd, std::vector<int>{}),
-					code::make(code::OpPop, std::vector<int>{}),
-				}}
-		}
-	};
+	std::vector<CompilerTestCaseStringExpression> test_cases{
+			{"\"lups\"",
+			 std::vector<std::string>{"lups"},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"\"lu\" + \"ps\"",
+			 std::vector<std::string>{"lu", "ps"},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpAdd, std::vector<int>{}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}}};
 
 	for (const auto &tt : test_cases) {
 		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
@@ -1830,8 +1825,8 @@ TEST(CompilerTest, StringExpressions) {
 		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
 
 		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(
-					test_string_constant(tt.expected_constants[i], bytecode->constants[i]))
+			EXPECT_TRUE(test_string_constant(tt.expected_constants[i],
+																			 bytecode->constants[i]))
 					<< "object evaluation fails with input " << tt.input;
 		}
 	}
@@ -1845,31 +1840,28 @@ TEST(CompilerTest, GlobalLetStatements) {
 	};
 
 	std::vector<CompilerTestCaseLetStatement> test_cases{
-			{
-				"let one = 1;"
-				"let two = 2;",
-				std::vector<int>{1, 2},
+			{"let one = 1;"
+			 "let two = 2;",
+			 std::vector<int>{1, 2},
 			 {{
 					 code::make(code::OpConstant, std::vector<int>{0}),
 					 code::make(code::OpSetGlobal, std::vector<int>{0}),
 					 code::make(code::OpConstant, std::vector<int>{1}),
 					 code::make(code::OpSetGlobal, std::vector<int>{1}),
 			 }}},
-			{
-				"let one = 1;"
-				"one;",
-				std::vector<int>{1},
+			{"let one = 1;"
+			 "one;",
+			 std::vector<int>{1},
 			 {{
 					 code::make(code::OpConstant, std::vector<int>{0}),
 					 code::make(code::OpSetGlobal, std::vector<int>{0}),
 					 code::make(code::OpGetGlobal, std::vector<int>{0}),
 					 code::make(code::OpPop, std::vector<int>{}),
 			 }}},
-			{
-				"let one = 1;"
-				"let two = one;"
-				"two;",
-				std::vector<int>{1},
+			{"let one = 1;"
+			 "let two = one;"
+			 "two;",
+			 std::vector<int>{1},
 			 {{
 					 code::make(code::OpConstant, std::vector<int>{0}),
 					 code::make(code::OpSetGlobal, std::vector<int>{0}),
@@ -1890,7 +1882,8 @@ TEST(CompilerTest, GlobalLetStatements) {
 
 		auto bytecode = compiler->bytecode();
 		EXPECT_TRUE(
-								test_instructions(tt.expected_instructions, bytecode->instructions)) << "Instructions incorrect for test" << test_index << '\n';
+				test_instructions(tt.expected_instructions, bytecode->instructions))
+				<< "Instructions incorrect for test" << test_index << '\n';
 		++test_index;
 
 		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
@@ -1927,11 +1920,11 @@ TEST(SymbolTableTest, TestResolveGlobal) {
 	auto b = global->define("b");
 
 	std::vector<Symbol> expected{
-		{"a", scopes::GlobalScope, 0},
-		{"b", scopes::GlobalScope, 1},
+			{"a", scopes::GlobalScope, 0},
+			{"b", scopes::GlobalScope, 1},
 	};
 
-	for (const auto& tt : expected) {
+	for (const auto &tt : expected) {
 		auto res = global->resolve(tt.name);
 		EXPECT_NE(res, nullptr);
 
@@ -1948,12 +1941,12 @@ TEST(VMTest, GlobalLetStatements) {
 	};
 
 	std::vector<Testcase> test_cases{
-		{"let one = 1; one", 1},
-		{"let one = 1; let two = 2; one + two", 3},
-		{"let one = 1; let two = one + one; one + two", 3},
+			{"let one = 1; one", 1},
+			{"let one = 1; let two = 2; one + two", 3},
+			{"let one = 1; let two = one + one; one + two", 3},
 	};
 
-	for (const auto& tt : test_cases) {
+	for (const auto &tt : test_cases) {
 		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
 		auto comp = new Compiler();
 		auto status = comp->compile(program.get());
@@ -1980,13 +1973,13 @@ TEST(VMTest, StringExpressions) {
 		std::string expected;
 	};
 
-	std::vector<Testcase> test_cases {
-		{"\"lups\"", "lups"},
-		{"\"lu\" + \"ps\"", "lups"},
-		{"\"lu\" + \"ps\" + \"programming\"", "lupsprogramming"},
+	std::vector<Testcase> test_cases{
+			{"\"lups\"", "lups"},
+			{"\"lu\" + \"ps\"", "lups"},
+			{"\"lu\" + \"ps\" + \"programming\"", "lupsprogramming"},
 	};
 
-	for (const auto& tt : test_cases) {
+	for (const auto &tt : test_cases) {
 		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
 		auto comp = new Compiler();
 		auto status = comp->compile(program.get());
@@ -2000,5 +1993,65 @@ TEST(VMTest, StringExpressions) {
 		EXPECT_NE(stack_elem, nullptr);
 
 		EXPECT_TRUE(test_string_constant(tt.expected, stack_elem));
+	}
+}
+
+TEST(CompilerTest, ArrayLiterals) {
+	struct CompilerTestcaseInteger {
+		std::string input;
+		std::vector<int> expected_constants;
+		std::vector<code::Instructions> expected_instructions;
+	};
+
+	std::vector<CompilerTestcaseInteger> test_cases{
+			{"[]",
+			 std::vector<int>{},
+			 {{
+					 code::make(code::OpArray, std::vector<int>{0}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"[1, 2, 3]",
+			 std::vector<int>{1, 2, 3},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpConstant, std::vector<int>{2}),
+					 code::make(code::OpArray, std::vector<int>{3}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}},
+			{"[1 + 2, 3 - 4, 5 * 6]",
+			 std::vector<int>{1, 2, 3, 4, 5, 6},
+			 {{
+					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpAdd, std::vector<int>{}),
+					 code::make(code::OpConstant, std::vector<int>{2}),
+					 code::make(code::OpConstant, std::vector<int>{3}),
+					 code::make(code::OpSub, std::vector<int>{}),
+					 code::make(code::OpConstant, std::vector<int>{4}),
+					 code::make(code::OpConstant, std::vector<int>{5}),
+					 code::make(code::OpMul, std::vector<int>{}),
+					 code::make(code::OpArray, std::vector<int>{3}),
+					 code::make(code::OpPop, std::vector<int>{}),
+			 }}}};
+
+	for (const auto &tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+
+		auto compiler = new Compiler();
+		auto status = compiler->compile(program.get());
+		EXPECT_EQ(status, 0) << "The compilation was unsuccessful";
+
+		auto bytecode = compiler->bytecode();
+		EXPECT_TRUE(
+				test_instructions(tt.expected_instructions, bytecode->instructions));
+
+		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
+
+		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
+			EXPECT_TRUE(
+					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
+					<< "object evaluation fails with input " << tt.input;
+		}
 	}
 }

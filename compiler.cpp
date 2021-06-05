@@ -61,7 +61,7 @@ int Compiler::compile(Node *node) {
 			return -1;
 	} else if (type == "IntegerLiteral") {
 		auto integer = new Integer(((IntegerLiteral *)node)->value);
-		emit(code::OpConstant, std::vector<int>{add_constant(integer)});
+		emit(code::OpConstant, {add_constant(integer)});
 	} else if (type == "BooleanExpression") {
 		auto value = ((BooleanExpression *)node)->value;
 		if (value)
@@ -87,7 +87,7 @@ int Compiler::compile(Node *node) {
 			return status;
 
 		auto jump_not_truthy_pos =
-				emit(code::OpJumpNotTruthy, std::vector<int>{9999});
+				emit(code::OpJumpNotTruthy, {9999});
 
 		status = compile(ifx->after.get());
 		if (status != 0)
@@ -96,7 +96,7 @@ int Compiler::compile(Node *node) {
 		if (is_last_inst_pop())
 			remove_last_pop();
 
-		auto jump_pos = emit(code::OpJump, std::vector<int>{9999});
+		auto jump_pos = emit(code::OpJump, {9999});
 		auto after_conq_pos = m_instructions.size();
 		change_operand(jump_not_truthy_pos, after_conq_pos);
 
@@ -125,15 +125,23 @@ int Compiler::compile(Node *node) {
 			return status;
 
 		auto symbol = m_symbol_table->define(letexp->name->value);
-		emit(code::OpSetGlobal, std::vector<int>{symbol->index});
+		emit(code::OpSetGlobal, {symbol->index});
 	} else if (type == "Identifier") {
 		auto symbol = m_symbol_table->resolve(((Identifier*)node)->value);
 		if (symbol == nullptr)
 			return -1;
-		emit(code::OpGetGlobal, std::vector<int>{symbol->index});
+		emit(code::OpGetGlobal, {symbol->index});
 	} else if (type == "StringLiteral") {
 		auto str = new String(((StringLiteral*)node)->TokenLiteral());
-		emit(code::OpConstant, std::vector<int>{add_constant(str)});
+		emit(code::OpConstant, {add_constant(str)});
+	} else if (type == "ArrayLiteral") {
+		for (const auto &el : ((ArrayLiteral*)node)->elements) {
+			auto status = compile(el.get());
+			if (status != 0)
+				return status;
+		}
+
+		emit(code::OpArray, {(int)((ArrayLiteral*)node)->elements.size()});
 	}
 
 	return 0;
@@ -153,7 +161,7 @@ int Compiler::emit(code::Opcode op, std::vector<int> operands) {
 }
 
 int Compiler::emit(code::Opcode op) {
-	auto inst = code::make(op, std::vector<int>{});
+	auto inst = code::make(op, {});
 	auto pos = add_instruction(inst);
 	set_last_instruction(op, pos);
 
@@ -186,7 +194,7 @@ void Compiler::remove_last_pop() {
 
 void Compiler::change_operand(int op_pos, int operand) {
 	auto op = m_instructions[op_pos];
-	auto new_inst = code::make(op, std::vector<int>{operand});
+	auto new_inst = code::make(op, {operand});
 
 	replace_instructions(op_pos, new_inst);
 }
