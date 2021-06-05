@@ -1777,6 +1777,66 @@ TEST(VmTest, Conditionals) {
 	}
 }
 
+bool test_string_constant(const std::string &expected, Object *obj) {
+	auto res = dynamic_cast<String *>(obj);
+	if (res == nullptr)
+		return false;
+
+	if (res->value != expected)
+		return false;
+
+	return true;
+}
+
+TEST(CompilerTest, StringExpressions) {
+	struct CompilerTestCaseStringExpression {
+		std::string input;
+		std::vector<std::string> expected_constants;
+		std::vector<code::Instructions> expected_instructions;
+	};
+
+	std::vector<CompilerTestCaseStringExpression> test_cases {
+		{
+			"\"lups\"",
+			std::vector<std::string>{"lups"},
+			{{
+					code::make(code::OpConstant, std::vector<int>{0}),
+					code::make(code::OpPop, std::vector<int>{}),
+				}}
+		},
+		{
+			"\"lu\" + \"ps\"",
+			std::vector<std::string>{"lu", "ps"},
+			{{
+					code::make(code::OpConstant, std::vector<int>{0}),
+					code::make(code::OpConstant, std::vector<int>{1}),
+					code::make(code::OpAdd, std::vector<int>{}),
+					code::make(code::OpPop, std::vector<int>{}),
+				}}
+		}
+	};
+
+	for (const auto &tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+
+		auto compiler = new Compiler();
+		auto status = compiler->compile(program.get());
+		EXPECT_EQ(status, 0) << "The compilation was successful";
+
+		auto bytecode = compiler->bytecode();
+		EXPECT_TRUE(
+				test_instructions(tt.expected_instructions, bytecode->instructions));
+
+		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
+
+		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
+			EXPECT_TRUE(
+					test_string_constant(tt.expected_constants[i], bytecode->constants[i]))
+					<< "object evaluation fails with input " << tt.input;
+		}
+	}
+}
+
 TEST(CompilerTest, GlobalLetStatements) {
 	struct CompilerTestCaseLetStatement {
 		std::string input;
@@ -1911,5 +1971,34 @@ TEST(VMTest, GlobalLetStatements) {
 		} else {
 			EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));
 		}
+	}
+}
+
+TEST(VMTest, StringExpressions) {
+	struct Testcase {
+		std::string input;
+		std::string expected;
+	};
+
+	std::vector<Testcase> test_cases {
+		{"\"lups\"", "lups"},
+		{"\"lu\" + \"ps\"", "lups"},
+		{"\"lu\" + \"ps\" + \"programming\"", "lupsprogramming"},
+	};
+
+	for (const auto& tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+		auto comp = new Compiler();
+		auto status = comp->compile(program.get());
+		EXPECT_EQ(status, 0);
+
+		auto vm = new VM(comp->bytecode());
+		auto vm_status = vm->run();
+		EXPECT_EQ(vm_status, 0);
+
+		auto stack_elem = vm->last_popped_stack_elem();
+		EXPECT_NE(stack_elem, nullptr);
+
+		EXPECT_TRUE(test_string_constant(tt.expected, stack_elem));
 	}
 }

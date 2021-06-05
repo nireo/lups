@@ -131,6 +131,9 @@ int Compiler::compile(Node *node) {
 		if (symbol == nullptr)
 			return -1;
 		emit(code::OpGetGlobal, std::vector<int>{symbol->index});
+	} else if (type == "StringLiteral") {
+		auto str = new String(((StringLiteral*)node)->TokenLiteral());
+		emit(code::OpConstant, std::vector<int>{add_constant(str)});
 	}
 
 	return 0;

@@ -18,6 +18,7 @@ public:
 	// binary operations
 	int execute_binary_operation(code::Opcode op);
 	int execute_binary_integer_operation(code::Opcode op, Object *left, Object *right);
+	int execute_binary_string_operation(code::Opcode op, Object *left, Object *right);
 
 	// comparisons
 	int execute_comparison(code::Opcode op);

@@ -180,6 +180,8 @@ int VM::execute_binary_operation(code::Opcode op) {
 	if (left->Type() == objecttypes::INTEGER &&
 			right->Type() == objecttypes::INTEGER) {
 		return execute_binary_integer_operation(op, left, right);
+	} else if (left->Type() == objecttypes::STRING && right->Type() == objecttypes::STRING) {
+		return execute_binary_string_operation(op, left, right);
 	} else {
 		// the types don't have a supported binary expression
 		return -1;
@@ -271,4 +273,15 @@ int VM::execute_minus_operator() {
 
 	auto value = ((Integer *)oper)->value;
 	return push(new Integer(-value));
+}
+
+int VM::execute_binary_string_operation(code::Opcode op, Object *left,
+																				Object *right) {
+	if (op != code::OpAdd)
+		return -1;
+
+	auto left_value = ((String*)left)->value;
+	auto right_value = ((String*)right)->value;
+
+	return push(new String(left_value + right_value));
 }
