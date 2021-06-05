@@ -2055,3 +2055,36 @@ TEST(CompilerTest, ArrayLiterals) {
 		}
 	}
 }
+
+TEST(VMTest, ArrayLiterals) {
+	struct Testcase {
+		std::string input;
+		std::vector<int> expected;
+	};
+
+	std::vector<Testcase> test_cases {
+		{"[]", {}},
+		{"[1, 2, 3]", {1, 2, 3}},
+		{"[1 + 2, 3 * 4, 5 + 6]", {3, 12, 11}}
+	};
+
+	for (auto const &tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+		auto comp = new Compiler();
+		auto status = comp->compile(program.get());
+		EXPECT_EQ(status, 0);
+
+		auto vm = new VM(comp->bytecode());
+		auto vm_status = vm->run();
+		EXPECT_EQ(vm_status, 0);
+
+		auto stack_elem = vm->last_popped_stack_elem();
+		EXPECT_NE(stack_elem, nullptr);
+
+		auto arr = dynamic_cast<Array*>(stack_elem);
+		EXPECT_EQ(arr->elements.size(), tt.expected.size());
+		for (int i = 0; i < arr->elements.size(); ++i) {
+			EXPECT_TRUE(test_integer_object(arr->elements[i], tt.expected[i]));
+		}
+	}
+}

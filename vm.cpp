@@ -144,6 +144,17 @@ int VM::run() {
 				return status;
 			break;
 		}
+		case code::OpArray: {
+			auto num_elements = code::decode_uint16(code::Instructions(
+					m_instructions.begin() + ip + 1, m_instructions.begin() + ip + 3));
+			ip += 2;
+			auto array = build_array(m_sp-num_elements, m_sp);
+			m_sp = m_sp - num_elements;
+
+			auto status = push(array);
+			if (status != 0)
+				return status;
+		}
 		}
 	}
 
@@ -284,4 +295,13 @@ int VM::execute_binary_string_operation(code::Opcode op, Object *left,
 	auto right_value = ((String*)right)->value;
 
 	return push(new String(left_value + right_value));
+}
+
+Object *VM::build_array(int start_index, int end_index) {
+	auto elements = std::vector<Object*>(end_index-start_index, nullptr);
+
+	for (int i = start_index; i < end_index; ++i)
+		elements[i-start_index] = m_stack[i];
+
+	return new Array(elements);
 }
