@@ -4,6 +4,7 @@
 #include "code.h"
 #include "compiler.h"
 constexpr int StackSize = 2048;
+constexpr int GlobalsSize = 65536;
 
 class VM {
 public:
@@ -30,6 +31,7 @@ private:
 	code::Instructions m_instructions;
 	std::vector<Object *> m_constants;
 	std::vector<Object *> m_stack;
+	std::vector<Object *> m_globals;
 };
 
 #endif

@@ -4,9 +4,12 @@
 #include "eval.h"
 #include "object.h"
 
-// TODO: add better error handling rather than just returning integers. Probably by making
-// some kind of error class or something since enums aren't different from integers.
+// TODO: add better error handling rather than just returning integers. Probably
+// by making some kind of error class or something since enums aren't different
+// from integers.
 
+// TODO: Start using unique pointers since using raw pointers and returning raw
+// pointers is not best practice.
 
 Object *native_bool_to_obj(bool val) {
 	return (val ? object_constant::TRUE_OBJ : object_constant::FALSE_OBJ);
@@ -17,7 +20,7 @@ bool is_truthy(Object *obj) {
 		return false;
 
 	if (obj->Type() == objecttypes::BOOLEAN)
-		return ((Boolean*)obj)->value;
+		return ((Boolean *)obj)->value;
 	else if (obj->Type() == objecttypes::NULLOBJ)
 		return false;
 
@@ -30,6 +33,7 @@ VM::VM(Bytecode *bytecode) {
 	m_instructions = bytecode->instructions;
 	m_constants = bytecode->constants;
 	m_stack = std::vector<Object *>(StackSize, nullptr);
+	m_globals = std::vector<Object *>(GlobalsSize);
 }
 
 // return the topmost element in stack.
@@ -120,6 +124,25 @@ int VM::run() {
 			auto status = push(object_constant::null);
 			if (status != 0)
 				return status;
+			break;
+		}
+		case code::OpSetGlobal: {
+			auto global_index = code::decode_uint16(code::Instructions(
+					m_instructions.begin() + ip + 1, m_instructions.begin() + ip + 3));
+			ip += 2;
+
+			m_globals[global_index] = pop();
+			break;
+		}
+		case code::OpGetGlobal: {
+			auto global_index = code::decode_uint16(code::Instructions(
+					m_instructions.begin() + ip + 1, m_instructions.begin() + ip + 3));
+			ip += 2;
+
+			auto status = push(m_globals[global_index]);
+			if (status != 0)
+				return status;
+			break;
 		}
 		}
 	}

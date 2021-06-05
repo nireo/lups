@@ -1888,6 +1888,9 @@ TEST(VMTest, GlobalLetStatements) {
 	};
 
 	std::vector<Testcase> test_cases{
+		{"let one = 1; one", 1},
+		{"let one = 1; let two = 2; one + two", 3},
+		{"let one = 1; let two = one + one; one + two", 3},
 	};
 
 	for (const auto& tt : test_cases) {
