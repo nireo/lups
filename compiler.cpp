@@ -2,6 +2,7 @@
 #include "ast.h"
 #include "code.h"
 #include "object.h"
+#include <algorithm>
 #include <vector>
 
 int Compiler::compile(Node *node) {
@@ -142,6 +143,21 @@ int Compiler::compile(Node *node) {
 		}
 
 		emit(code::OpArray, {(int)((ArrayLiteral*)node)->elements.size()});
+	} else if (type == "HashLiteral") {
+		auto hash_lit = dynamic_cast<HashLiteral*>(node);
+
+		// TODO: probably sort the elements or maybe not :D
+		for (auto const &pr : hash_lit->pairs) {
+			auto status = compile(pr.first.get());
+			if (status != 0)
+				return status;
+
+			status = compile(pr.second.get());
+			if (status != 0)
+				return status;
+		}
+
+		emit(code::OpHash, {(int)hash_lit->pairs.size() * 2});
 	}
 
 	return 0;

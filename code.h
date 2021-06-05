@@ -30,6 +30,7 @@ enum Opcodes {
 	OpGetGlobal,
 	OpSetGlobal,
 	OpArray,
+	OpHash,
 };
 
 struct Definition {
@@ -57,7 +58,8 @@ static const std::unordered_map<Opcode, Definition *> definitions{
 		{Opcodes::OpNull, new Definition{"OpNull", std::vector<int>{}}},
 		{Opcodes::OpGetGlobal, new Definition{"OpGetGlobal", std::vector<int>{2}}},
 		{Opcodes::OpSetGlobal, new Definition{"OpSetGlobal", std::vector<int>{2}}},
-		{Opcodes::OpArray, new Definition{"OpArray", std::vector<int>{2}}}};
+		{Opcodes::OpArray, new Definition{"OpArray", std::vector<int>{2}}},
+		{Opcodes::OpHash, new Definition{"OpHash", std::vector<int>{2}}}};
 
 Definition *look_up(char op_code);
 std::vector<char> make(Opcode op, std::vector<int> operands);

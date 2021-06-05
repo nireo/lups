@@ -147,4 +147,6 @@ CMakeFiles/lups_test.dir/compiler.cpp.o: \
  /usr/include/c++/11.1.0/backward/auto_ptr.h \
  /usr/include/c++/11.1.0/pstl/glue_memory_defs.h \
  /usr/include/c++/11.1.0/pstl/execution_defs.h \
- /home/eemil/dev/c++/lups/ast.h /home/eemil/dev/c++/lups/token.h
+ /home/eemil/dev/c++/lups/ast.h /home/eemil/dev/c++/lups/token.h \
+ /usr/include/c++/11.1.0/algorithm \
+ /usr/include/c++/11.1.0/pstl/glue_algorithm_defs.h

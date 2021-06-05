@@ -561,7 +561,9 @@ CMakeFiles/lups_test.dir/compiler.cpp.o: ../compiler.cpp \
   /usr/include/c++/11.1.0/pstl/glue_memory_defs.h \
   /usr/include/c++/11.1.0/pstl/execution_defs.h \
   ../ast.h \
-  ../token.h
+  ../token.h \
+  /usr/include/c++/11.1.0/algorithm \
+  /usr/include/c++/11.1.0/pstl/glue_algorithm_defs.h
 
 CMakeFiles/lups_test.dir/eval.cpp.o: ../eval.cpp \
   /usr/include/stdc-predef.h \

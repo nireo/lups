@@ -1363,52 +1363,52 @@ TEST(CompilerTest, IntegerArithmetic) {
 
 	std::vector<CompilerTestCaseInteger> test_cases{
 			{"1 + 2",
-			 std::vector<int>{1, 2},
+			 {1, 2},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpAdd, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpAdd, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"1; 2",
-			 std::vector<int>{1, 2},
+			 {1, 2},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpPop, std::vector<int>{}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpPop, {}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpPop, {}),
 			 }}},
 
 			{"1 * 2",
-			 std::vector<int>{1, 2},
+			 {1, 2},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpMul, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpMul, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"1 - 2",
-			 std::vector<int>{1, 2},
+			 {1, 2},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpSub, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpSub, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"2 / 1",
-			 std::vector<int>{2, 1},
+			 {2, 1},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpDiv, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpDiv, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"-1",
-			 std::vector<int>{1},
+			 {1},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpMinus, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpMinus, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 	};
 
@@ -1441,44 +1441,44 @@ TEST(CompilerTest, ConditionalTest) {
 
 	std::vector<CompilerTestCaseConditional> test_cases{
 			{"if (true) { 10 } else { 20 }; 3333;",
-			 std::vector<int>{10, 20, 3333},
+			 {10, 20, 3333},
 			 {{
 					 // 0000
-					 code::make(code::OpTrue, std::vector<int>{}),
+					 code::make(code::OpTrue, {}),
 					 // 0001
-					 code::make(code::OpJumpNotTruthy, std::vector<int>{10}),
+					 code::make(code::OpJumpNotTruthy, {10}),
 					 // 0004
-					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, {0}),
 					 // 0007
-					 code::make(code::OpJump, std::vector<int>{13}),
+					 code::make(code::OpJump, {13}),
 					 // 0010
-					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpConstant, {1}),
 					 // 0013
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpPop, {}),
 					 // 0014
-					 code::make(code::OpConstant, std::vector<int>{2}),
+					 code::make(code::OpConstant, {2}),
 					 // 0017
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"if (true) { 10 }; 3333;",
-			 std::vector<int>{10, 3333},
+			 {10, 3333},
 			 {{
 					 // 0000
-					 code::make(code::OpTrue, std::vector<int>{}),
+					 code::make(code::OpTrue, {}),
 					 // 0001
-					 code::make(code::OpJumpNotTruthy, std::vector<int>{10}),
+					 code::make(code::OpJumpNotTruthy, {10}),
 					 // 0004
-					 code::make(code::OpConstant, std::vector<int>{0}),
+					 code::make(code::OpConstant, {0}),
 					 // 0007
-					 code::make(code::OpJump, std::vector<int>{11}),
+					 code::make(code::OpJump, {11}),
 					 // 0010
-					 code::make(code::OpNull, std::vector<int>{}),
+					 code::make(code::OpNull, {}),
 					 // 0011
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpPop, {}),
 					 // 0012
-					 code::make(code::OpConstant, std::vector<int>{1}),
+					 code::make(code::OpConstant, {1}),
 					 // 0015
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpPop, {}),
 			 }}},
 	};
 
@@ -1512,71 +1512,71 @@ TEST(CompilerTest, BooleanExpressions) {
 
 	std::vector<CompilerTestCaseBoolean> test_cases{
 			{"true",
-			 std::vector<int>{},
+			 {},
 			 {{
-					 code::make(code::OpTrue, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpTrue, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"false",
-			 std::vector<int>{},
+			 {},
 			 {{
-					 code::make(code::OpFalse, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpFalse, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"1 > 2",
-			 std::vector<int>{1, 2},
+			 {1, 2},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpGreaterThan, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpGreaterThan, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"1 < 2",
-			 std::vector<int>{2, 1},
+			 {2, 1},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpGreaterThan, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpGreaterThan, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"1 == 2",
-			 std::vector<int>{1, 2},
+			 {1, 2},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpEqual, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpEqual, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"1 != 2",
-			 std::vector<int>{1, 2},
+			 {1, 2},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpNotEqual, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpNotEqual, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"true == false",
-			 std::vector<int>{},
+			 {},
 			 {{
-					 code::make(code::OpTrue, std::vector<int>{}),
-					 code::make(code::OpFalse, std::vector<int>{}),
-					 code::make(code::OpEqual, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpTrue, {}),
+					 code::make(code::OpFalse, {}),
+					 code::make(code::OpEqual, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"true != false",
-			 std::vector<int>{},
+			 {},
 			 {{
-					 code::make(code::OpTrue, std::vector<int>{}),
-					 code::make(code::OpFalse, std::vector<int>{}),
-					 code::make(code::OpNotEqual, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpTrue, {}),
+					 code::make(code::OpFalse, {}),
+					 code::make(code::OpNotEqual, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"!true",
-			 std::vector<int>{},
+			 {},
 			 {{
-					 code::make(code::OpTrue, std::vector<int>{}),
-					 code::make(code::OpBang, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpTrue, {}),
+					 code::make(code::OpBang, {}),
+					 code::make(code::OpPop, {}),
 			 }}},
 	};
 
@@ -1684,7 +1684,7 @@ TEST(VMTest, VMIntegerArithmetic) {
 	}
 }
 
-TEST(VmTest, VMBooleanTest) {
+TEST(VMTest, VMBooleanTest) {
 	struct Testcase {
 		std::string input;
 		bool expected;
@@ -1735,7 +1735,7 @@ TEST(VmTest, VMBooleanTest) {
 	}
 }
 
-TEST(VmTest, Conditionals) {
+TEST(VMTest, Conditionals) {
 	struct Testcase {
 		std::string input;
 		int expected;
@@ -1797,18 +1797,18 @@ TEST(CompilerTest, StringExpressions) {
 
 	std::vector<CompilerTestCaseStringExpression> test_cases{
 			{"\"lups\"",
-			 std::vector<std::string>{"lups"},
+			 {"lups"},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"\"lu\" + \"ps\"",
-			 std::vector<std::string>{"lu", "ps"},
+			 {"lu", "ps"},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpAdd, std::vector<int>{}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpAdd, {}),
+					 code::make(code::OpPop, {}),
 			 }}}};
 
 	for (const auto &tt : test_cases) {
@@ -1842,33 +1842,33 @@ TEST(CompilerTest, GlobalLetStatements) {
 	std::vector<CompilerTestCaseLetStatement> test_cases{
 			{"let one = 1;"
 			 "let two = 2;",
-			 std::vector<int>{1, 2},
+			 {1, 2},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpSetGlobal, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpSetGlobal, std::vector<int>{1}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpSetGlobal, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpSetGlobal, {1}),
 			 }}},
 			{"let one = 1;"
 			 "one;",
-			 std::vector<int>{1},
+			 {1},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpSetGlobal, std::vector<int>{0}),
-					 code::make(code::OpGetGlobal, std::vector<int>{0}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpSetGlobal, {0}),
+					 code::make(code::OpGetGlobal, {0}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"let one = 1;"
 			 "let two = one;"
 			 "two;",
-			 std::vector<int>{1},
+			 {1},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpSetGlobal, std::vector<int>{0}),
-					 code::make(code::OpGetGlobal, std::vector<int>{0}),
-					 code::make(code::OpSetGlobal, std::vector<int>{1}),
-					 code::make(code::OpGetGlobal, std::vector<int>{1}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpSetGlobal, {0}),
+					 code::make(code::OpGetGlobal, {0}),
+					 code::make(code::OpSetGlobal, {1}),
+					 code::make(code::OpGetGlobal, {1}),
+					 code::make(code::OpPop, {}),
 			 }}},
 	};
 
@@ -2005,34 +2005,34 @@ TEST(CompilerTest, ArrayLiterals) {
 
 	std::vector<CompilerTestcaseInteger> test_cases{
 			{"[]",
-			 std::vector<int>{},
+			 {},
 			 {{
-					 code::make(code::OpArray, std::vector<int>{0}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpArray, {0}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"[1, 2, 3]",
-			 std::vector<int>{1, 2, 3},
+			 {1, 2, 3},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpConstant, std::vector<int>{2}),
-					 code::make(code::OpArray, std::vector<int>{3}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpArray, {3}),
+					 code::make(code::OpPop, {}),
 			 }}},
 			{"[1 + 2, 3 - 4, 5 * 6]",
 			 std::vector<int>{1, 2, 3, 4, 5, 6},
 			 {{
-					 code::make(code::OpConstant, std::vector<int>{0}),
-					 code::make(code::OpConstant, std::vector<int>{1}),
-					 code::make(code::OpAdd, std::vector<int>{}),
-					 code::make(code::OpConstant, std::vector<int>{2}),
-					 code::make(code::OpConstant, std::vector<int>{3}),
-					 code::make(code::OpSub, std::vector<int>{}),
-					 code::make(code::OpConstant, std::vector<int>{4}),
-					 code::make(code::OpConstant, std::vector<int>{5}),
-					 code::make(code::OpMul, std::vector<int>{}),
-					 code::make(code::OpArray, std::vector<int>{3}),
-					 code::make(code::OpPop, std::vector<int>{}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpAdd, {}),
+					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpConstant, {3}),
+					 code::make(code::OpSub, {}),
+					 code::make(code::OpConstant, {4}),
+					 code::make(code::OpConstant, {5}),
+					 code::make(code::OpMul, {}),
+					 code::make(code::OpArray, {3}),
+					 code::make(code::OpPop, {}),
 			 }}}};
 
 	for (const auto &tt : test_cases) {
@@ -2085,6 +2085,75 @@ TEST(VMTest, ArrayLiterals) {
 		EXPECT_EQ(arr->elements.size(), tt.expected.size());
 		for (int i = 0; i < arr->elements.size(); ++i) {
 			EXPECT_TRUE(test_integer_object(arr->elements[i], tt.expected[i]));
+		}
+	}
+}
+
+TEST(CompilerTest, HashLiterals) {
+	struct CompilerTestcaseInteger {
+		std::string input;
+		std::vector<int> expected_constants;
+		std::vector<code::Instructions> expected_instructions;
+	};
+
+	std::vector<CompilerTestcaseInteger> test_cases {
+		{
+			"{}",
+			{},
+			{{
+					code::make(code::OpHash, {0}),
+					code::make(code::OpPop, {}),
+				}}
+		},
+		{
+			"{1: 2, 3: 4, 5: 6}",
+			{1, 2, 3, 4, 5, 6},
+			{{
+					code::make(code::OpConstant, {0}),
+					code::make(code::OpConstant, {1}),
+					code::make(code::OpConstant, {2}),
+					code::make(code::OpConstant, {3}),
+					code::make(code::OpConstant, {4}),
+					code::make(code::OpConstant, {5}),
+					code::make(code::OpHash, {6}),
+					code::make(code::OpPop, {}),
+				}}
+		},
+		{
+			"{1: 2 + 3, 4: 5 * 6}",
+			{1, 2, 3, 4, 5, 6},
+			{{
+					code::make(code::OpConstant, {0}),
+					code::make(code::OpConstant, {1}),
+					code::make(code::OpConstant, {2}),
+					code::make(code::OpAdd, {}),
+					code::make(code::OpConstant, {3}),
+					code::make(code::OpConstant, {4}),
+					code::make(code::OpConstant, {5}),
+					code::make(code::OpMul, {}),
+					code::make(code::OpHash, {4}),
+					code::make(code::OpPop, {}),
+				}}
+		}
+	};
+
+	for (const auto &tt : test_cases) {
+		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
+
+		auto compiler = new Compiler();
+		auto status = compiler->compile(program.get());
+		EXPECT_EQ(status, 0) << "The compilation was unsuccessful";
+
+		auto bytecode = compiler->bytecode();
+		EXPECT_TRUE(
+				test_instructions(tt.expected_instructions, bytecode->instructions));
+
+		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
+
+		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
+			EXPECT_TRUE(
+					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
+					<< "object evaluation fails with input " << tt.input;
 		}
 	}
 }
