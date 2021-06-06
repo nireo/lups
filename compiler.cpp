@@ -245,3 +245,17 @@ Symbol *SymbolTable::resolve(const std::string &name) {
 
 	return m_store[name];
 }
+
+code::Instructions Compiler::current_instructions() {
+	return scopes[scope_index].instructions;
+}
+
+int Compiler::add_instructions(std::vector<char> &inst) {
+	auto cur_inst = current_instructions();
+	auto pos_new_instruction = cur_inst.size();
+	auto updated_inst = cur_inst.insert(cur_inst.end(), inst.begin(), inst.end());
+
+	scopes[scope_index].instructions = updated_inst;
+
+	return pos_new_instruction;
+}

@@ -21,6 +21,12 @@ struct EmittedInstruction {
 	int pos;
 };
 
+struct CompilationScope {
+	code::Instructions instructions;
+	EmittedInstruction last_inst;
+	EmittedInstruction prev_inst;
+};
+
 struct Symbol {
 	std::string name;
 	SymbolScope scope;
@@ -55,6 +61,15 @@ public:
 		last_inst = nullptr;
 		prev_inst = nullptr;
 		m_symbol_table = new SymbolTable();
+		scope_index = 0;
+
+		auto main_scope = CompilationScope{
+			code::Instructions(),
+			EmittedInstruction{},
+			EmittedInstruction{},
+		};
+
+		scopes = std::vector<CompilationScope>(1, main_scope);
 	}
 
 	// int is the statuscode
@@ -71,8 +86,13 @@ public:
 	void replace_instructions(int pos, code::Instructions new_inst);
 	void change_operand(int op_pos, int operand);
 
+	code::Instructions current_instructions();
+	int add_instructions(std::vector<char> &inst);
+
 	Bytecode *bytecode() { return new Bytecode{m_instructions, m_constants}; }
 
+	std::vector<CompilationScope> scopes;
+	int scope_index;
 private:
 	code::Instructions m_instructions;
 	std::vector<Object *> m_constants;

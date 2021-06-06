@@ -1,12 +1,13 @@
 #ifndef LUPS_OBJECT_H
 #define LUPS_OBJECT_H
 
+#include "ast.h"
+#include "code.h"
 #include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "ast.h"
 
 typedef std::string ObjectType;
 class Boolean;
@@ -20,8 +21,9 @@ const ObjectType ERROR = "ERROR";
 const ObjectType FUNCTION = "FUNCTION";
 const ObjectType STRING = "STRING";
 const ObjectType BUILTIN = "BUILTIN";
-const ObjectType ARRAY_OBJ    = "ARRAY";
+const ObjectType ARRAY_OBJ = "ARRAY";
 const ObjectType HASH = "HASH";
+const ObjectType COMPILED_FUNCTION_OBJ = "COMPILED_FUNCTION_OBJ";
 } // namespace objecttypes
 
 typedef long long HashValue;
@@ -37,6 +39,16 @@ public:
 	virtual std::string Inspect() = 0;
 };
 
+class CompiledFunction : public Object {
+public:
+	CompiledFunction(code::Instructions inst) : Object(), m_instructions(inst) {}
+	ObjectType Type() { return objecttypes::INTEGER; }
+	std::string Inspect() { return "compiled-function"; }
+
+private:
+	code::Instructions m_instructions;
+};
+
 typedef Object *(*built_in)(std::vector<Object *> &);
 
 class Integer : public Object {
@@ -45,9 +57,7 @@ public:
 	ObjectType Type() { return objecttypes::INTEGER; }
 	std::string Inspect() { return std::to_string(value); }
 
-	HashKey hash_key() {
-		return HashKey{Type(), (HashValue)value};
-	}
+	HashKey hash_key() { return HashKey{Type(), (HashValue)value}; }
 
 	int value;
 };
@@ -58,9 +68,7 @@ public:
 	ObjectType Type() { return objecttypes::BOOLEAN; }
 	std::string Inspect() { return value ? "true" : "false"; }
 
-	HashKey hash_key() {
-		return HashKey{Type(), (HashValue)(value ? 1 : 0)};
-	}
+	HashKey hash_key() { return HashKey{Type(), (HashValue)(value ? 1 : 0)}; }
 
 	bool value;
 };
@@ -74,9 +82,7 @@ public:
 class Return : public Object {
 public:
 	Return(Object *v) : Object(), value(v) {}
-	~Return() {
-		delete value;
-	}
+	~Return() { delete value; }
 	ObjectType Type() { return objecttypes::RETURN; }
 	std::string Inspect() { return value->Inspect(); }
 
@@ -104,9 +110,7 @@ public:
 		m_outer = outer;
 	}
 
-	~Environment() {
-		delete m_outer;
-	}
+	~Environment() { delete m_outer; }
 
 	Object *set(std::string name, Object *val) {
 		m_store[name] = val;
@@ -199,9 +203,7 @@ struct HashPair {
 
 class Hash : public Object {
 public:
-	Hash() {
-		pairs = std::unordered_map<HashValue, HashPair*>();
-	}
+	Hash() { pairs = std::unordered_map<HashValue, HashPair *>(); }
 
 	~Hash() {
 		for (auto pr : pairs)
@@ -212,7 +214,7 @@ public:
 	std::string Inspect() {
 		std::string result;
 		result += "{";
-		for (const auto& pr : pairs) {
+		for (const auto &pr : pairs) {
 			result += pr.second->key->Inspect() + ": " + pr.second->value->Inspect();
 		}
 
@@ -221,7 +223,7 @@ public:
 		return result;
 	}
 
-	std::unordered_map<HashValue, HashPair*> pairs;
+	std::unordered_map<HashValue, HashPair *> pairs;
 };
 
 #endif
