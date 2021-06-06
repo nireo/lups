@@ -10,9 +10,31 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 #include <vector>
+
+const std::string
+run_lexer_tests(const std::string &input,
+								std::vector<std::pair<TokenType, std::string>> expected) {
+	auto lexer = Lexer(input);
+	for (int i = 0; i < (int)expected.size(); ++i) {
+		auto token = lexer.next_token();
+
+		if (expected[i].first != token.type) {
+			return "token types don't match at index: " + std::to_string(i);
+		}
+
+		if (expected[i].second != token.literal) {
+			return "token literals don't match at index: " + std::to_string(i);
+		}
+	}
+
+	// no error
+	return "";
+}
 
 TEST(LexerTest, TestNextToken) {
 	std::string input = "=+(){},;";
@@ -27,14 +49,8 @@ TEST(LexerTest, TestNextToken) {
 	expected.push_back(std::make_pair(tokentypes::COMMA, ","));
 	expected.push_back(std::make_pair(tokentypes::SEMICOLON, ";"));
 
-	auto lexer = Lexer(input);
-	for (int i = 0; i < (int)expected.size(); ++i) {
-		auto token = lexer.next_token();
-
-		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
-		EXPECT_EQ(expected[i].second, token.literal)
-				<< "token literals don't match";
-	}
+	auto err = run_lexer_tests(input, expected);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(LexerTest, IfStatements) {
@@ -63,14 +79,8 @@ TEST(LexerTest, IfStatements) {
 	expected.push_back(std::make_pair(tokentypes::SEMICOLON, ";"));
 	expected.push_back(std::make_pair(tokentypes::RBRACE, "}"));
 
-	auto lexer = Lexer(input);
-	for (int i = 0; i < (int)expected.size(); ++i) {
-		auto token = lexer.next_token();
-
-		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
-		EXPECT_EQ(expected[i].second, token.literal)
-				<< "token literals don't match";
-	}
+	auto err = run_lexer_tests(input, expected);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(LexerTest, Variables) {
@@ -88,14 +98,8 @@ TEST(LexerTest, Variables) {
 	expected.push_back(std::make_pair(tokentypes::INT, "5"));
 	expected.push_back(std::make_pair(tokentypes::SEMICOLON, ";"));
 
-	auto lexer = Lexer(input);
-	for (int i = 0; i < (int)expected.size(); ++i) {
-		auto token = lexer.next_token();
-
-		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
-		EXPECT_EQ(expected[i].second, token.literal)
-				<< "token literals don't match";
-	}
+	auto err = run_lexer_tests(input, expected);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(LexerTest, Strings) {
@@ -106,14 +110,8 @@ TEST(LexerTest, Strings) {
 	expected.push_back(std::make_pair(tokentypes::STRING, "foobar"));
 	expected.push_back(std::make_pair(tokentypes::STRING, "foo bar"));
 
-	auto lexer = Lexer(input);
-	for (int i = 0; i < (int)expected.size(); ++i) {
-		auto token = lexer.next_token();
-
-		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
-		EXPECT_EQ(expected[i].second, token.literal)
-				<< "token literals don't match";
-	}
+	auto err = run_lexer_tests(input, expected);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(LexerTest, FunctionDeclaration) {
@@ -139,14 +137,8 @@ TEST(LexerTest, FunctionDeclaration) {
 	expected.push_back(std::make_pair(tokentypes::SEMICOLON, ";"));
 	expected.push_back(std::make_pair(tokentypes::RBRACE, "}"));
 
-	auto lexer = Lexer(input);
-	for (int i = 0; i < (int)expected.size(); ++i) {
-		auto token = lexer.next_token();
-
-		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
-		EXPECT_EQ(expected[i].second, token.literal)
-				<< "token literals don't match";
-	}
+	auto err = run_lexer_tests(input, expected);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(LexerTest, EqualNonEqual) {
@@ -164,14 +156,8 @@ TEST(LexerTest, EqualNonEqual) {
 	expected.push_back(std::make_pair(tokentypes::INT, "5"));
 	expected.push_back(std::make_pair(tokentypes::SEMICOLON, ";"));
 
-	auto lexer = Lexer(input);
-	for (int i = 0; i < (int)expected.size(); ++i) {
-		auto token = lexer.next_token();
-
-		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
-		EXPECT_EQ(expected[i].second, token.literal)
-				<< "token literals don't match";
-	}
+	auto err = run_lexer_tests(input, expected);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(LexerTest, ArrayTest) {
@@ -184,14 +170,8 @@ TEST(LexerTest, ArrayTest) {
 	expected.push_back(std::make_pair(tokentypes::RBRACKET, "]"));
 	expected.push_back(std::make_pair(tokentypes::SEMICOLON, ";"));
 
-	auto lexer = Lexer(input);
-	for (int i = 0; i < (int)expected.size(); ++i) {
-		auto token = lexer.next_token();
-
-		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
-		EXPECT_EQ(expected[i].second, token.literal)
-				<< "token literals don't match";
-	}
+	auto err = run_lexer_tests(input, expected);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(LexerTest, HashTest) {
@@ -203,14 +183,8 @@ TEST(LexerTest, HashTest) {
 	expected.push_back(std::make_pair(tokentypes::STRING, "bar"));
 	expected.push_back(std::make_pair(tokentypes::RBRACE, "}"));
 
-	auto lexer = Lexer(input);
-	for (int i = 0; i < (int)expected.size(); ++i) {
-		auto token = lexer.next_token();
-
-		EXPECT_EQ(expected[i].first, token.type) << "token types don't match";
-		EXPECT_EQ(expected[i].second, token.literal)
-				<< "token literals don't match";
-	}
+	auto err = run_lexer_tests(input, expected);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(ParserTest, LetStatements) {
@@ -1354,14 +1328,58 @@ bool test_instructions(std::vector<code::Instructions> inst,
 	return true;
 }
 
-TEST(CompilerTest, IntegerArithmetic) {
-	struct CompilerTestCaseInteger {
-		std::string input;
-		std::vector<int> expected_constants;
-		std::vector<code::Instructions> expected_instructions;
-	};
+bool test_string_constant(const std::string &expected, Object *obj) {
+	auto res = dynamic_cast<String *>(obj);
+	if (res == nullptr)
+		return false;
 
-	std::vector<CompilerTestCaseInteger> test_cases{
+	if (res->value != expected)
+		return false;
+
+	return true;
+}
+
+template <typename T> struct CompilerTestcase {
+	std::string input;
+	std::vector<T> expected_constants;
+	std::vector<code::Instructions> expected_instructions;
+};
+
+template <typename T>
+const std::string
+run_compiler_tests(const std::vector<CompilerTestcase<T>> &tests) {
+	for (const auto &test : tests) {
+		auto program = parse_compiler_program_helper(test.input);
+
+		auto compiler = new Compiler();
+		auto status = compiler->compile(program.get());
+		if (status != 0)
+			return "The compilation was unsuccessful";
+
+		auto bytecode = compiler->bytecode();
+		if (!test_instructions(test.expected_instructions, bytecode->instructions))
+			return "The instructions don't match";
+		if (test.expected_constants.size() != bytecode->constants.size())
+			return "The amount of constants differs";
+
+		if constexpr (std::is_same<int, T>::value) {
+			for (int i = 0; i < (int)test.expected_constants.size(); ++i) {
+				if (!test_integer_object(bytecode->constants[i], test.expected_constants[i]))
+					return "integer constants don't match";
+			}
+		} else if constexpr (std::is_same<std::string, T>::value) {
+			for (int i = 0; i < (int)test.expected_constants.size(); ++i) {
+				if (!test_string_constant(test.expected_constants[i], bytecode->constants[i]))
+					return "string constants don't match";
+			}
+		}
+	}
+
+	return "";
+}
+
+TEST(CompilerTest, IntegerArithmetic) {
+	std::vector<CompilerTestcase<int>> test_cases{
 			{"1 + 2",
 			 {1, 2},
 			 {{
@@ -1412,105 +1430,44 @@ TEST(CompilerTest, IntegerArithmetic) {
 			 }}},
 	};
 
-	for (const auto &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-
-		auto compiler = new Compiler();
-		auto status = compiler->compile(program.get());
-		EXPECT_EQ(status, 0) << "The compilation was successful";
-
-		auto bytecode = compiler->bytecode();
-		EXPECT_TRUE(
-				test_instructions(tt.expected_instructions, bytecode->instructions));
-
-		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
-
-		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(test_integer_object(bytecode->constants[i],
-																			tt.expected_constants[i]));
-		}
-	}
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(CompilerTest, ConditionalTest) {
-	struct CompilerTestCaseConditional {
-		std::string input;
-		std::vector<int> expected_constants;
-		std::vector<code::Instructions> expected_instructions;
-	};
-
-	std::vector<CompilerTestCaseConditional> test_cases{
+	std::vector<CompilerTestcase<int>> test_cases{
 			{"if (true) { 10 } else { 20 }; 3333;",
 			 {10, 20, 3333},
 			 {{
-					 // 0000
 					 code::make(code::OpTrue, {}),
-					 // 0001
 					 code::make(code::OpJumpNotTruthy, {10}),
-					 // 0004
 					 code::make(code::OpConstant, {0}),
-					 // 0007
 					 code::make(code::OpJump, {13}),
-					 // 0010
 					 code::make(code::OpConstant, {1}),
-					 // 0013
 					 code::make(code::OpPop, {}),
-					 // 0014
 					 code::make(code::OpConstant, {2}),
-					 // 0017
 					 code::make(code::OpPop, {}),
 			 }}},
 			{"if (true) { 10 }; 3333;",
 			 {10, 3333},
 			 {{
-					 // 0000
 					 code::make(code::OpTrue, {}),
-					 // 0001
 					 code::make(code::OpJumpNotTruthy, {10}),
-					 // 0004
 					 code::make(code::OpConstant, {0}),
-					 // 0007
 					 code::make(code::OpJump, {11}),
-					 // 0010
 					 code::make(code::OpNull, {}),
-					 // 0011
 					 code::make(code::OpPop, {}),
-					 // 0012
 					 code::make(code::OpConstant, {1}),
-					 // 0015
 					 code::make(code::OpPop, {}),
 			 }}},
 	};
 
-	for (const auto &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-
-		auto compiler = new Compiler();
-		auto status = compiler->compile(program.get());
-		EXPECT_EQ(status, 0) << "The compilation was successful";
-
-		auto bytecode = compiler->bytecode();
-		EXPECT_TRUE(
-				test_instructions(tt.expected_instructions, bytecode->instructions));
-
-		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
-
-		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(
-					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
-					<< code::instructions_to_string(bytecode->instructions);
-		}
-	}
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(CompilerTest, BooleanExpressions) {
-	struct CompilerTestCaseBoolean {
-		std::string input;
-		std::vector<int> expected_constants;
-		std::vector<code::Instructions> expected_instructions;
-	};
-
-	std::vector<CompilerTestCaseBoolean> test_cases{
+	std::vector<CompilerTestcase<int>> test_cases{
 			{"true",
 			 {},
 			 {{
@@ -1580,25 +1537,8 @@ TEST(CompilerTest, BooleanExpressions) {
 			 }}},
 	};
 
-	for (const auto &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-
-		auto compiler = new Compiler();
-		auto status = compiler->compile(program.get());
-		EXPECT_EQ(status, 0) << "The compilation was successful";
-
-		auto bytecode = compiler->bytecode();
-		EXPECT_TRUE(
-				test_instructions(tt.expected_instructions, bytecode->instructions));
-
-		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
-
-		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(
-					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
-					<< "object evaluation fails with input " << tt.input;
-		}
-	}
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(CodeTest, InstructionString) {
@@ -1777,25 +1717,8 @@ TEST(VMTest, Conditionals) {
 	}
 }
 
-bool test_string_constant(const std::string &expected, Object *obj) {
-	auto res = dynamic_cast<String *>(obj);
-	if (res == nullptr)
-		return false;
-
-	if (res->value != expected)
-		return false;
-
-	return true;
-}
-
 TEST(CompilerTest, StringExpressions) {
-	struct CompilerTestCaseStringExpression {
-		std::string input;
-		std::vector<std::string> expected_constants;
-		std::vector<code::Instructions> expected_instructions;
-	};
-
-	std::vector<CompilerTestCaseStringExpression> test_cases{
+	std::vector<CompilerTestcase<std::string>> test_cases{
 			{"\"lups\"",
 			 {"lups"},
 			 {{
@@ -1811,35 +1734,12 @@ TEST(CompilerTest, StringExpressions) {
 					 code::make(code::OpPop, {}),
 			 }}}};
 
-	for (const auto &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-
-		auto compiler = new Compiler();
-		auto status = compiler->compile(program.get());
-		EXPECT_EQ(status, 0) << "The compilation was successful";
-
-		auto bytecode = compiler->bytecode();
-		EXPECT_TRUE(
-				test_instructions(tt.expected_instructions, bytecode->instructions));
-
-		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
-
-		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(test_string_constant(tt.expected_constants[i],
-																			 bytecode->constants[i]))
-					<< "object evaluation fails with input " << tt.input;
-		}
-	}
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(CompilerTest, GlobalLetStatements) {
-	struct CompilerTestCaseLetStatement {
-		std::string input;
-		std::vector<int> expected_constants;
-		std::vector<code::Instructions> expected_instructions;
-	};
-
-	std::vector<CompilerTestCaseLetStatement> test_cases{
+	std::vector<CompilerTestcase<int>> test_cases{
 			{"let one = 1;"
 			 "let two = 2;",
 			 {1, 2},
@@ -1872,28 +1772,8 @@ TEST(CompilerTest, GlobalLetStatements) {
 			 }}},
 	};
 
-	int test_index = 0;
-	for (const auto &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-
-		auto compiler = new Compiler();
-		auto status = compiler->compile(program.get());
-		EXPECT_EQ(status, 0) << "The compilation was successful";
-
-		auto bytecode = compiler->bytecode();
-		EXPECT_TRUE(
-				test_instructions(tt.expected_instructions, bytecode->instructions))
-				<< "Instructions incorrect for test" << test_index << '\n';
-		++test_index;
-
-		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
-
-		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(
-					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
-					<< "object evaluation fails with input " << tt.input;
-		}
-	}
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(SymbolTableTest, TestDefine) {
@@ -1997,13 +1877,7 @@ TEST(VMTest, StringExpressions) {
 }
 
 TEST(CompilerTest, ArrayLiterals) {
-	struct CompilerTestcaseInteger {
-		std::string input;
-		std::vector<int> expected_constants;
-		std::vector<code::Instructions> expected_instructions;
-	};
-
-	std::vector<CompilerTestcaseInteger> test_cases{
+	std::vector<CompilerTestcase<int>> test_cases{
 			{"[]",
 			 {},
 			 {{
@@ -2035,25 +1909,8 @@ TEST(CompilerTest, ArrayLiterals) {
 					 code::make(code::OpPop, {}),
 			 }}}};
 
-	for (const auto &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-
-		auto compiler = new Compiler();
-		auto status = compiler->compile(program.get());
-		EXPECT_EQ(status, 0) << "The compilation was unsuccessful";
-
-		auto bytecode = compiler->bytecode();
-		EXPECT_TRUE(
-				test_instructions(tt.expected_instructions, bytecode->instructions));
-
-		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
-
-		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(
-					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
-					<< "object evaluation fails with input " << tt.input;
-		}
-	}
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(VMTest, ArrayLiterals) {
@@ -2062,11 +1919,9 @@ TEST(VMTest, ArrayLiterals) {
 		std::vector<int> expected;
 	};
 
-	std::vector<Testcase> test_cases {
-		{"[]", {}},
-		{"[1, 2, 3]", {1, 2, 3}},
-		{"[1 + 2, 3 * 4, 5 + 6]", {3, 12, 11}}
-	};
+	std::vector<Testcase> test_cases{{"[]", {}},
+																	 {"[1, 2, 3]", {1, 2, 3}},
+																	 {"[1 + 2, 3 * 4, 5 + 6]", {3, 12, 11}}};
 
 	for (auto const &tt : test_cases) {
 		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
@@ -2081,7 +1936,7 @@ TEST(VMTest, ArrayLiterals) {
 		auto stack_elem = vm->last_popped_stack_elem();
 		EXPECT_NE(stack_elem, nullptr);
 
-		auto arr = dynamic_cast<Array*>(stack_elem);
+		auto arr = dynamic_cast<Array *>(stack_elem);
 		EXPECT_EQ(arr->elements.size(), tt.expected.size());
 		for (int i = 0; i < arr->elements.size(); ++i) {
 			EXPECT_TRUE(test_integer_object(arr->elements[i], tt.expected[i]));
@@ -2090,70 +1945,40 @@ TEST(VMTest, ArrayLiterals) {
 }
 
 TEST(CompilerTest, HashLiterals) {
-	struct CompilerTestcaseInteger {
-		std::string input;
-		std::vector<int> expected_constants;
-		std::vector<code::Instructions> expected_instructions;
-	};
+	std::vector<CompilerTestcase<int>> test_cases{
+			{"{}",
+			 {},
+			 {{
+					 code::make(code::OpHash, {0}),
+					 code::make(code::OpPop, {}),
+			 }}},
+			{"{1: 2, 3: 4, 5: 6}",
+			 {1, 2, 3, 4, 5, 6},
+			 {{
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpConstant, {3}),
+					 code::make(code::OpConstant, {4}),
+					 code::make(code::OpConstant, {5}),
+					 code::make(code::OpHash, {6}),
+					 code::make(code::OpPop, {}),
+			 }}},
+			{"{1: 2 + 3, 4: 5 * 6}",
+			 {1, 2, 3, 4, 5, 6},
+			 {{
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpAdd, {}),
+					 code::make(code::OpConstant, {3}),
+					 code::make(code::OpConstant, {4}),
+					 code::make(code::OpConstant, {5}),
+					 code::make(code::OpMul, {}),
+					 code::make(code::OpHash, {4}),
+					 code::make(code::OpPop, {}),
+			 }}}};
 
-	std::vector<CompilerTestcaseInteger> test_cases {
-		{
-			"{}",
-			{},
-			{{
-					code::make(code::OpHash, {0}),
-					code::make(code::OpPop, {}),
-				}}
-		},
-		{
-			"{1: 2, 3: 4, 5: 6}",
-			{1, 2, 3, 4, 5, 6},
-			{{
-					code::make(code::OpConstant, {0}),
-					code::make(code::OpConstant, {1}),
-					code::make(code::OpConstant, {2}),
-					code::make(code::OpConstant, {3}),
-					code::make(code::OpConstant, {4}),
-					code::make(code::OpConstant, {5}),
-					code::make(code::OpHash, {6}),
-					code::make(code::OpPop, {}),
-				}}
-		},
-		{
-			"{1: 2 + 3, 4: 5 * 6}",
-			{1, 2, 3, 4, 5, 6},
-			{{
-					code::make(code::OpConstant, {0}),
-					code::make(code::OpConstant, {1}),
-					code::make(code::OpConstant, {2}),
-					code::make(code::OpAdd, {}),
-					code::make(code::OpConstant, {3}),
-					code::make(code::OpConstant, {4}),
-					code::make(code::OpConstant, {5}),
-					code::make(code::OpMul, {}),
-					code::make(code::OpHash, {4}),
-					code::make(code::OpPop, {}),
-				}}
-		}
-	};
-
-	for (const auto &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-
-		auto compiler = new Compiler();
-		auto status = compiler->compile(program.get());
-		EXPECT_EQ(status, 0) << "The compilation was unsuccessful";
-
-		auto bytecode = compiler->bytecode();
-		EXPECT_TRUE(
-				test_instructions(tt.expected_instructions, bytecode->instructions));
-
-		EXPECT_EQ(tt.expected_constants.size(), bytecode->constants.size());
-
-		for (int i = 0; i < (int)tt.expected_constants.size(); ++i) {
-			EXPECT_TRUE(
-					test_integer_object(bytecode->constants[i], tt.expected_constants[i]))
-					<< "object evaluation fails with input " << tt.input;
-		}
-	}
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
