@@ -2010,12 +2010,12 @@ TEST(VMTest, IndexExpressions) {
 
 TEST(CompilerTest, CompilerScopes) {
 	auto compiler = new Compiler();
-	EXPECT_NE(compiler->scope_index, 0);
+	EXPECT_EQ(compiler->scope_index, 0);
 
 	compiler->emit(code::OpMul);
 
-	// compiler->enter_scope();
-	EXPECT_NE(compiler->scope_index, 1);
+	compiler->enter_scope();
+	EXPECT_EQ(compiler->scope_index, 1);
 
 	compiler->emit(code::OpSub);
 	EXPECT_EQ(compiler->scopes[compiler->scope_index].instructions.size(), 1);
@@ -2023,7 +2023,7 @@ TEST(CompilerTest, CompilerScopes) {
 	auto last = compiler->scopes[compiler->scope_index].last_inst;
 	EXPECT_EQ(last.op, code::OpSub);
 
-	// compiler->leave_scope();
+	compiler->leave_scope();
 	EXPECT_EQ(compiler->scope_index, 0);
 	compiler->emit(code::OpAdd);
 

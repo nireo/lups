@@ -1,10 +1,10 @@
-Start testing: Jun 06 13:26 EEST
+Start testing: Jun 06 23:13 EEST
 ----------------------------------------------------------
-1/65 Testing: LexerTest.TestNextToken
-1/65 Test: LexerTest.TestNextToken
+1/66 Testing: LexerTest.TestNextToken
+1/66 Test: LexerTest.TestNextToken
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=LexerTest.TestNextToken" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"LexerTest.TestNextToken" start time: Jun 06 13:26 EEST
+"LexerTest.TestNextToken" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -23,15 +23,15 @@ Note: Google Test filter = LexerTest.TestNextToken
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.TestNextToken" end time: Jun 06 13:26 EEST
+"LexerTest.TestNextToken" end time: Jun 06 23:13 EEST
 "LexerTest.TestNextToken" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-2/65 Testing: LexerTest.IfStatements
-2/65 Test: LexerTest.IfStatements
+2/66 Testing: LexerTest.IfStatements
+2/66 Test: LexerTest.IfStatements
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=LexerTest.IfStatements" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"LexerTest.IfStatements" start time: Jun 06 13:26 EEST
+"LexerTest.IfStatements" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -50,15 +50,15 @@ Note: Google Test filter = LexerTest.IfStatements
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.IfStatements" end time: Jun 06 13:26 EEST
+"LexerTest.IfStatements" end time: Jun 06 23:13 EEST
 "LexerTest.IfStatements" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-3/65 Testing: LexerTest.Variables
-3/65 Test: LexerTest.Variables
+3/66 Testing: LexerTest.Variables
+3/66 Test: LexerTest.Variables
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=LexerTest.Variables" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"LexerTest.Variables" start time: Jun 06 13:26 EEST
+"LexerTest.Variables" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -77,15 +77,15 @@ Note: Google Test filter = LexerTest.Variables
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.Variables" end time: Jun 06 13:26 EEST
+"LexerTest.Variables" end time: Jun 06 23:13 EEST
 "LexerTest.Variables" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-4/65 Testing: LexerTest.Strings
-4/65 Test: LexerTest.Strings
+4/66 Testing: LexerTest.Strings
+4/66 Test: LexerTest.Strings
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=LexerTest.Strings" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"LexerTest.Strings" start time: Jun 06 13:26 EEST
+"LexerTest.Strings" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -101,18 +101,18 @@ Note: Google Test filter = LexerTest.Strings
 [==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
-Test time =   0.00 sec
+Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.Strings" end time: Jun 06 13:26 EEST
+"LexerTest.Strings" end time: Jun 06 23:13 EEST
 "LexerTest.Strings" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-5/65 Testing: LexerTest.FunctionDeclaration
-5/65 Test: LexerTest.FunctionDeclaration
+5/66 Testing: LexerTest.FunctionDeclaration
+5/66 Test: LexerTest.FunctionDeclaration
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=LexerTest.FunctionDeclaration" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"LexerTest.FunctionDeclaration" start time: Jun 06 13:26 EEST
+"LexerTest.FunctionDeclaration" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -125,21 +125,21 @@ Note: Google Test filter = LexerTest.FunctionDeclaration
 [----------] 1 test from LexerTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.FunctionDeclaration" end time: Jun 06 13:26 EEST
+"LexerTest.FunctionDeclaration" end time: Jun 06 23:13 EEST
 "LexerTest.FunctionDeclaration" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-6/65 Testing: LexerTest.EqualNonEqual
-6/65 Test: LexerTest.EqualNonEqual
+6/66 Testing: LexerTest.EqualNonEqual
+6/66 Test: LexerTest.EqualNonEqual
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=LexerTest.EqualNonEqual" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"LexerTest.EqualNonEqual" start time: Jun 06 13:26 EEST
+"LexerTest.EqualNonEqual" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -158,15 +158,15 @@ Note: Google Test filter = LexerTest.EqualNonEqual
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.EqualNonEqual" end time: Jun 06 13:26 EEST
+"LexerTest.EqualNonEqual" end time: Jun 06 23:13 EEST
 "LexerTest.EqualNonEqual" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-7/65 Testing: LexerTest.ArrayTest
-7/65 Test: LexerTest.ArrayTest
+7/66 Testing: LexerTest.ArrayTest
+7/66 Test: LexerTest.ArrayTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=LexerTest.ArrayTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"LexerTest.ArrayTest" start time: Jun 06 13:26 EEST
+"LexerTest.ArrayTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -185,15 +185,15 @@ Note: Google Test filter = LexerTest.ArrayTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.ArrayTest" end time: Jun 06 13:26 EEST
+"LexerTest.ArrayTest" end time: Jun 06 23:13 EEST
 "LexerTest.ArrayTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-8/65 Testing: LexerTest.HashTest
-8/65 Test: LexerTest.HashTest
+8/66 Testing: LexerTest.HashTest
+8/66 Test: LexerTest.HashTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=LexerTest.HashTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"LexerTest.HashTest" start time: Jun 06 13:26 EEST
+"LexerTest.HashTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -212,15 +212,15 @@ Note: Google Test filter = LexerTest.HashTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"LexerTest.HashTest" end time: Jun 06 13:26 EEST
+"LexerTest.HashTest" end time: Jun 06 23:13 EEST
 "LexerTest.HashTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-9/65 Testing: ParserTest.LetStatements
-9/65 Test: ParserTest.LetStatements
+9/66 Testing: ParserTest.LetStatements
+9/66 Test: ParserTest.LetStatements
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.LetStatements" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.LetStatements" start time: Jun 06 13:26 EEST
+"ParserTest.LetStatements" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -239,15 +239,15 @@ Note: Google Test filter = ParserTest.LetStatements
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.LetStatements" end time: Jun 06 13:26 EEST
+"ParserTest.LetStatements" end time: Jun 06 23:13 EEST
 "ParserTest.LetStatements" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-10/65 Testing: ParserTest.ReturnStatements
-10/65 Test: ParserTest.ReturnStatements
+10/66 Testing: ParserTest.ReturnStatements
+10/66 Test: ParserTest.ReturnStatements
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.ReturnStatements" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.ReturnStatements" start time: Jun 06 13:26 EEST
+"ParserTest.ReturnStatements" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -266,15 +266,15 @@ Note: Google Test filter = ParserTest.ReturnStatements
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.ReturnStatements" end time: Jun 06 13:26 EEST
+"ParserTest.ReturnStatements" end time: Jun 06 23:13 EEST
 "ParserTest.ReturnStatements" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-11/65 Testing: ParserTest.IdentifierExpression
-11/65 Test: ParserTest.IdentifierExpression
+11/66 Testing: ParserTest.IdentifierExpression
+11/66 Test: ParserTest.IdentifierExpression
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.IdentifierExpression" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.IdentifierExpression" start time: Jun 06 13:26 EEST
+"ParserTest.IdentifierExpression" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -293,15 +293,15 @@ Note: Google Test filter = ParserTest.IdentifierExpression
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.IdentifierExpression" end time: Jun 06 13:26 EEST
+"ParserTest.IdentifierExpression" end time: Jun 06 23:13 EEST
 "ParserTest.IdentifierExpression" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-12/65 Testing: ParserTest.IntegerLiteralExpression
-12/65 Test: ParserTest.IntegerLiteralExpression
+12/66 Testing: ParserTest.IntegerLiteralExpression
+12/66 Test: ParserTest.IntegerLiteralExpression
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.IntegerLiteralExpression" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.IntegerLiteralExpression" start time: Jun 06 13:26 EEST
+"ParserTest.IntegerLiteralExpression" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -314,21 +314,21 @@ Note: Google Test filter = ParserTest.IntegerLiteralExpression
 [----------] 1 test from ParserTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.IntegerLiteralExpression" end time: Jun 06 13:26 EEST
+"ParserTest.IntegerLiteralExpression" end time: Jun 06 23:13 EEST
 "ParserTest.IntegerLiteralExpression" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-13/65 Testing: ParserTest.PrefixExpressionTest
-13/65 Test: ParserTest.PrefixExpressionTest
+13/66 Testing: ParserTest.PrefixExpressionTest
+13/66 Test: ParserTest.PrefixExpressionTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.PrefixExpressionTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.PrefixExpressionTest" start time: Jun 06 13:26 EEST
+"ParserTest.PrefixExpressionTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -347,15 +347,15 @@ Note: Google Test filter = ParserTest.PrefixExpressionTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.PrefixExpressionTest" end time: Jun 06 13:26 EEST
+"ParserTest.PrefixExpressionTest" end time: Jun 06 23:13 EEST
 "ParserTest.PrefixExpressionTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-14/65 Testing: ParserTest.HashLiteralStrings
-14/65 Test: ParserTest.HashLiteralStrings
+14/66 Testing: ParserTest.HashLiteralStrings
+14/66 Test: ParserTest.HashLiteralStrings
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.HashLiteralStrings" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.HashLiteralStrings" start time: Jun 06 13:26 EEST
+"ParserTest.HashLiteralStrings" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -374,15 +374,15 @@ Note: Google Test filter = ParserTest.HashLiteralStrings
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.HashLiteralStrings" end time: Jun 06 13:26 EEST
+"ParserTest.HashLiteralStrings" end time: Jun 06 23:13 EEST
 "ParserTest.HashLiteralStrings" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-15/65 Testing: ParserTest.EmptyHashLiteral
-15/65 Test: ParserTest.EmptyHashLiteral
+15/66 Testing: ParserTest.EmptyHashLiteral
+15/66 Test: ParserTest.EmptyHashLiteral
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.EmptyHashLiteral" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.EmptyHashLiteral" start time: Jun 06 13:26 EEST
+"ParserTest.EmptyHashLiteral" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -401,15 +401,15 @@ Note: Google Test filter = ParserTest.EmptyHashLiteral
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.EmptyHashLiteral" end time: Jun 06 13:26 EEST
+"ParserTest.EmptyHashLiteral" end time: Jun 06 23:13 EEST
 "ParserTest.EmptyHashLiteral" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-16/65 Testing: ParserTest.HashLiteralWithExpressions
-16/65 Test: ParserTest.HashLiteralWithExpressions
+16/66 Testing: ParserTest.HashLiteralWithExpressions
+16/66 Test: ParserTest.HashLiteralWithExpressions
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.HashLiteralWithExpressions" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.HashLiteralWithExpressions" start time: Jun 06 13:26 EEST
+"ParserTest.HashLiteralWithExpressions" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -428,15 +428,15 @@ Note: Google Test filter = ParserTest.HashLiteralWithExpressions
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.HashLiteralWithExpressions" end time: Jun 06 13:26 EEST
+"ParserTest.HashLiteralWithExpressions" end time: Jun 06 23:13 EEST
 "ParserTest.HashLiteralWithExpressions" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-17/65 Testing: ParserTest.InfixExpressionTest
-17/65 Test: ParserTest.InfixExpressionTest
+17/66 Testing: ParserTest.InfixExpressionTest
+17/66 Test: ParserTest.InfixExpressionTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.InfixExpressionTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.InfixExpressionTest" start time: Jun 06 13:26 EEST
+"ParserTest.InfixExpressionTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -455,15 +455,15 @@ Note: Google Test filter = ParserTest.InfixExpressionTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.InfixExpressionTest" end time: Jun 06 13:26 EEST
+"ParserTest.InfixExpressionTest" end time: Jun 06 23:13 EEST
 "ParserTest.InfixExpressionTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-18/65 Testing: ParserTest.BooleanInfixExpression
-18/65 Test: ParserTest.BooleanInfixExpression
+18/66 Testing: ParserTest.BooleanInfixExpression
+18/66 Test: ParserTest.BooleanInfixExpression
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.BooleanInfixExpression" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.BooleanInfixExpression" start time: Jun 06 13:26 EEST
+"ParserTest.BooleanInfixExpression" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -482,15 +482,15 @@ Note: Google Test filter = ParserTest.BooleanInfixExpression
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.BooleanInfixExpression" end time: Jun 06 13:26 EEST
+"ParserTest.BooleanInfixExpression" end time: Jun 06 23:13 EEST
 "ParserTest.BooleanInfixExpression" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-19/65 Testing: ParserTest.OperatorPrecedenceParsing
-19/65 Test: ParserTest.OperatorPrecedenceParsing
+19/66 Testing: ParserTest.OperatorPrecedenceParsing
+19/66 Test: ParserTest.OperatorPrecedenceParsing
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.OperatorPrecedenceParsing" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.OperatorPrecedenceParsing" start time: Jun 06 13:26 EEST
+"ParserTest.OperatorPrecedenceParsing" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -509,15 +509,15 @@ Note: Google Test filter = ParserTest.OperatorPrecedenceParsing
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.OperatorPrecedenceParsing" end time: Jun 06 13:26 EEST
+"ParserTest.OperatorPrecedenceParsing" end time: Jun 06 23:13 EEST
 "ParserTest.OperatorPrecedenceParsing" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-20/65 Testing: ParserTest.IfExpressionTest
-20/65 Test: ParserTest.IfExpressionTest
+20/66 Testing: ParserTest.IfExpressionTest
+20/66 Test: ParserTest.IfExpressionTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.IfExpressionTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.IfExpressionTest" start time: Jun 06 13:26 EEST
+"ParserTest.IfExpressionTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -526,25 +526,25 @@ Note: Google Test filter = ParserTest.IfExpressionTest
 [----------] Global test environment set-up.
 [----------] 1 test from ParserTest
 [ RUN      ] ParserTest.IfExpressionTest
-[       OK ] ParserTest.IfExpressionTest (1 ms)
-[----------] 1 test from ParserTest (1 ms total)
+[       OK ] ParserTest.IfExpressionTest (0 ms)
+[----------] 1 test from ParserTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.IfExpressionTest" end time: Jun 06 13:26 EEST
+"ParserTest.IfExpressionTest" end time: Jun 06 23:13 EEST
 "ParserTest.IfExpressionTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-21/65 Testing: ParserTest.FunctionLiteralParsing
-21/65 Test: ParserTest.FunctionLiteralParsing
+21/66 Testing: ParserTest.FunctionLiteralParsing
+21/66 Test: ParserTest.FunctionLiteralParsing
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.FunctionLiteralParsing" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.FunctionLiteralParsing" start time: Jun 06 13:26 EEST
+"ParserTest.FunctionLiteralParsing" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -557,21 +557,21 @@ Note: Google Test filter = ParserTest.FunctionLiteralParsing
 [----------] 1 test from ParserTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.FunctionLiteralParsing" end time: Jun 06 13:26 EEST
+"ParserTest.FunctionLiteralParsing" end time: Jun 06 23:13 EEST
 "ParserTest.FunctionLiteralParsing" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-22/65 Testing: ParserTest.FunctionParameterTest
-22/65 Test: ParserTest.FunctionParameterTest
+22/66 Testing: ParserTest.FunctionParameterTest
+22/66 Test: ParserTest.FunctionParameterTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.FunctionParameterTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.FunctionParameterTest" start time: Jun 06 13:26 EEST
+"ParserTest.FunctionParameterTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -580,25 +580,25 @@ Note: Google Test filter = ParserTest.FunctionParameterTest
 [----------] Global test environment set-up.
 [----------] 1 test from ParserTest
 [ RUN      ] ParserTest.FunctionParameterTest
-[       OK ] ParserTest.FunctionParameterTest (1 ms)
-[----------] 1 test from ParserTest (1 ms total)
+[       OK ] ParserTest.FunctionParameterTest (0 ms)
+[----------] 1 test from ParserTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.FunctionParameterTest" end time: Jun 06 13:26 EEST
+"ParserTest.FunctionParameterTest" end time: Jun 06 23:13 EEST
 "ParserTest.FunctionParameterTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-23/65 Testing: ParserTest.CallExpressionParsing
-23/65 Test: ParserTest.CallExpressionParsing
+23/66 Testing: ParserTest.CallExpressionParsing
+23/66 Test: ParserTest.CallExpressionParsing
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.CallExpressionParsing" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.CallExpressionParsing" start time: Jun 06 13:26 EEST
+"ParserTest.CallExpressionParsing" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -608,24 +608,24 @@ Note: Google Test filter = ParserTest.CallExpressionParsing
 [----------] 1 test from ParserTest
 [ RUN      ] ParserTest.CallExpressionParsing
 [       OK ] ParserTest.CallExpressionParsing (0 ms)
-[----------] 1 test from ParserTest (1 ms total)
+[----------] 1 test from ParserTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.CallExpressionParsing" end time: Jun 06 13:26 EEST
+"ParserTest.CallExpressionParsing" end time: Jun 06 23:13 EEST
 "ParserTest.CallExpressionParsing" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-24/65 Testing: ParserTest.StringLiteralTest
-24/65 Test: ParserTest.StringLiteralTest
+24/66 Testing: ParserTest.StringLiteralTest
+24/66 Test: ParserTest.StringLiteralTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.StringLiteralTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.StringLiteralTest" start time: Jun 06 13:26 EEST
+"ParserTest.StringLiteralTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -644,15 +644,15 @@ Note: Google Test filter = ParserTest.StringLiteralTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.StringLiteralTest" end time: Jun 06 13:26 EEST
+"ParserTest.StringLiteralTest" end time: Jun 06 23:13 EEST
 "ParserTest.StringLiteralTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-25/65 Testing: ParserTest.ArrayLiteralParsing
-25/65 Test: ParserTest.ArrayLiteralParsing
+25/66 Testing: ParserTest.ArrayLiteralParsing
+25/66 Test: ParserTest.ArrayLiteralParsing
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.ArrayLiteralParsing" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.ArrayLiteralParsing" start time: Jun 06 13:26 EEST
+"ParserTest.ArrayLiteralParsing" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -665,21 +665,21 @@ Note: Google Test filter = ParserTest.ArrayLiteralParsing
 [----------] 1 test from ParserTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (0 ms total)
+[==========] 1 test from 1 test suite ran. (1 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.ArrayLiteralParsing" end time: Jun 06 13:26 EEST
+"ParserTest.ArrayLiteralParsing" end time: Jun 06 23:13 EEST
 "ParserTest.ArrayLiteralParsing" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-26/65 Testing: ParserTest.IndexExpression
-26/65 Test: ParserTest.IndexExpression
+26/66 Testing: ParserTest.IndexExpression
+26/66 Test: ParserTest.IndexExpression
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParserTest.IndexExpression" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParserTest.IndexExpression" start time: Jun 06 13:26 EEST
+"ParserTest.IndexExpression" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -698,15 +698,15 @@ Note: Google Test filter = ParserTest.IndexExpression
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParserTest.IndexExpression" end time: Jun 06 13:26 EEST
+"ParserTest.IndexExpression" end time: Jun 06 23:13 EEST
 "ParserTest.IndexExpression" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-27/65 Testing: ParsetTest.BooleanPrefixExpressionTest
-27/65 Test: ParsetTest.BooleanPrefixExpressionTest
+27/66 Testing: ParsetTest.BooleanPrefixExpressionTest
+27/66 Test: ParsetTest.BooleanPrefixExpressionTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ParsetTest.BooleanPrefixExpressionTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ParsetTest.BooleanPrefixExpressionTest" start time: Jun 06 13:26 EEST
+"ParsetTest.BooleanPrefixExpressionTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -725,15 +725,15 @@ Note: Google Test filter = ParsetTest.BooleanPrefixExpressionTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ParsetTest.BooleanPrefixExpressionTest" end time: Jun 06 13:26 EEST
+"ParsetTest.BooleanPrefixExpressionTest" end time: Jun 06 23:13 EEST
 "ParsetTest.BooleanPrefixExpressionTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-28/65 Testing: EvalTest.IntegerExpressions
-28/65 Test: EvalTest.IntegerExpressions
+28/66 Testing: EvalTest.IntegerExpressions
+28/66 Test: EvalTest.IntegerExpressions
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.IntegerExpressions" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.IntegerExpressions" start time: Jun 06 13:26 EEST
+"EvalTest.IntegerExpressions" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -752,15 +752,15 @@ Note: Google Test filter = EvalTest.IntegerExpressions
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.IntegerExpressions" end time: Jun 06 13:26 EEST
+"EvalTest.IntegerExpressions" end time: Jun 06 23:13 EEST
 "EvalTest.IntegerExpressions" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-29/65 Testing: EvalTest.BooleanExpression
-29/65 Test: EvalTest.BooleanExpression
+29/66 Testing: EvalTest.BooleanExpression
+29/66 Test: EvalTest.BooleanExpression
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.BooleanExpression" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.BooleanExpression" start time: Jun 06 13:26 EEST
+"EvalTest.BooleanExpression" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -779,15 +779,15 @@ Note: Google Test filter = EvalTest.BooleanExpression
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.BooleanExpression" end time: Jun 06 13:26 EEST
+"EvalTest.BooleanExpression" end time: Jun 06 23:13 EEST
 "EvalTest.BooleanExpression" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-30/65 Testing: EvalTest.PrefixExpressionTest
-30/65 Test: EvalTest.PrefixExpressionTest
+30/66 Testing: EvalTest.PrefixExpressionTest
+30/66 Test: EvalTest.PrefixExpressionTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.PrefixExpressionTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.PrefixExpressionTest" start time: Jun 06 13:26 EEST
+"EvalTest.PrefixExpressionTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -796,34 +796,7 @@ Note: Google Test filter = EvalTest.PrefixExpressionTest
 [----------] Global test environment set-up.
 [----------] 1 test from EvalTest
 [ RUN      ] EvalTest.PrefixExpressionTest
-[       OK ] EvalTest.PrefixExpressionTest (0 ms)
-[----------] 1 test from EvalTest (0 ms total)
-
-[----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (0 ms total)
-[  PASSED  ] 1 test.
-<end of output>
-Test time =   0.00 sec
-----------------------------------------------------------
-Test Passed.
-"EvalTest.PrefixExpressionTest" end time: Jun 06 13:26 EEST
-"EvalTest.PrefixExpressionTest" time elapsed: 00:00:00
-----------------------------------------------------------
-
-31/65 Testing: EvalTest.IfElseTest
-31/65 Test: EvalTest.IfElseTest
-Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.IfElseTest" "--gtest_also_run_disabled_tests"
-Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.IfElseTest" start time: Jun 06 13:26 EEST
-Output:
-----------------------------------------------------------
-Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
-Note: Google Test filter = EvalTest.IfElseTest
-[==========] Running 1 test from 1 test suite.
-[----------] Global test environment set-up.
-[----------] 1 test from EvalTest
-[ RUN      ] EvalTest.IfElseTest
-[       OK ] EvalTest.IfElseTest (1 ms)
+[       OK ] EvalTest.PrefixExpressionTest (1 ms)
 [----------] 1 test from EvalTest (1 ms total)
 
 [----------] Global test environment tear-down
@@ -833,15 +806,42 @@ Note: Google Test filter = EvalTest.IfElseTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.IfElseTest" end time: Jun 06 13:26 EEST
+"EvalTest.PrefixExpressionTest" end time: Jun 06 23:13 EEST
+"EvalTest.PrefixExpressionTest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+31/66 Testing: EvalTest.IfElseTest
+31/66 Test: EvalTest.IfElseTest
+Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.IfElseTest" "--gtest_also_run_disabled_tests"
+Directory: /home/eemil/dev/c++/lups/build
+"EvalTest.IfElseTest" start time: Jun 06 23:13 EEST
+Output:
+----------------------------------------------------------
+Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = EvalTest.IfElseTest
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from EvalTest
+[ RUN      ] EvalTest.IfElseTest
+[       OK ] EvalTest.IfElseTest (0 ms)
+[----------] 1 test from EvalTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"EvalTest.IfElseTest" end time: Jun 06 23:13 EEST
 "EvalTest.IfElseTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-32/65 Testing: EvalTest.ReturnTest
-32/65 Test: EvalTest.ReturnTest
+32/66 Testing: EvalTest.ReturnTest
+32/66 Test: EvalTest.ReturnTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.ReturnTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.ReturnTest" start time: Jun 06 13:26 EEST
+"EvalTest.ReturnTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -860,15 +860,15 @@ Note: Google Test filter = EvalTest.ReturnTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.ReturnTest" end time: Jun 06 13:26 EEST
+"EvalTest.ReturnTest" end time: Jun 06 23:13 EEST
 "EvalTest.ReturnTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-33/65 Testing: EvalTest.ReturnComplex
-33/65 Test: EvalTest.ReturnComplex
+33/66 Testing: EvalTest.ReturnComplex
+33/66 Test: EvalTest.ReturnComplex
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.ReturnComplex" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.ReturnComplex" start time: Jun 06 13:26 EEST
+"EvalTest.ReturnComplex" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -887,15 +887,15 @@ Note: Google Test filter = EvalTest.ReturnComplex
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.ReturnComplex" end time: Jun 06 13:26 EEST
+"EvalTest.ReturnComplex" end time: Jun 06 23:13 EEST
 "EvalTest.ReturnComplex" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-34/65 Testing: EvalTest.ErrorHandling
-34/65 Test: EvalTest.ErrorHandling
+34/66 Testing: EvalTest.ErrorHandling
+34/66 Test: EvalTest.ErrorHandling
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.ErrorHandling" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.ErrorHandling" start time: Jun 06 13:26 EEST
+"EvalTest.ErrorHandling" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -914,15 +914,15 @@ Note: Google Test filter = EvalTest.ErrorHandling
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.ErrorHandling" end time: Jun 06 13:26 EEST
+"EvalTest.ErrorHandling" end time: Jun 06 23:13 EEST
 "EvalTest.ErrorHandling" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-35/65 Testing: EvalTest.LetStatements
-35/65 Test: EvalTest.LetStatements
+35/66 Testing: EvalTest.LetStatements
+35/66 Test: EvalTest.LetStatements
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.LetStatements" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.LetStatements" start time: Jun 06 13:26 EEST
+"EvalTest.LetStatements" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -941,15 +941,15 @@ Note: Google Test filter = EvalTest.LetStatements
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.LetStatements" end time: Jun 06 13:26 EEST
+"EvalTest.LetStatements" end time: Jun 06 23:13 EEST
 "EvalTest.LetStatements" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-36/65 Testing: EvalTest.FunctionObject
-36/65 Test: EvalTest.FunctionObject
+36/66 Testing: EvalTest.FunctionObject
+36/66 Test: EvalTest.FunctionObject
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.FunctionObject" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.FunctionObject" start time: Jun 06 13:26 EEST
+"EvalTest.FunctionObject" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -968,15 +968,15 @@ Note: Google Test filter = EvalTest.FunctionObject
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.FunctionObject" end time: Jun 06 13:26 EEST
+"EvalTest.FunctionObject" end time: Jun 06 23:13 EEST
 "EvalTest.FunctionObject" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-37/65 Testing: EvalTest.FunctionUsage
-37/65 Test: EvalTest.FunctionUsage
+37/66 Testing: EvalTest.FunctionUsage
+37/66 Test: EvalTest.FunctionUsage
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.FunctionUsage" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.FunctionUsage" start time: Jun 06 13:26 EEST
+"EvalTest.FunctionUsage" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -985,25 +985,25 @@ Note: Google Test filter = EvalTest.FunctionUsage
 [----------] Global test environment set-up.
 [----------] 1 test from EvalTest
 [ RUN      ] EvalTest.FunctionUsage
-[       OK ] EvalTest.FunctionUsage (1 ms)
-[----------] 1 test from EvalTest (1 ms total)
+[       OK ] EvalTest.FunctionUsage (0 ms)
+[----------] 1 test from EvalTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.FunctionUsage" end time: Jun 06 13:26 EEST
+"EvalTest.FunctionUsage" end time: Jun 06 23:13 EEST
 "EvalTest.FunctionUsage" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-38/65 Testing: EvalTest.StringLiteralTest
-38/65 Test: EvalTest.StringLiteralTest
+38/66 Testing: EvalTest.StringLiteralTest
+38/66 Test: EvalTest.StringLiteralTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.StringLiteralTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.StringLiteralTest" start time: Jun 06 13:26 EEST
+"EvalTest.StringLiteralTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1016,21 +1016,21 @@ Note: Google Test filter = EvalTest.StringLiteralTest
 [----------] 1 test from EvalTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.StringLiteralTest" end time: Jun 06 13:26 EEST
+"EvalTest.StringLiteralTest" end time: Jun 06 23:13 EEST
 "EvalTest.StringLiteralTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-39/65 Testing: EvalTest.BuiltInFunction
-39/65 Test: EvalTest.BuiltInFunction
+39/66 Testing: EvalTest.BuiltInFunction
+39/66 Test: EvalTest.BuiltInFunction
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.BuiltInFunction" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.BuiltInFunction" start time: Jun 06 13:26 EEST
+"EvalTest.BuiltInFunction" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1043,21 +1043,21 @@ Note: Google Test filter = EvalTest.BuiltInFunction
 [----------] 1 test from EvalTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (0 ms total)
+[==========] 1 test from 1 test suite ran. (1 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.BuiltInFunction" end time: Jun 06 13:26 EEST
+"EvalTest.BuiltInFunction" end time: Jun 06 23:13 EEST
 "EvalTest.BuiltInFunction" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-40/65 Testing: EvalTest.ArrayLiteralEvaluation
-40/65 Test: EvalTest.ArrayLiteralEvaluation
+40/66 Testing: EvalTest.ArrayLiteralEvaluation
+40/66 Test: EvalTest.ArrayLiteralEvaluation
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.ArrayLiteralEvaluation" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.ArrayLiteralEvaluation" start time: Jun 06 13:26 EEST
+"EvalTest.ArrayLiteralEvaluation" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1076,15 +1076,15 @@ Note: Google Test filter = EvalTest.ArrayLiteralEvaluation
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.ArrayLiteralEvaluation" end time: Jun 06 13:26 EEST
+"EvalTest.ArrayLiteralEvaluation" end time: Jun 06 23:13 EEST
 "EvalTest.ArrayLiteralEvaluation" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-41/65 Testing: EvalTest.ArrayIndexExpressions
-41/65 Test: EvalTest.ArrayIndexExpressions
+41/66 Testing: EvalTest.ArrayIndexExpressions
+41/66 Test: EvalTest.ArrayIndexExpressions
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.ArrayIndexExpressions" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.ArrayIndexExpressions" start time: Jun 06 13:26 EEST
+"EvalTest.ArrayIndexExpressions" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1103,15 +1103,15 @@ Note: Google Test filter = EvalTest.ArrayIndexExpressions
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.ArrayIndexExpressions" end time: Jun 06 13:26 EEST
+"EvalTest.ArrayIndexExpressions" end time: Jun 06 23:13 EEST
 "EvalTest.ArrayIndexExpressions" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-42/65 Testing: EvalTest.HashEvaluationTest
-42/65 Test: EvalTest.HashEvaluationTest
+42/66 Testing: EvalTest.HashEvaluationTest
+42/66 Test: EvalTest.HashEvaluationTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.HashEvaluationTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.HashEvaluationTest" start time: Jun 06 13:26 EEST
+"EvalTest.HashEvaluationTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1130,15 +1130,15 @@ Note: Google Test filter = EvalTest.HashEvaluationTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.HashEvaluationTest" end time: Jun 06 13:26 EEST
+"EvalTest.HashEvaluationTest" end time: Jun 06 23:13 EEST
 "EvalTest.HashEvaluationTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-43/65 Testing: EvalTest.HashIndexExpressions
-43/65 Test: EvalTest.HashIndexExpressions
+43/66 Testing: EvalTest.HashIndexExpressions
+43/66 Test: EvalTest.HashIndexExpressions
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=EvalTest.HashIndexExpressions" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"EvalTest.HashIndexExpressions" start time: Jun 06 13:26 EEST
+"EvalTest.HashIndexExpressions" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1157,15 +1157,15 @@ Note: Google Test filter = EvalTest.HashIndexExpressions
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"EvalTest.HashIndexExpressions" end time: Jun 06 13:26 EEST
+"EvalTest.HashIndexExpressions" end time: Jun 06 23:13 EEST
 "EvalTest.HashIndexExpressions" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-44/65 Testing: ObjectTest.HashKeyTest
-44/65 Test: ObjectTest.HashKeyTest
+44/66 Testing: ObjectTest.HashKeyTest
+44/66 Test: ObjectTest.HashKeyTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=ObjectTest.HashKeyTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"ObjectTest.HashKeyTest" start time: Jun 06 13:26 EEST
+"ObjectTest.HashKeyTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1184,15 +1184,15 @@ Note: Google Test filter = ObjectTest.HashKeyTest
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"ObjectTest.HashKeyTest" end time: Jun 06 13:26 EEST
+"ObjectTest.HashKeyTest" end time: Jun 06 23:13 EEST
 "ObjectTest.HashKeyTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-45/65 Testing: CodeTest.Make
-45/65 Test: CodeTest.Make
+45/66 Testing: CodeTest.Make
+45/66 Test: CodeTest.Make
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CodeTest.Make" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CodeTest.Make" start time: Jun 06 13:26 EEST
+"CodeTest.Make" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1211,15 +1211,15 @@ Note: Google Test filter = CodeTest.Make
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CodeTest.Make" end time: Jun 06 13:26 EEST
+"CodeTest.Make" end time: Jun 06 23:13 EEST
 "CodeTest.Make" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-46/65 Testing: CodeTest.InstructionString
-46/65 Test: CodeTest.InstructionString
+46/66 Testing: CodeTest.InstructionString
+46/66 Test: CodeTest.InstructionString
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CodeTest.InstructionString" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CodeTest.InstructionString" start time: Jun 06 13:26 EEST
+"CodeTest.InstructionString" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1238,15 +1238,15 @@ Note: Google Test filter = CodeTest.InstructionString
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CodeTest.InstructionString" end time: Jun 06 13:26 EEST
+"CodeTest.InstructionString" end time: Jun 06 23:13 EEST
 "CodeTest.InstructionString" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-47/65 Testing: CodeTest.ReadOperands
-47/65 Test: CodeTest.ReadOperands
+47/66 Testing: CodeTest.ReadOperands
+47/66 Test: CodeTest.ReadOperands
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CodeTest.ReadOperands" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CodeTest.ReadOperands" start time: Jun 06 13:26 EEST
+"CodeTest.ReadOperands" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1265,15 +1265,15 @@ Note: Google Test filter = CodeTest.ReadOperands
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CodeTest.ReadOperands" end time: Jun 06 13:26 EEST
+"CodeTest.ReadOperands" end time: Jun 06 23:13 EEST
 "CodeTest.ReadOperands" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-48/65 Testing: CompilerTest.IntegerArithmetic
-48/65 Test: CompilerTest.IntegerArithmetic
+48/66 Testing: CompilerTest.IntegerArithmetic
+48/66 Test: CompilerTest.IntegerArithmetic
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CompilerTest.IntegerArithmetic" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CompilerTest.IntegerArithmetic" start time: Jun 06 13:26 EEST
+"CompilerTest.IntegerArithmetic" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1340,25 +1340,25 @@ expected: 0000 OpConstant 0
 0003 OpMinus
 0004 OpPop
 
-[       OK ] CompilerTest.IntegerArithmetic (0 ms)
-[----------] 1 test from CompilerTest (0 ms total)
+[       OK ] CompilerTest.IntegerArithmetic (1 ms)
+[----------] 1 test from CompilerTest (1 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (0 ms total)
+[==========] 1 test from 1 test suite ran. (1 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CompilerTest.IntegerArithmetic" end time: Jun 06 13:26 EEST
+"CompilerTest.IntegerArithmetic" end time: Jun 06 23:13 EEST
 "CompilerTest.IntegerArithmetic" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-49/65 Testing: CompilerTest.ConditionalTest
-49/65 Test: CompilerTest.ConditionalTest
+49/66 Testing: CompilerTest.ConditionalTest
+49/66 Test: CompilerTest.ConditionalTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CompilerTest.ConditionalTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CompilerTest.ConditionalTest" start time: Jun 06 13:26 EEST
+"CompilerTest.ConditionalTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1377,51 +1377,43 @@ result: 0000 OpTrue
 0017 OpPop
 
 expected: 0000 OpTrue
-0001 OpJumpNotTruthy 10
+0001 OpJumpNotTruthy 9999
 0004 OpConstant 0
-0007 OpJump 13
+0007 OpJump 9999
 0010 OpConstant 1
 0013 OpPop
 0014 OpConstant 2
 0017 OpPop
 
-result: 0000 OpTrue
-0001 OpJumpNotTruthy 10
-0004 OpConstant 0
-0007 OpJump 11
-0010 OpNull
-0011 OpPop
-0012 OpConstant 1
-0015 OpPop
-
-expected: 0000 OpTrue
-0001 OpJumpNotTruthy 10
-0004 OpConstant 0
-0007 OpJump 11
-0010 OpNull
-0011 OpPop
-0012 OpConstant 1
-0015 OpPop
-
-[       OK ] CompilerTest.ConditionalTest (0 ms)
+/home/eemil/dev/c++/lups/tests.cpp:1534: Failure
+Expected equality of these values:
+  err
+    Which is: "The instructions don't match"
+  ""
+The instructions don't match
+[  FAILED  ] CompilerTest.ConditionalTest (0 ms)
 [----------] 1 test from CompilerTest (0 ms total)
 
 [----------] Global test environment tear-down
 [==========] 1 test from 1 test suite ran. (0 ms total)
-[  PASSED  ] 1 test.
+[  PASSED  ] 0 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] CompilerTest.ConditionalTest
+
+ 1 FAILED TEST
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
-Test Passed.
-"CompilerTest.ConditionalTest" end time: Jun 06 13:26 EEST
+Test Failed.
+"CompilerTest.ConditionalTest" end time: Jun 06 23:13 EEST
 "CompilerTest.ConditionalTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-50/65 Testing: CompilerTest.BooleanExpressions
-50/65 Test: CompilerTest.BooleanExpressions
+50/66 Testing: CompilerTest.BooleanExpressions
+50/66 Test: CompilerTest.BooleanExpressions
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CompilerTest.BooleanExpressions" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CompilerTest.BooleanExpressions" start time: Jun 06 13:26 EEST
+"CompilerTest.BooleanExpressions" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1510,25 +1502,25 @@ expected: 0000 OpTrue
 0001 OpBang
 0002 OpPop
 
-[       OK ] CompilerTest.BooleanExpressions (1 ms)
-[----------] 1 test from CompilerTest (1 ms total)
+[       OK ] CompilerTest.BooleanExpressions (0 ms)
+[----------] 1 test from CompilerTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CompilerTest.BooleanExpressions" end time: Jun 06 13:26 EEST
+"CompilerTest.BooleanExpressions" end time: Jun 06 23:13 EEST
 "CompilerTest.BooleanExpressions" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-51/65 Testing: CompilerTest.StringExpressions
-51/65 Test: CompilerTest.StringExpressions
+51/66 Testing: CompilerTest.StringExpressions
+51/66 Test: CompilerTest.StringExpressions
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CompilerTest.StringExpressions" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CompilerTest.StringExpressions" start time: Jun 06 13:26 EEST
+"CompilerTest.StringExpressions" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1557,21 +1549,21 @@ expected: 0000 OpConstant 0
 [----------] 1 test from CompilerTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (1 ms total)
+[==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CompilerTest.StringExpressions" end time: Jun 06 13:26 EEST
+"CompilerTest.StringExpressions" end time: Jun 06 23:13 EEST
 "CompilerTest.StringExpressions" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-52/65 Testing: CompilerTest.GlobalLetStatements
-52/65 Test: CompilerTest.GlobalLetStatements
+52/66 Testing: CompilerTest.GlobalLetStatements
+52/66 Test: CompilerTest.GlobalLetStatements
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CompilerTest.GlobalLetStatements" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CompilerTest.GlobalLetStatements" start time: Jun 06 13:26 EEST
+"CompilerTest.GlobalLetStatements" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1624,15 +1616,15 @@ expected: 0000 OpConstant 0
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CompilerTest.GlobalLetStatements" end time: Jun 06 13:26 EEST
+"CompilerTest.GlobalLetStatements" end time: Jun 06 23:13 EEST
 "CompilerTest.GlobalLetStatements" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-53/65 Testing: CompilerTest.ArrayLiterals
-53/65 Test: CompilerTest.ArrayLiterals
+53/66 Testing: CompilerTest.ArrayLiterals
+53/66 Test: CompilerTest.ArrayLiterals
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CompilerTest.ArrayLiterals" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CompilerTest.ArrayLiterals" start time: Jun 06 13:26 EEST
+"CompilerTest.ArrayLiterals" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1693,15 +1685,15 @@ expected: 0000 OpConstant 0
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CompilerTest.ArrayLiterals" end time: Jun 06 13:26 EEST
+"CompilerTest.ArrayLiterals" end time: Jun 06 23:13 EEST
 "CompilerTest.ArrayLiterals" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-54/65 Testing: CompilerTest.HashLiterals
-54/65 Test: CompilerTest.HashLiterals
+54/66 Testing: CompilerTest.HashLiterals
+54/66 Test: CompilerTest.HashLiterals
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CompilerTest.HashLiterals" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CompilerTest.HashLiterals" start time: Jun 06 13:26 EEST
+"CompilerTest.HashLiterals" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1756,25 +1748,25 @@ expected: 0000 OpConstant 0
 0020 OpHash 4
 0023 OpPop
 
-[       OK ] CompilerTest.HashLiterals (0 ms)
-[----------] 1 test from CompilerTest (0 ms total)
+[       OK ] CompilerTest.HashLiterals (1 ms)
+[----------] 1 test from CompilerTest (1 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (0 ms total)
+[==========] 1 test from 1 test suite ran. (1 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CompilerTest.HashLiterals" end time: Jun 06 13:26 EEST
+"CompilerTest.HashLiterals" end time: Jun 06 23:13 EEST
 "CompilerTest.HashLiterals" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-55/65 Testing: CompilerTest.CIndexExpression
-55/65 Test: CompilerTest.CIndexExpression
+55/66 Testing: CompilerTest.CIndexExpression
+55/66 Test: CompilerTest.CIndexExpression
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CompilerTest.CIndexExpression" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"CompilerTest.CIndexExpression" start time: Jun 06 13:26 EEST
+"CompilerTest.CIndexExpression" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1821,25 +1813,52 @@ expected: 0000 OpConstant 0
 0016 OpIndex
 0017 OpPop
 
-[       OK ] CompilerTest.CIndexExpression (0 ms)
-[----------] 1 test from CompilerTest (0 ms total)
+[       OK ] CompilerTest.CIndexExpression (1 ms)
+[----------] 1 test from CompilerTest (1 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (0 ms total)
+[==========] 1 test from 1 test suite ran. (1 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"CompilerTest.CIndexExpression" end time: Jun 06 13:26 EEST
+"CompilerTest.CIndexExpression" end time: Jun 06 23:13 EEST
 "CompilerTest.CIndexExpression" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-56/65 Testing: VMTest.VMIntegerArithmetic
-56/65 Test: VMTest.VMIntegerArithmetic
+56/66 Testing: CompilerTest.CompilerScopes
+56/66 Test: CompilerTest.CompilerScopes
+Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=CompilerTest.CompilerScopes" "--gtest_also_run_disabled_tests"
+Directory: /home/eemil/dev/c++/lups/build
+"CompilerTest.CompilerScopes" start time: Jun 06 23:13 EEST
+Output:
+----------------------------------------------------------
+Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CompilerTest.CompilerScopes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CompilerTest
+[ RUN      ] CompilerTest.CompilerScopes
+[       OK ] CompilerTest.CompilerScopes (1 ms)
+[----------] 1 test from CompilerTest (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (1 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CompilerTest.CompilerScopes" end time: Jun 06 23:13 EEST
+"CompilerTest.CompilerScopes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+57/66 Testing: VMTest.VMIntegerArithmetic
+57/66 Test: VMTest.VMIntegerArithmetic
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=VMTest.VMIntegerArithmetic" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"VMTest.VMIntegerArithmetic" start time: Jun 06 13:26 EEST
+"VMTest.VMIntegerArithmetic" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1848,25 +1867,25 @@ Note: Google Test filter = VMTest.VMIntegerArithmetic
 [----------] Global test environment set-up.
 [----------] 1 test from VMTest
 [ RUN      ] VMTest.VMIntegerArithmetic
-[       OK ] VMTest.VMIntegerArithmetic (4 ms)
-[----------] 1 test from VMTest (4 ms total)
+[       OK ] VMTest.VMIntegerArithmetic (5 ms)
+[----------] 1 test from VMTest (5 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (4 ms total)
+[==========] 1 test from 1 test suite ran. (5 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"VMTest.VMIntegerArithmetic" end time: Jun 06 13:26 EEST
+"VMTest.VMIntegerArithmetic" end time: Jun 06 23:13 EEST
 "VMTest.VMIntegerArithmetic" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-57/65 Testing: VMTest.VMBooleanTest
-57/65 Test: VMTest.VMBooleanTest
+58/66 Testing: VMTest.VMBooleanTest
+58/66 Test: VMTest.VMBooleanTest
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=VMTest.VMBooleanTest" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"VMTest.VMBooleanTest" start time: Jun 06 13:26 EEST
+"VMTest.VMBooleanTest" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1875,25 +1894,25 @@ Note: Google Test filter = VMTest.VMBooleanTest
 [----------] Global test environment set-up.
 [----------] 1 test from VMTest
 [ RUN      ] VMTest.VMBooleanTest
-[       OK ] VMTest.VMBooleanTest (7 ms)
-[----------] 1 test from VMTest (7 ms total)
+[       OK ] VMTest.VMBooleanTest (8 ms)
+[----------] 1 test from VMTest (8 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (7 ms total)
+[==========] 1 test from 1 test suite ran. (8 ms total)
 [  PASSED  ] 1 test.
 <end of output>
 Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"VMTest.VMBooleanTest" end time: Jun 06 13:26 EEST
+"VMTest.VMBooleanTest" end time: Jun 06 23:13 EEST
 "VMTest.VMBooleanTest" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-58/65 Testing: VMTest.Conditionals
-58/65 Test: VMTest.Conditionals
+59/66 Testing: VMTest.Conditionals
+59/66 Test: VMTest.Conditionals
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=VMTest.Conditionals" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"VMTest.Conditionals" start time: Jun 06 13:26 EEST
+"VMTest.Conditionals" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1902,25 +1921,35 @@ Note: Google Test filter = VMTest.Conditionals
 [----------] Global test environment set-up.
 [----------] 1 test from VMTest
 [ RUN      ] VMTest.Conditionals
-[       OK ] VMTest.Conditionals (3 ms)
-[----------] 1 test from VMTest (3 ms total)
+/home/eemil/dev/c++/lups/tests.cpp:1727: Failure
+Expected equality of these values:
+  err
+    Which is: "The stack element is a null pointer."
+  ""
+The stack element is a null pointer.
+[  FAILED  ] VMTest.Conditionals (0 ms)
+[----------] 1 test from VMTest (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test suite ran. (3 ms total)
-[  PASSED  ] 1 test.
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 0 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] VMTest.Conditionals
+
+ 1 FAILED TEST
 <end of output>
-Test time =   0.01 sec
+Test time =   0.00 sec
 ----------------------------------------------------------
-Test Passed.
-"VMTest.Conditionals" end time: Jun 06 13:26 EEST
+Test Failed.
+"VMTest.Conditionals" end time: Jun 06 23:13 EEST
 "VMTest.Conditionals" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-59/65 Testing: VMTest.GlobalLetStatements
-59/65 Test: VMTest.GlobalLetStatements
+60/66 Testing: VMTest.GlobalLetStatements
+60/66 Test: VMTest.GlobalLetStatements
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=VMTest.GlobalLetStatements" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"VMTest.GlobalLetStatements" start time: Jun 06 13:26 EEST
+"VMTest.GlobalLetStatements" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1939,15 +1968,15 @@ Note: Google Test filter = VMTest.GlobalLetStatements
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"VMTest.GlobalLetStatements" end time: Jun 06 13:26 EEST
+"VMTest.GlobalLetStatements" end time: Jun 06 23:13 EEST
 "VMTest.GlobalLetStatements" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-60/65 Testing: VMTest.StringExpressions
-60/65 Test: VMTest.StringExpressions
+61/66 Testing: VMTest.StringExpressions
+61/66 Test: VMTest.StringExpressions
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=VMTest.StringExpressions" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"VMTest.StringExpressions" start time: Jun 06 13:26 EEST
+"VMTest.StringExpressions" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1966,15 +1995,15 @@ Note: Google Test filter = VMTest.StringExpressions
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"VMTest.StringExpressions" end time: Jun 06 13:26 EEST
+"VMTest.StringExpressions" end time: Jun 06 23:13 EEST
 "VMTest.StringExpressions" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-61/65 Testing: VMTest.ArrayLiterals
-61/65 Test: VMTest.ArrayLiterals
+62/66 Testing: VMTest.ArrayLiterals
+62/66 Test: VMTest.ArrayLiterals
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=VMTest.ArrayLiterals" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"VMTest.ArrayLiterals" start time: Jun 06 13:26 EEST
+"VMTest.ArrayLiterals" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -1983,8 +2012,8 @@ Note: Google Test filter = VMTest.ArrayLiterals
 [----------] Global test environment set-up.
 [----------] 1 test from VMTest
 [ RUN      ] VMTest.ArrayLiterals
-[       OK ] VMTest.ArrayLiterals (1 ms)
-[----------] 1 test from VMTest (1 ms total)
+[       OK ] VMTest.ArrayLiterals (0 ms)
+[----------] 1 test from VMTest (0 ms total)
 
 [----------] Global test environment tear-down
 [==========] 1 test from 1 test suite ran. (1 ms total)
@@ -1993,15 +2022,15 @@ Note: Google Test filter = VMTest.ArrayLiterals
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"VMTest.ArrayLiterals" end time: Jun 06 13:26 EEST
+"VMTest.ArrayLiterals" end time: Jun 06 23:13 EEST
 "VMTest.ArrayLiterals" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-62/65 Testing: VMTest.HashLiterals
-62/65 Test: VMTest.HashLiterals
+63/66 Testing: VMTest.HashLiterals
+63/66 Test: VMTest.HashLiterals
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=VMTest.HashLiterals" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"VMTest.HashLiterals" start time: Jun 06 13:26 EEST
+"VMTest.HashLiterals" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -2020,15 +2049,15 @@ Note: Google Test filter = VMTest.HashLiterals
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"VMTest.HashLiterals" end time: Jun 06 13:26 EEST
+"VMTest.HashLiterals" end time: Jun 06 23:13 EEST
 "VMTest.HashLiterals" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-63/65 Testing: VMTest.IndexExpressions
-63/65 Test: VMTest.IndexExpressions
+64/66 Testing: VMTest.IndexExpressions
+64/66 Test: VMTest.IndexExpressions
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=VMTest.IndexExpressions" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"VMTest.IndexExpressions" start time: Jun 06 13:26 EEST
+"VMTest.IndexExpressions" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -2044,18 +2073,18 @@ Note: Google Test filter = VMTest.IndexExpressions
 [==========] 1 test from 1 test suite ran. (3 ms total)
 [  PASSED  ] 1 test.
 <end of output>
-Test time =   0.00 sec
+Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"VMTest.IndexExpressions" end time: Jun 06 13:26 EEST
+"VMTest.IndexExpressions" end time: Jun 06 23:13 EEST
 "VMTest.IndexExpressions" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-64/65 Testing: SymbolTableTest.TestDefine
-64/65 Test: SymbolTableTest.TestDefine
+65/66 Testing: SymbolTableTest.TestDefine
+65/66 Test: SymbolTableTest.TestDefine
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=SymbolTableTest.TestDefine" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"SymbolTableTest.TestDefine" start time: Jun 06 13:26 EEST
+"SymbolTableTest.TestDefine" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -2074,15 +2103,15 @@ Note: Google Test filter = SymbolTableTest.TestDefine
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"SymbolTableTest.TestDefine" end time: Jun 06 13:26 EEST
+"SymbolTableTest.TestDefine" end time: Jun 06 23:13 EEST
 "SymbolTableTest.TestDefine" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-65/65 Testing: SymbolTableTest.TestResolveGlobal
-65/65 Test: SymbolTableTest.TestResolveGlobal
+66/66 Testing: SymbolTableTest.TestResolveGlobal
+66/66 Test: SymbolTableTest.TestResolveGlobal
 Command: "/home/eemil/dev/c++/lups/build/lups_test" "--gtest_filter=SymbolTableTest.TestResolveGlobal" "--gtest_also_run_disabled_tests"
 Directory: /home/eemil/dev/c++/lups/build
-"SymbolTableTest.TestResolveGlobal" start time: Jun 06 13:26 EEST
+"SymbolTableTest.TestResolveGlobal" start time: Jun 06 23:13 EEST
 Output:
 ----------------------------------------------------------
 Running main() from /home/eemil/dev/c++/lups/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -2101,8 +2130,8 @@ Note: Google Test filter = SymbolTableTest.TestResolveGlobal
 Test time =   0.00 sec
 ----------------------------------------------------------
 Test Passed.
-"SymbolTableTest.TestResolveGlobal" end time: Jun 06 13:26 EEST
+"SymbolTableTest.TestResolveGlobal" end time: Jun 06 23:13 EEST
 "SymbolTableTest.TestResolveGlobal" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Jun 06 13:26 EEST
+End testing: Jun 06 23:13 EEST

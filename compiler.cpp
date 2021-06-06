@@ -98,7 +98,7 @@ int Compiler::compile(Node *node) {
 			remove_last_pop();
 
 		auto jump_pos = emit(code::OpJump, {9999});
-		auto after_conq_pos = m_instructions.size();
+		auto after_conq_pos = current_instructions().size();
 		change_operand(jump_not_truthy_pos, after_conq_pos);
 
 		if (ifx->other == nullptr) {
@@ -111,7 +111,7 @@ int Compiler::compile(Node *node) {
 			if (is_last_inst_pop())
 				remove_last_pop();
 		}
-		auto after_other_pos = m_instructions.size();
+		auto after_other_pos = current_instructions().size();
 		change_operand(jump_pos, after_other_pos);
 	} else if (type == "BlockExpression") {
 		for (auto &st : ((BlockStatement *)node)->statements) {
@@ -168,6 +168,22 @@ int Compiler::compile(Node *node) {
 		if (status != 0)
 			return status;
 		emit(code::OpIndex);
+	} else if (type == "FunctionLiteral") {
+		enter_scope();
+
+		auto func = dynamic_cast<FunctionLiteral*>(node);
+		auto status = compile(func->body.get());
+		if (status != 0)
+			return status;
+
+		auto instructions = leave_scope();
+		auto compiled_fucntion = new CompiledFunction(instructions);
+		emit(code::OpConstant, {add_constant(compiled_fucntion)});
+	} else if (type == "ReturnStatement") {
+		auto status = compile(((ReturnStatement*)node)->return_value.get());
+		if (status != 0)
+			return status;
+		emit(code::OpReturnValue);
 	}
 
 	return 0;
@@ -195,39 +211,49 @@ int Compiler::emit(code::Opcode op) {
 }
 
 int Compiler::add_instruction(std::vector<char> inst) {
-	auto new_inst_pos = m_instructions.size();
-	m_instructions.insert(m_instructions.end(), inst.begin(), inst.end());
+	auto cur_inst = current_instructions();
+	auto pos_new_instruction = cur_inst.size();
+	cur_inst.insert(cur_inst.end(), inst.begin(), inst.end());
 
-	return new_inst_pos;
+	scopes[scope_index].instructions = cur_inst;
+
+	return pos_new_instruction;
 }
 
 void Compiler::set_last_instruction(code::Opcode op, int pos) {
-	auto prev = last_inst;
-	auto last = new EmittedInstruction{op, pos};
+	auto prev = scopes[scope_index].last_inst;
+	auto last = EmittedInstruction{op, pos};
 
-	prev_inst = prev;
-	last_inst = last;
+	scopes[scope_index].prev_inst = prev;
+	scopes[scope_index].last_inst = last;
 }
 
-bool Compiler::is_last_inst_pop() { return last_inst->op == code::OpPop; }
+bool Compiler::is_last_inst_pop() {
+	return scopes[scope_index].last_inst.op == code::OpPop;
+}
 
 void Compiler::remove_last_pop() {
-	m_instructions = code::Instructions(m_instructions.begin(),
-																			m_instructions.begin() + last_inst->pos);
+	auto last = scopes[scope_index].last_inst;
+	auto prev = scopes[scope_index].prev_inst;
 
-	last_inst = prev_inst;
+	auto old = current_instructions();
+	auto new_inst = code::Instructions(old.begin(), old.begin()+last.pos);
+
+	scopes[scope_index].instructions = new_inst;
+	scopes[scope_index].last_inst = prev;
 }
 
 void Compiler::change_operand(int op_pos, int operand) {
-	auto op = m_instructions[op_pos];
+	auto op = current_instructions()[op_pos];
 	auto new_inst = code::make(op, {operand});
 
 	replace_instructions(op_pos, new_inst);
 }
 
 void Compiler::replace_instructions(int pos, code::Instructions inst) {
+	auto ins = current_instructions();
 	for (int i = 0; i < (int)inst.size(); ++i) {
-		m_instructions[pos + i] = inst[i];
+		ins[pos + i] = inst[i];
 	}
 }
 
@@ -250,12 +276,22 @@ code::Instructions Compiler::current_instructions() {
 	return scopes[scope_index].instructions;
 }
 
-int Compiler::add_instructions(std::vector<char> &inst) {
-	auto cur_inst = current_instructions();
-	auto pos_new_instruction = cur_inst.size();
-	auto updated_inst = cur_inst.insert(cur_inst.end(), inst.begin(), inst.end());
+void Compiler::enter_scope() {
+	auto scope = CompilationScope{
+		code::Instructions(),
+		EmittedInstruction{},
+		EmittedInstruction{},
+	};
 
-	scopes[scope_index].instructions = updated_inst;
+	scopes.push_back(scope);
+	++scope_index;
+}
 
-	return pos_new_instruction;
+code::Instructions Compiler::leave_scope() {
+	auto instructions = current_instructions();
+
+	scopes = std::vector<CompilationScope>(scopes.begin(), scopes.begin()+scopes.size()-1);
+	--scope_index;
+
+	return instructions;
 }

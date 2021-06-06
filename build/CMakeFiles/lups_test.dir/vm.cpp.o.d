@@ -121,21 +121,17 @@ CMakeFiles/lups_test.dir/vm.cpp.o: /home/eemil/dev/c++/lups/vm.cpp \
  /usr/include/c++/11.1.0/bits/stl_bvector.h \
  /usr/include/c++/11.1.0/bits/vector.tcc \
  /home/eemil/dev/c++/lups/compiler.h /home/eemil/dev/c++/lups/object.h \
- /usr/include/c++/11.1.0/functional \
- /usr/include/c++/11.1.0/bits/refwrap.h \
- /usr/include/c++/11.1.0/bits/std_function.h \
- /usr/include/c++/11.1.0/typeinfo /usr/include/c++/11.1.0/bits/stl_algo.h \
- /usr/include/c++/11.1.0/bits/algorithmfwd.h \
- /usr/include/c++/11.1.0/bits/stl_heap.h \
- /usr/include/c++/11.1.0/bits/stl_tempbuf.h \
- /usr/include/c++/11.1.0/bits/uniform_int_dist.h \
+ /home/eemil/dev/c++/lups/ast.h /home/eemil/dev/c++/lups/token.h \
  /usr/include/c++/11.1.0/memory \
+ /usr/include/c++/11.1.0/bits/stl_tempbuf.h \
  /usr/include/c++/11.1.0/bits/stl_raw_storage_iter.h \
  /usr/include/c++/11.1.0/bits/align.h /usr/include/c++/11.1.0/bit \
  /usr/include/c++/11.1.0/bits/unique_ptr.h \
  /usr/include/c++/11.1.0/bits/shared_ptr.h \
  /usr/include/c++/11.1.0/bits/shared_ptr_base.h \
+ /usr/include/c++/11.1.0/typeinfo \
  /usr/include/c++/11.1.0/bits/allocated_ptr.h \
+ /usr/include/c++/11.1.0/bits/refwrap.h \
  /usr/include/c++/11.1.0/ext/concurrence.h \
  /usr/include/c++/11.1.0/exception \
  /usr/include/c++/11.1.0/bits/exception_ptr.h \
@@ -147,5 +143,10 @@ CMakeFiles/lups_test.dir/vm.cpp.o: /home/eemil/dev/c++/lups/vm.cpp \
  /usr/include/c++/11.1.0/backward/auto_ptr.h \
  /usr/include/c++/11.1.0/pstl/glue_memory_defs.h \
  /usr/include/c++/11.1.0/pstl/execution_defs.h \
- /home/eemil/dev/c++/lups/ast.h /home/eemil/dev/c++/lups/token.h \
+ /usr/include/c++/11.1.0/functional \
+ /usr/include/c++/11.1.0/bits/std_function.h \
+ /usr/include/c++/11.1.0/bits/stl_algo.h \
+ /usr/include/c++/11.1.0/bits/algorithmfwd.h \
+ /usr/include/c++/11.1.0/bits/stl_heap.h \
+ /usr/include/c++/11.1.0/bits/uniform_int_dist.h \
  /home/eemil/dev/c++/lups/eval.h
