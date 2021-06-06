@@ -1378,6 +1378,58 @@ run_compiler_tests(const std::vector<CompilerTestcase<T>> &tests) {
 	return "";
 }
 
+template <typename T> struct VMTestcase {
+	std::string input;
+	T expected;
+};
+
+template <typename T>
+const std::string run_vm_tests(const std::vector<VMTestcase<T>> &tests) {
+	for (auto const &tt : tests) {
+		auto program = parse_compiler_program_helper(tt.input);
+		auto comp = new Compiler();
+		auto status = comp->compile(program.get());
+		if (status != 0)
+			return "The compilation was unsuccessful";
+
+		auto vm = new VM(comp->bytecode());
+		auto vm_status = vm->run();
+		if (vm_status != 0)
+			return "Running the vm was unsuccessful";
+
+		auto stack_elem = vm->last_popped_stack_elem();
+		if (stack_elem == nullptr)
+			return "The stack element is a null pointer.";
+
+		if constexpr (std::is_same<int, T>::value) {
+			// In some test cases -1 is used to indicate that it should return null.
+			if (tt.expected == -1) {
+				if (stack_elem->Type() != objecttypes::NULLOBJ)
+					return "stack_elem is not null even though it should";
+			} else {
+				if (!test_integer_object(stack_elem, tt.expected))
+					return "The integer object is invalid";
+			}
+		} else if constexpr (std::is_same<std::string,  T>::value) {
+			if (!test_string_constant(tt.expected, stack_elem))
+				return "The string object is invalid";
+		} else if constexpr (std::is_same<bool, T>::value) {
+			if (!test_boolean_object(stack_elem, tt.expected))
+				return "The boolean object is invalid";
+		} else if constexpr (std::is_same<std::vector<int>, T>::value) {
+			auto arr = dynamic_cast<Array *>(stack_elem);
+			if (arr->elements.size() != tt.expected.size())
+				return "The amount of elements differs in the array.";
+			for (int i = 0; i < arr->elements.size(); ++i) {
+				if (!test_integer_object(arr->elements[i], tt.expected[i]))
+					return "The integer object is invalid";
+			}
+		}
+	}
+
+	return "";
+}
+
 TEST(CompilerTest, IntegerArithmetic) {
 	std::vector<CompilerTestcase<int>> test_cases{
 			{"1 + 2",
@@ -1584,12 +1636,7 @@ TEST(CodeTest, ReadOperands) {
 }
 
 TEST(VMTest, VMIntegerArithmetic) {
-	struct Testcase {
-		std::string input;
-		int expected;
-	};
-
-	std::vector<Testcase> test_cases{
+	std::vector<VMTestcase<int>> test_cases{
 			{"1", 1},
 			{"2", 2},
 			{"1 + 2", 3},
@@ -1607,30 +1654,12 @@ TEST(VMTest, VMIntegerArithmetic) {
 			{"(5 + 10 * 2 + 15 / 3) * 2 + -10", 50},
 	};
 
-	for (auto const &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-		auto comp = new Compiler();
-		auto status = comp->compile(program.get());
-		EXPECT_EQ(status, 0);
-
-		auto vm = new VM(comp->bytecode());
-		auto vm_status = vm->run();
-		EXPECT_EQ(vm_status, 0);
-
-		auto stack_elem = vm->last_popped_stack_elem();
-		EXPECT_NE(stack_elem, nullptr);
-
-		EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));
-	}
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(VMTest, VMBooleanTest) {
-	struct Testcase {
-		std::string input;
-		bool expected;
-	};
-
-	std::vector<Testcase> test_cases{
+	std::vector<VMTestcase<bool>> test_cases{
 			{"true", true},
 			{"false", false},
 			{"1 < 2", true},
@@ -1658,30 +1687,12 @@ TEST(VMTest, VMBooleanTest) {
 			{"!!5", true},
 	};
 
-	for (auto const &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-		auto comp = new Compiler();
-		auto status = comp->compile(program.get());
-		EXPECT_EQ(status, 0);
-
-		auto vm = new VM(comp->bytecode());
-		auto vm_status = vm->run();
-		EXPECT_EQ(vm_status, 0);
-
-		auto stack_elem = vm->last_popped_stack_elem();
-		EXPECT_NE(stack_elem, nullptr);
-
-		EXPECT_TRUE(test_boolean_object(stack_elem, tt.expected));
-	}
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(VMTest, Conditionals) {
-	struct Testcase {
-		std::string input;
-		int expected;
-	};
-
-	std::vector<Testcase> test_cases{
+	std::vector<VMTestcase<int>> test_cases{
 			{"if (true) { 10 }", 10},
 			{"if (true) { 10 } else { 20 }", 10},
 			{"if (false) { 10 } else { 20 } ", 20},
@@ -1696,25 +1707,8 @@ TEST(VMTest, Conditionals) {
 			{"if (1 > 2) { 10 }", -1},
 			{"if (false) { 10 }", -1}};
 
-	for (auto const &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-		auto comp = new Compiler();
-		auto status = comp->compile(program.get());
-		EXPECT_EQ(status, 0);
-
-		auto vm = new VM(comp->bytecode());
-		auto vm_status = vm->run();
-		EXPECT_EQ(vm_status, 0);
-
-		auto stack_elem = vm->last_popped_stack_elem();
-		EXPECT_NE(stack_elem, nullptr);
-
-		if (tt.expected == -1) {
-			EXPECT_EQ(stack_elem->Type(), objecttypes::NULLOBJ);
-		} else {
-			EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));
-		}
-	}
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(CompilerTest, StringExpressions) {
@@ -1815,65 +1809,25 @@ TEST(SymbolTableTest, TestResolveGlobal) {
 }
 
 TEST(VMTest, GlobalLetStatements) {
-	struct Testcase {
-		std::string input;
-		int expected;
-	};
-
-	std::vector<Testcase> test_cases{
+	std::vector<VMTestcase<int>> test_cases{
 			{"let one = 1; one", 1},
 			{"let one = 1; let two = 2; one + two", 3},
 			{"let one = 1; let two = one + one; one + two", 3},
 	};
 
-	for (const auto &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-		auto comp = new Compiler();
-		auto status = comp->compile(program.get());
-		EXPECT_EQ(status, 0);
-
-		auto vm = new VM(comp->bytecode());
-		auto vm_status = vm->run();
-		EXPECT_EQ(vm_status, 0);
-
-		auto stack_elem = vm->last_popped_stack_elem();
-		EXPECT_NE(stack_elem, nullptr);
-
-		if (tt.expected == -1) {
-			EXPECT_EQ(stack_elem->Type(), objecttypes::NULLOBJ);
-		} else {
-			EXPECT_TRUE(test_integer_object(stack_elem, tt.expected));
-		}
-	}
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(VMTest, StringExpressions) {
-	struct Testcase {
-		std::string input;
-		std::string expected;
-	};
-
-	std::vector<Testcase> test_cases{
+	std::vector<VMTestcase<std::string>> test_cases{
 			{"\"lups\"", "lups"},
 			{"\"lu\" + \"ps\"", "lups"},
 			{"\"lu\" + \"ps\" + \"programming\"", "lupsprogramming"},
 	};
 
-	for (const auto &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-		auto comp = new Compiler();
-		auto status = comp->compile(program.get());
-		EXPECT_EQ(status, 0);
-
-		auto vm = new VM(comp->bytecode());
-		auto vm_status = vm->run();
-		EXPECT_EQ(vm_status, 0);
-
-		auto stack_elem = vm->last_popped_stack_elem();
-		EXPECT_NE(stack_elem, nullptr);
-
-		EXPECT_TRUE(test_string_constant(tt.expected, stack_elem));
-	}
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(CompilerTest, ArrayLiterals) {
@@ -1914,34 +1868,11 @@ TEST(CompilerTest, ArrayLiterals) {
 }
 
 TEST(VMTest, ArrayLiterals) {
-	struct Testcase {
-		std::string input;
-		std::vector<int> expected;
-	};
-
-	std::vector<Testcase> test_cases{{"[]", {}},
+	std::vector<VMTestcase<std::vector<int>>> test_cases{{"[]", {}},
 																	 {"[1, 2, 3]", {1, 2, 3}},
 																	 {"[1 + 2, 3 * 4, 5 + 6]", {3, 12, 11}}};
-
-	for (auto const &tt : test_cases) {
-		std::unique_ptr<Program> program = parse_compiler_program_helper(tt.input);
-		auto comp = new Compiler();
-		auto status = comp->compile(program.get());
-		EXPECT_EQ(status, 0);
-
-		auto vm = new VM(comp->bytecode());
-		auto vm_status = vm->run();
-		EXPECT_EQ(vm_status, 0);
-
-		auto stack_elem = vm->last_popped_stack_elem();
-		EXPECT_NE(stack_elem, nullptr);
-
-		auto arr = dynamic_cast<Array *>(stack_elem);
-		EXPECT_EQ(arr->elements.size(), tt.expected.size());
-		for (int i = 0; i < arr->elements.size(); ++i) {
-			EXPECT_TRUE(test_integer_object(arr->elements[i], tt.expected[i]));
-		}
-	}
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }
 
 TEST(CompilerTest, HashLiterals) {
