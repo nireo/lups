@@ -146,7 +146,7 @@ int Compiler::compile(Node *node) {
 	} else if (type == "HashLiteral") {
 		auto hash_lit = dynamic_cast<HashLiteral*>(node);
 
-		// TODO: probably sort the elements or maybe not :D
+		// TODO: probably sort the elements or maybe not it works either way
 		for (auto const &pr : hash_lit->pairs) {
 			auto status = compile(pr.first.get());
 			if (status != 0)
@@ -158,6 +158,16 @@ int Compiler::compile(Node *node) {
 		}
 
 		emit(code::OpHash, {(int)hash_lit->pairs.size() * 2});
+	} else if (type == "IndexExpression") {
+		auto index_expression = dynamic_cast<IndexExpression*>(node);
+		auto status = compile(index_expression->left.get());
+		if (status != 0)
+			return status;
+
+		status = compile(index_expression->index.get());
+		if (status != 0)
+			return status;
+		emit(code::OpIndex);
 	}
 
 	return 0;

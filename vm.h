@@ -28,6 +28,11 @@ public:
 	int execute_bang_operator();
 	int execute_minus_operator();
 
+	// index expressions
+	int execute_index_expression(Object *left, Object *index);
+	int execute_array_index(Object *left, Object *index);
+	int execute_hash_index(Object *left, Object *index);
+
 	Object *build_array(int start_index, int end_index);
 	Object *build_hash(int start_index, int end_index);
 private:

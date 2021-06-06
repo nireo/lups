@@ -150,7 +150,7 @@ int VM::run() {
 			auto num_elements = code::decode_uint16(code::Instructions(
 					m_instructions.begin() + ip + 1, m_instructions.begin() + ip + 3));
 			ip += 2;
-			auto array = build_array(m_sp-num_elements, m_sp);
+			auto array = build_array(m_sp - num_elements, m_sp);
 			m_sp = m_sp - num_elements;
 
 			auto status = push(array);
@@ -163,9 +163,18 @@ int VM::run() {
 					m_instructions.begin() + ip + 1, m_instructions.begin() + ip + 3));
 			ip += 2;
 
-			auto hash = build_hash(m_sp-num_elements, m_sp);
+			auto hash = build_hash(m_sp - num_elements, m_sp);
 			m_sp = m_sp - num_elements;
 			auto status = push(hash);
+			if (status != 0)
+				return status;
+			break;
+		}
+		case code::OpIndex: {
+			auto index = pop();
+			auto left = pop();
+
+			auto status = execute_index_expression(left, index);
 			if (status != 0)
 				return status;
 			break;
@@ -206,7 +215,8 @@ int VM::execute_binary_operation(code::Opcode op) {
 	if (left->Type() == objecttypes::INTEGER &&
 			right->Type() == objecttypes::INTEGER) {
 		return execute_binary_integer_operation(op, left, right);
-	} else if (left->Type() == objecttypes::STRING && right->Type() == objecttypes::STRING) {
+	} else if (left->Type() == objecttypes::STRING &&
+						 right->Type() == objecttypes::STRING) {
 		return execute_binary_string_operation(op, left, right);
 	} else {
 		// the types don't have a supported binary expression
@@ -306,17 +316,17 @@ int VM::execute_binary_string_operation(code::Opcode op, Object *left,
 	if (op != code::OpAdd)
 		return -1;
 
-	auto left_value = ((String*)left)->value;
-	auto right_value = ((String*)right)->value;
+	auto left_value = ((String *)left)->value;
+	auto right_value = ((String *)right)->value;
 
 	return push(new String(left_value + right_value));
 }
 
 Object *VM::build_array(int start_index, int end_index) {
-	auto elements = std::vector<Object*>(end_index-start_index, nullptr);
+	auto elements = std::vector<Object *>(end_index - start_index, nullptr);
 
 	for (int i = start_index; i < end_index; ++i)
-		elements[i-start_index] = m_stack[i];
+		elements[i - start_index] = m_stack[i];
 
 	return new Array(elements);
 }
@@ -325,7 +335,7 @@ Object *VM::build_hash(int start_index, int end_index) {
 	auto hashtable = new Hash();
 	for (int i = start_index; i < end_index; i += 2) {
 		auto key = m_stack[i];
-		auto value = m_stack[i+1];
+		auto value = m_stack[i + 1];
 		auto pair = new HashPair{key, value};
 
 		if (!(key->Type() == objecttypes::INTEGER ||
@@ -346,4 +356,56 @@ Object *VM::build_hash(int start_index, int end_index) {
 	}
 
 	return hashtable;
+}
+
+int VM::execute_index_expression(Object *left, Object *index) {
+	if (left->Type() == objecttypes::ARRAY_OBJ &&
+			index->Type() == objecttypes::INTEGER)
+		return execute_array_index(left, index);
+	else if (left->Type() == objecttypes::HASH)
+		return execute_hash_index(left, index);
+
+	// the index operator is not supported for this type
+	return -1;
+}
+
+int VM::execute_array_index(Object *arr, Object *index) {
+	auto array = dynamic_cast<Array *>(arr);
+	if (array == nullptr)
+		return -1;
+
+	auto idx = ((Integer *)index)->value;
+	auto max = (int)array->elements.size() - 1;
+
+	if (idx < 0 || idx > max) {
+		return push(object_constant::null);
+	}
+
+	return push(array->elements[idx]);
+}
+
+int VM::execute_hash_index(Object *hash, Object *index) {
+	auto hashobj = dynamic_cast<Hash *>(hash);
+	if (hashobj == nullptr)
+		return -1;
+
+	if (!(index->Type() == objecttypes::INTEGER ||
+				index->Type() == objecttypes::STRING ||
+				index->Type() == objecttypes::BOOLEAN))
+		return -1;
+
+	HashKey res;
+	// we only need to check these types since the previous if expressions
+	// guarantees that the object is one of them.
+	if (index->Type() == objecttypes::INTEGER)
+		res = ((Integer *)index)->hash_key();
+	else if (index->Type() == objecttypes::STRING)
+		res = ((String *)index)->hash_key();
+	else if (index->Type() == objecttypes::BOOLEAN)
+		res = ((Boolean *)index)->hash_key();
+
+	if (hashobj->pairs.count(res.value) == 0)
+		return push(object_constant::null);
+
+	return push(hashobj->pairs[res.value]->value);
 }

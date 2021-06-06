@@ -1930,6 +1930,40 @@ TEST(CompilerTest, HashLiterals) {
 	EXPECT_EQ(err, "") << err;
 }
 
+
+TEST(CompilerTest, CIndexExpression) {
+	std::vector<CompilerTestcase<int>> test_cases{
+			{"[1, 2, 3][1 + 1]",
+			 {1, 2, 3, 1, 1},
+			 {{
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpArray, {3}),
+					 code::make(code::OpConstant, {3}),
+					 code::make(code::OpConstant, {4}),
+					 code::make(code::OpAdd, {}),
+					 code::make(code::OpIndex, {}),
+					 code::make(code::OpPop, {}),
+			 }}},
+			{"{1: 2}[2 - 1]",
+			 {1, 2, 2, 1},
+			 {{
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpHash, {2}),
+					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpConstant, {3}),
+					 code::make(code::OpSub, {}),
+					 code::make(code::OpIndex, {}),
+					 code::make(code::OpPop, {}),
+			 }}},
+	};
+
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
+}
+
 TEST(VMTest, HashLiterals) {
 	std::vector<VMTestcase<std::map<int, int>>> test_cases {
 		{
@@ -1949,6 +1983,25 @@ TEST(VMTest, HashLiterals) {
 			{(new Integer(6))->hash_key().value, 16},
 			}
 		}
+	};
+
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
+}
+
+TEST(VMTest, IndexExpressions) {
+	std::vector<VMTestcase<int>> test_cases {
+		{"[1, 2, 3][1]", 2},
+		{"[1, 2, 3][0 + 2]", 3},
+		{"[[1, 1, 1]][0][0]", 1},
+		// -1 means null
+		{"[][0]", -1},
+		{"[1, 2, 3][99]", -1},
+		{"[1][-1]", -1},
+		{"{1: 1, 2: 2}[1]", 1},
+		{"{1: 1, 2: 2}[2]", 2},
+		{"{1: 1}[0]", -1},
+		{"{}[0]", -1},
 	};
 
 	auto err = run_vm_tests(test_cases);
