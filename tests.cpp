@@ -1424,6 +1424,22 @@ const std::string run_vm_tests(const std::vector<VMTestcase<T>> &tests) {
 				if (!test_integer_object(arr->elements[i], tt.expected[i]))
 					return "The integer object is invalid";
 			}
+		} else if constexpr (std::is_same<std::map<int, int>, T>::value) {
+			auto hash = dynamic_cast<Hash*>(stack_elem);
+			if (hash == nullptr)
+				return "The class is not a Hash object";
+
+			if (hash->pairs.size() != tt.expected.size())
+				return "The amount of elements differ in the hash class";
+
+			for (const auto &e : tt.expected) {
+				auto pr = hash->pairs[e.first];
+				if (pr == nullptr)
+					return "A pair was not found in the map";
+
+				if (!test_integer_object(pr->value, e.second))
+					return "The integer object is invalid";
+			}
 		}
 	}
 
@@ -1911,5 +1927,30 @@ TEST(CompilerTest, HashLiterals) {
 			 }}}};
 
 	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
+}
+
+TEST(VMTest, HashLiterals) {
+	std::vector<VMTestcase<std::map<int, int>>> test_cases {
+		{
+			"{}",
+		},
+		{
+			"{1: 2, 2: 3}",
+			{
+			{(new Integer(1))->hash_key().value, 2},
+			{(new Integer(2))->hash_key().value, 3},
+			}
+		},
+		{
+			"{1 + 1: 2 * 2, 3 + 3: 4 * 4}",
+			{
+			{(new Integer(2))->hash_key().value, 4},
+			{(new Integer(6))->hash_key().value, 16},
+			}
+		}
+	};
+
+	auto err = run_vm_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
 }

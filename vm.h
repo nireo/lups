@@ -29,6 +29,7 @@ public:
 	int execute_minus_operator();
 
 	Object *build_array(int start_index, int end_index);
+	Object *build_hash(int start_index, int end_index);
 private:
 	int m_sp;
 	code::Instructions m_instructions;

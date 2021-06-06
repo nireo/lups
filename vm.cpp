@@ -3,6 +3,7 @@
 #include "compiler.h"
 #include "eval.h"
 #include "object.h"
+#include <unordered_map>
 
 // TODO: add better error handling rather than just returning integers. Probably
 // by making some kind of error class or something since enums aren't different
@@ -109,6 +110,7 @@ int VM::run() {
 			auto pos = (int)code::decode_uint16(code::Instructions(
 					m_instructions.begin() + ip + 1, m_instructions.begin() + ip + 3));
 			ip = pos - 1;
+			break;
 		}
 		case code::OpJumpNotTruthy: {
 			auto pos = (int)code::decode_uint16(code::Instructions(
@@ -154,6 +156,19 @@ int VM::run() {
 			auto status = push(array);
 			if (status != 0)
 				return status;
+			break;
+		}
+		case code::OpHash: {
+			auto num_elements = code::decode_uint16(code::Instructions(
+					m_instructions.begin() + ip + 1, m_instructions.begin() + ip + 3));
+			ip += 2;
+
+			auto hash = build_hash(m_sp-num_elements, m_sp);
+			m_sp = m_sp - num_elements;
+			auto status = push(hash);
+			if (status != 0)
+				return status;
+			break;
 		}
 		}
 	}
@@ -304,4 +319,31 @@ Object *VM::build_array(int start_index, int end_index) {
 		elements[i-start_index] = m_stack[i];
 
 	return new Array(elements);
+}
+
+Object *VM::build_hash(int start_index, int end_index) {
+	auto hashtable = new Hash();
+	for (int i = start_index; i < end_index; i += 2) {
+		auto key = m_stack[i];
+		auto value = m_stack[i+1];
+		auto pair = new HashPair{key, value};
+
+		if (!(key->Type() == objecttypes::INTEGER ||
+					key->Type() == objecttypes::STRING ||
+					key->Type() == objecttypes::BOOLEAN))
+			return nullptr;
+
+		HashKey res;
+		// we only need to check these types since the previous if expressions
+		// guarantees that the object is one of them.
+		if (key->Type() == objecttypes::INTEGER)
+			res = ((Integer *)key)->hash_key();
+		else if (key->Type() == objecttypes::STRING)
+			res = ((String *)key)->hash_key();
+		else if (key->Type() == objecttypes::BOOLEAN)
+			res = ((Boolean *)key)->hash_key();
+		hashtable->pairs[res.value] = pair;
+	}
+
+	return hashtable;
 }
