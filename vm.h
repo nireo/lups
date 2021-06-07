@@ -3,8 +3,23 @@
 
 #include "code.h"
 #include "compiler.h"
-constexpr int StackSize = 2048;
-constexpr int GlobalsSize = 65536;
+#include <array>
+#include <memory>
+static constexpr int StackSize = 2048;
+static constexpr int GlobalsSize = 65536;
+static constexpr int MaxFrames = 1024;
+
+class Frame {
+public:
+	Frame(code::Instructions inst) {
+		func_ = std::make_unique<CompiledFunction>(inst);
+		ip_ = -1;
+	}
+	code::Instructions &instructions() { return func_->m_instructions; }
+
+	int ip_;
+	std::unique_ptr<CompiledFunction> func_;
+};
 
 class VM {
 public:
@@ -35,12 +50,28 @@ public:
 
 	Object *build_array(int start_index, int end_index);
 	Object *build_hash(int start_index, int end_index);
+
+	// frame functions
+	Frame& current_frame() { return *frames_[frames_index_-1]; }
+
+	void push_frame(std::unique_ptr<Frame> frame) {
+		frames_[frames_index_] = std::move(frame);
+		++frames_index_;
+	}
+
+	Frame& pop_frame() {
+		--frames_index_;
+		return *frames_[frames_index_];
+	}
+
 private:
 	int m_sp;
-	code::Instructions m_instructions;
 	std::vector<Object *> m_constants;
 	std::vector<Object *> m_stack;
 	std::vector<Object *> m_globals;
+
+	std::array<std::unique_ptr<Frame>, MaxFrames> frames_;
+	int frames_index_;
 };
 
 #endif
