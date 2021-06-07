@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/lups_test.dir/tests.cpp.o CMakeFiles/lups_test.dir/lexer.cpp.o CMakeFiles/lups_test.dir/parser.cpp.o CMakeFiles/lups_test.dir/ast.cpp.o CMakeFiles/lups_test.dir/eval.cpp.o CMakeFiles/lups_test.dir/code.cpp.o CMakeFiles/lups_test.dir/compiler.cpp.o CMakeFiles/lups_test.dir/vm.cpp.o -o lups_test  lib/libgtest_main.a lib/libgtest.a -lpthread 
