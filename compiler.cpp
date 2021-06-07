@@ -70,7 +70,7 @@ int Compiler::compile(Node *node) {
 		else
 			emit(code::OpFalse);
 	} else if (type == "PrefixExpression") {
-		auto prex = dynamic_cast<PrefixExpression *>(node);
+		const auto prex = dynamic_cast<PrefixExpression *>(node);
 		auto status = compile(prex->right.get());
 		if (status != 0)
 			return status;
@@ -82,12 +82,12 @@ int Compiler::compile(Node *node) {
 		else
 			return -1;
 	} else if (type == "IfExpression") {
-		auto ifx = dynamic_cast<IfExpression *>(node);
+		const auto ifx = dynamic_cast<IfExpression *>(node);
 		auto status = compile(ifx->cond.get());
 		if (status != 0)
 			return status;
 
-		auto jump_not_truthy_pos =
+		const auto jump_not_truthy_pos =
 				emit(code::OpJumpNotTruthy, {9999});
 
 		status = compile(ifx->after.get());
@@ -97,8 +97,8 @@ int Compiler::compile(Node *node) {
 		if (is_last_inst_pop())
 			remove_last_pop();
 
-		auto jump_pos = emit(code::OpJump, {9999});
-		auto after_conq_pos = current_instructions().size();
+		const auto jump_pos = emit(code::OpJump, {9999});
+		const auto after_conq_pos = current_instructions().size();
 		change_operand(jump_not_truthy_pos, after_conq_pos);
 
 		if (ifx->other == nullptr) {
@@ -111,7 +111,7 @@ int Compiler::compile(Node *node) {
 			if (is_last_inst_pop())
 				remove_last_pop();
 		}
-		auto after_other_pos = current_instructions().size();
+		const auto after_other_pos = current_instructions().size();
 		change_operand(jump_pos, after_other_pos);
 	} else if (type == "BlockExpression") {
 		for (auto &st : ((BlockStatement *)node)->statements) {
@@ -120,24 +120,24 @@ int Compiler::compile(Node *node) {
 				return status;
 		}
 	} else if (type == "LetStatement") {
-		auto letexp = dynamic_cast<LetStatement*>(node);
-		auto status = compile(letexp->value.get());
+		const auto letexp = dynamic_cast<LetStatement*>(node);
+		const auto status = compile(letexp->value.get());
 		if (status != 0)
 			return status;
 
-		auto symbol = m_symbol_table->define(letexp->name->value);
+		const auto symbol = m_symbol_table->define(letexp->name->value);
 		emit(code::OpSetGlobal, {symbol->index});
 	} else if (type == "Identifier") {
-		auto symbol = m_symbol_table->resolve(((Identifier*)node)->value);
+		const auto symbol = m_symbol_table->resolve(((Identifier*)node)->value);
 		if (symbol == nullptr)
 			return -1;
 		emit(code::OpGetGlobal, {symbol->index});
 	} else if (type == "StringLiteral") {
-		auto str = new String(((StringLiteral*)node)->TokenLiteral());
+		const auto str = new String(((StringLiteral*)node)->TokenLiteral());
 		emit(code::OpConstant, {add_constant(str)});
 	} else if (type == "ArrayLiteral") {
 		for (const auto &el : ((ArrayLiteral*)node)->elements) {
-			auto status = compile(el.get());
+			const auto status = compile(el.get());
 			if (status != 0)
 				return status;
 		}
@@ -250,10 +250,10 @@ void Compiler::change_operand(int op_pos, int operand) {
 	replace_instructions(op_pos, new_inst);
 }
 
-void Compiler::replace_instructions(int pos, code::Instructions inst) {
-	auto ins = current_instructions();
-	for (int i = 0; i < (int)inst.size(); ++i) {
-		ins[pos + i] = inst[i];
+void Compiler::replace_instructions(int pos, code::Instructions &new_inst) {
+	auto& ins = scoped_inst();
+	for (int i = 0; i < (int)new_inst.size(); ++i) {
+		ins[pos + i] = new_inst[i];
 	}
 }
 

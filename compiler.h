@@ -81,11 +81,14 @@ public:
 	void set_last_instruction(code::Opcode, int pos);
 	bool is_last_inst_pop();
 	void remove_last_pop();
-	void replace_instructions(int pos, code::Instructions new_inst);
+	void replace_instructions(int pos, code::Instructions &new_inst);
 	void change_operand(int op_pos, int operand);
 	code::Instructions current_instructions();
 	int add_instructions(std::vector<char> &inst);
 	Bytecode *bytecode() { return new Bytecode{current_instructions(), m_constants}; }
+
+	code::Instructions& scoped_inst() { return curr_scope().instructions; }
+	CompilationScope& curr_scope() { return scopes.back(); }
 
 	void enter_scope();
 	code::Instructions leave_scope();
