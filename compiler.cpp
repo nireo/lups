@@ -94,7 +94,7 @@ int Compiler::compile(Node *node) {
 		if (status != 0)
 			return status;
 
-		if (is_last_inst_pop())
+		if (last_instruction_is(code::OpPop))
 			remove_last_pop();
 
 		const auto jump_pos = emit(code::OpJump, {9999});
@@ -108,7 +108,7 @@ int Compiler::compile(Node *node) {
 			if (status != 0)
 				return status;
 
-			if (is_last_inst_pop())
+			if (last_instruction_is(code::OpPop))
 				remove_last_pop();
 		}
 		const auto after_other_pos = current_instructions().size();
@@ -176,6 +176,12 @@ int Compiler::compile(Node *node) {
 		if (status != 0)
 			return status;
 
+		if (last_instruction_is(code::OpPop))
+			replace_last_pop_with_return();
+
+		if (!last_instruction_is(code::OpReturnValue))
+			emit(code::OpReturn);
+
 		auto instructions = leave_scope();
 		auto compiled_fucntion = new CompiledFunction(instructions);
 		emit(code::OpConstant, {add_constant(compiled_fucntion)});
@@ -184,6 +190,13 @@ int Compiler::compile(Node *node) {
 		if (status != 0)
 			return status;
 		emit(code::OpReturnValue);
+	} else if (type == "CallExpression") {
+		const auto call_exp = dynamic_cast<CallExpression*>(node);
+		auto status = compile(call_exp->func.get());
+		if (status != 0)
+			return status;
+
+		emit(code::OpCall);
 	}
 
 	return 0;
@@ -228,10 +241,6 @@ void Compiler::set_last_instruction(code::Opcode op, int pos) {
 	scopes[scope_index].last_inst = last;
 }
 
-bool Compiler::is_last_inst_pop() {
-	return scopes[scope_index].last_inst.op == code::OpPop;
-}
-
 void Compiler::remove_last_pop() {
 	auto last = scopes[scope_index].last_inst;
 	auto prev = scopes[scope_index].prev_inst;
@@ -250,7 +259,7 @@ void Compiler::change_operand(int op_pos, int operand) {
 	replace_instructions(op_pos, new_inst);
 }
 
-void Compiler::replace_instructions(int pos, code::Instructions &new_inst) {
+void Compiler::replace_instructions(int pos, const code::Instructions &new_inst) {
 	auto& ins = scoped_inst();
 	for (int i = 0; i < (int)new_inst.size(); ++i) {
 		ins[pos + i] = new_inst[i];
@@ -294,4 +303,17 @@ code::Instructions Compiler::leave_scope() {
 	--scope_index;
 
 	return instructions;
+}
+
+bool Compiler::last_instruction_is(const code::Opcode &op) {
+	if (scoped_inst().size() == 0)
+		return false;
+
+	return scopes[scope_index].last_inst.op == op;
+}
+
+void Compiler::replace_last_pop_with_return() {
+	auto last_pos = scopes[scope_index].last_inst.pos;
+	replace_instructions(last_pos, code::make(code::OpReturnValue, {}));
+	scopes[scope_index].last_inst.op= code::OpReturnValue;
 }
