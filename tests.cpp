@@ -1372,6 +1372,32 @@ run_compiler_tests(const std::vector<CompilerTestcase<T>> &tests) {
 				if (!test_string_constant(test.expected_constants[i], bytecode->constants[i]))
 					return "string constants don't match";
 			}
+		} else if constexpr (std::is_same<Object*, T>::value) {
+			for (int i = 0; i < (int)test.expected_constants.size(); ++i) {
+				if (test.expected_constants[i]->Type() == objecttypes::COMPILED_FUNCTION_OBJ) {
+					auto expected_fn = dynamic_cast<CompiledFunction*>(test.expected_constants[i]);
+					if (expected_fn == nullptr)
+						return "Cannot convert object into compiled function.";
+
+					auto actual_fn = dynamic_cast<CompiledFunction*>(bytecode->constants[i]);
+					if (actual_fn == nullptr)
+						return "Cannot convert object into compiled function.";
+
+					if (!test_instructions({expected_fn->m_instructions}, actual_fn->m_instructions))
+						return "The function instructions don't match";
+				} else if (test.expected_constants[i]->Type() == objecttypes::INTEGER) {
+					auto expected_int = dynamic_cast<Integer*>(test.expected_constants[i]);
+					if (expected_int == nullptr)
+						return "Cannot convert object into compiled function.";
+
+					auto actual_int = dynamic_cast<Integer*>(bytecode->constants[i]);
+					if (actual_int == nullptr)
+						return "Cannot convert object into compiled function.";
+
+					if (actual_int->value != expected_int->value)
+						return "Integer values don't match";
+				}
+			}
 		}
 	}
 
@@ -2034,4 +2060,67 @@ TEST(CompilerTest, CompilerScopes) {
 
 	auto previous = compiler->scopes[compiler->scope_index].prev_inst;
 	EXPECT_EQ(previous.op, code::OpMul);
+}
+
+TEST(CompilerTest, Functions) {
+	std::vector<code::Instructions> func_insts1 {
+		{
+				code::make(code::OpConstant, {0}),
+				code::make(code::OpConstant, {1}),
+				code::make(code::OpAdd, {}),
+				code::make(code::OpReturnValue, {}),
+			}
+	};
+
+	std::vector<code::Instructions> func_insts2 {
+		{
+				code::make(code::OpConstant, {0}),
+				code::make(code::OpReturnValue, {}),
+			}
+	};
+
+	std::vector<code::Instructions> func_insts3 {
+		{
+			code::make(code::OpReturn, {}),
+		}
+	};
+
+	std::vector<CompilerTestcase<Object*>> test_cases {
+		{
+			"func() { return 5 + 10 }",
+			{new Integer(5), new Integer(10), new CompiledFunction(concat_instructions(func_insts1))},
+			 {{
+					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpPop, {}),
+			 }}},
+		{
+			"func() { 24 }();",
+			{new Integer(24), new CompiledFunction(concat_instructions(func_insts2))},
+			 {{
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpCall, {}),
+					 code::make(code::OpPop, {}),
+			 }}},
+		{
+			"let noArg = func() { 24 };"
+			"noArg();",
+			{new Integer(24), new CompiledFunction(concat_instructions(func_insts2))},
+			 {{
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpSetGlobal, {0}),
+					 code::make(code::OpGetGlobal, {0}),
+					 code::make(code::OpCall, {}),
+					 code::make(code::OpPop, {}),
+			 }}},
+		{
+			"func () { }",
+			{new CompiledFunction(concat_instructions(func_insts3))},
+			 {{
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpPop, {}),
+			 }}},
+	};
+
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }

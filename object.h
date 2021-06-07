@@ -42,10 +42,9 @@ public:
 class CompiledFunction : public Object {
 public:
 	CompiledFunction(code::Instructions inst) : Object(), m_instructions(inst) {}
-	ObjectType Type() { return objecttypes::INTEGER; }
+	ObjectType Type() { return objecttypes::COMPILED_FUNCTION_OBJ; }
 	std::string Inspect() { return "compiled-function"; }
 
-private:
 	code::Instructions m_instructions;
 };
 
