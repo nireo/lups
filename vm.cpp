@@ -4,6 +4,7 @@
 #include "eval.h"
 #include "object.h"
 #include <iostream>
+#include <memory>
 #include <unordered_map>
 
 // TODO: add better error handling rather than just returning integers. Probably
@@ -186,6 +187,24 @@ int VM::run() {
 			auto left = pop();
 
 			auto status = execute_index_expression(left, index);
+			if (status != 0)
+				return status;
+			break;
+		}
+		case code::OpCall: {
+			const auto fn = dynamic_cast<CompiledFunction*>(m_stack[m_sp-1]);
+			if (fn == nullptr)
+				return -1;
+
+			push_frame(std::make_unique<Frame>(fn->m_instructions));
+			break;
+		}
+		case code::OpReturnValue: {
+			auto return_value = pop();
+			pop_frame();
+			pop();
+
+			auto status = push(return_value);
 			if (status != 0)
 				return status;
 			break;

@@ -2124,3 +2124,16 @@ TEST(CompilerTest, Functions) {
 	auto err = run_compiler_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
 }
+
+TEST(VMTest, Callingfunctions) {
+	std::vector<VMTestcase<int>> tests {
+		{
+			"let fivePlusTen = func() { 5 + 10; };"
+			"fivePlusTen()",
+			15,
+		}
+	};
+
+	auto err = run_vm_tests(tests);
+	EXPECT_EQ(err, "") << err;
+}
