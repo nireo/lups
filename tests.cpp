@@ -2131,6 +2131,42 @@ TEST(VMTest, Callingfunctions) {
 			"let fivePlusTen = func() { 5 + 10; };"
 			"fivePlusTen()",
 			15,
+		},
+		{
+			"let one = func() { 1; };"
+			"let two = func() { 2; };"
+			"one() + two()",
+			3,
+		},
+		{
+			"let a = func() { 1 };"
+			"let b = func() { a() + 1};"
+			"let c = func() { b() + 1};"
+			"c();", 3
+		},
+		{
+			"let earlyExit = func() { return 99; 100; };"
+			"earlyExit();", 99
+		},
+		{
+			"let earlyExit = func() { return 99; return 100; };"
+			"earlyExit();", 99
+		},
+		{
+			// -1 is null
+			"let noReturn = func() { };"
+			"noReturn();", -1
+		},
+		{
+			"let noReturn = func() { };"
+			"let noReturnTwo = func() { noReturn(); };"
+			"noReturn();"
+			"noReturnTwo();", -1
+		},
+		{
+		"let returnsOne = func() { 1; };"
+		"let returnsOneReturner = func() { returnsOne; };"
+		"returnsOneReturner()();", 1
 		}
 	};
 

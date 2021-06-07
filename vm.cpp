@@ -209,6 +209,14 @@ int VM::run() {
 				return status;
 			break;
 		}
+		case code::OpReturn: {
+			pop_frame();
+			pop();
+
+			auto status = push(object_constant::null);
+			if (status != 0)
+				return status;
+		}
 		}
 	}
 
