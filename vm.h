@@ -14,10 +14,19 @@ public:
 	Frame(code::Instructions inst) {
 		func_ = std::make_unique<CompiledFunction>(inst);
 		ip_ = -1;
+		base_pointer_ = 0;
 	}
+
+	Frame(code::Instructions inst, int base_pointer) {
+		func_ = std::make_unique<CompiledFunction>(inst);
+		ip_ = -1;
+		base_pointer_ = base_pointer;
+	}
+
 	code::Instructions &instructions() { return func_->m_instructions; }
 
 	int ip_;
+	int base_pointer_;
 	std::unique_ptr<CompiledFunction> func_;
 };
 

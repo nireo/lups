@@ -2368,3 +2368,42 @@ TEST(CompilerTest, LetStatementScopes) {
 	auto err = run_compiler_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
 }
+
+TEST(VMTest, CallingFunctionsWithBindings) {
+	std::vector<VMTestcase<int>> test_cases {
+		{
+			"let one = func() { let one = 1; one };"
+			"one();",
+			1
+		},
+		{
+			"let oneAndTwo = func() { let one = 1; let two = 2; one + two; };"
+			"oneAndTwo();", 3
+		},
+		{
+			"let oneAndTwo = func() { let one = 1; let two = 2; one + two; };"
+			"let threeAndFour = func() { let three = 3; let four = 4; three + four; };"
+			"oneAndTwo() + threeAndFour();", 10
+		},
+		{
+			"let firstFoobar = func() { let foobar = 50; foobar; };"
+			"let secondFoobar = func() { let foobar = 100; foobar; };"
+			"firstFoobar() + secondFoobar();", 150
+		},
+		{
+			"let globalSeed = 50;"
+			"let minusOne = func() {"
+			"    let num = 1;"
+			"    globalSeed - num;"
+			"}"
+			"let minusTwo = func() {"
+			"    let num = 2;"
+			"    globalSeed - num;"
+			"}"
+			"minusOne() + minusTwo();", 97
+		}
+	};
+
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
+}

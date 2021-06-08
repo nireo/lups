@@ -13,17 +13,17 @@ typedef std::string ObjectType;
 class Boolean;
 
 namespace objecttypes {
-const ObjectType INTEGER = "INTEGER";
-const ObjectType BOOLEAN = "BOOLEAN";
-const ObjectType NULLOBJ = "NULL";
-const ObjectType RETURN = "RETURN";
-const ObjectType ERROR = "ERROR";
-const ObjectType FUNCTION = "FUNCTION";
-const ObjectType STRING = "STRING";
-const ObjectType BUILTIN = "BUILTIN";
-const ObjectType ARRAY_OBJ = "ARRAY";
-const ObjectType HASH = "HASH";
-const ObjectType COMPILED_FUNCTION_OBJ = "COMPILED_FUNCTION_OBJ";
+static const ObjectType INTEGER = "INTEGER";
+static const ObjectType BOOLEAN = "BOOLEAN";
+static const ObjectType NULLOBJ = "NULL";
+static const ObjectType RETURN = "RETURN";
+static const ObjectType ERROR = "ERROR";
+static const ObjectType FUNCTION = "FUNCTION";
+static const ObjectType STRING = "STRING";
+static const ObjectType BUILTIN = "BUILTIN";
+static const ObjectType ARRAY_OBJ = "ARRAY";
+static const ObjectType HASH = "HASH";
+static const ObjectType COMPILED_FUNCTION_OBJ = "COMPILED_FUNCTION_OBJ";
 } // namespace objecttypes
 
 typedef long long HashValue;
@@ -41,11 +41,17 @@ public:
 
 class CompiledFunction : public Object {
 public:
-	CompiledFunction(code::Instructions inst) : Object(), m_instructions(inst) {}
+	CompiledFunction(code::Instructions inst)
+			: Object(), m_instructions(inst), m_num_locals(0) {}
+
+	CompiledFunction(code::Instructions inst, int num_locals)
+			: Object(), m_instructions(inst), m_num_locals(num_locals) {}
+
 	ObjectType Type() { return objecttypes::COMPILED_FUNCTION_OBJ; }
 	std::string Inspect() { return "compiled-function"; }
 
 	code::Instructions m_instructions;
+	int m_num_locals;
 };
 
 typedef Object *(*built_in)(std::vector<Object *> &);

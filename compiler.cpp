@@ -189,8 +189,9 @@ int Compiler::compile(Node *node) {
 		if (!last_instruction_is(code::OpReturnValue))
 			emit(code::OpReturn);
 
+		const auto num_locals = m_symbol_table->definition_num_;
 		auto instructions = leave_scope();
-		auto compiled_fucntion = new CompiledFunction(instructions);
+		auto compiled_fucntion = new CompiledFunction(instructions, num_locals);
 		emit(code::OpConstant, {add_constant(compiled_fucntion)});
 	} else if (type == "ReturnStatement") {
 		auto status = compile(((ReturnStatement*)node)->return_value.get());

@@ -3,6 +3,7 @@
 #include "compiler.h"
 #include "eval.h"
 #include "object.h"
+#include <cstdint>
 #include <iostream>
 #include <memory>
 #include <unordered_map>
@@ -37,7 +38,7 @@ VM::VM(Bytecode *bytecode) {
 	m_stack = std::vector<Object *>(StackSize, nullptr);
 	m_globals = std::vector<Object *>(GlobalsSize);
 
-	std::unique_ptr<Frame> main_frame(new Frame(bytecode->instructions));
+	std::unique_ptr<Frame> main_frame(new Frame(bytecode->instructions, 0));
 
 	frames_ = std::array<std::unique_ptr<Frame>, MaxFrames>();
 	frames_[0] = std::move(main_frame);
@@ -54,17 +55,17 @@ Object *VM::stack_top() {
 }
 
 int VM::run() {
-	for (current_frame().ip_ = 0; current_frame().ip_ < (int)current_frame().instructions().size(); ++current_frame().ip_) {
-		auto& ip = current_frame().ip_;
-		const auto& inst = current_frame().instructions();
+	for (current_frame().ip_ = 0;
+			 current_frame().ip_ < (int)current_frame().instructions().size();
+			 ++current_frame().ip_) {
+		auto &ip = current_frame().ip_;
+		const auto &inst = current_frame().instructions();
 		const auto op = inst[ip];
-
-		std::cout << "hello" << "\n";
 
 		switch (op) {
 		case code::OpConstant: {
-			auto const_index = code::decode_uint16(code::Instructions(
-					inst.begin() + ip + 1, inst.begin()+ip+3));
+			auto const_index = code::decode_uint16(
+					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
 			current_frame().ip_ += 2;
 
 			int status = push(m_constants[const_index]);
@@ -119,14 +120,14 @@ int VM::run() {
 			break;
 		}
 		case code::OpJump: {
-			auto pos = (int)code::decode_uint16(code::Instructions(
-					inst.begin() + ip + 1, inst.begin() + ip + 3));
+			auto pos = (int)code::decode_uint16(
+					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
 			current_frame().ip_ = pos - 1;
 			break;
 		}
 		case code::OpJumpNotTruthy: {
-			auto pos = (int)code::decode_uint16(code::Instructions(
-					inst.begin() + ip + 1, inst.begin() + ip + 3));
+			auto pos = (int)code::decode_uint16(
+					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
 			current_frame().ip_ += 2;
 
 			auto condition = pop();
@@ -141,16 +142,16 @@ int VM::run() {
 			break;
 		}
 		case code::OpSetGlobal: {
-			auto global_index = code::decode_uint16(code::Instructions(
-					inst.begin() + ip + 1, inst.begin() + ip + 3));
+			auto global_index = code::decode_uint16(
+					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
 			current_frame().ip_ += 2;
 
 			m_globals[global_index] = pop();
 			break;
 		}
 		case code::OpGetGlobal: {
-			auto global_index = code::decode_uint16(code::Instructions(
-					inst.begin() + ip + 1, inst.begin() + ip + 3));
+			auto global_index = code::decode_uint16(
+					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
 			current_frame().ip_ += 2;
 
 			auto status = push(m_globals[global_index]);
@@ -159,8 +160,8 @@ int VM::run() {
 			break;
 		}
 		case code::OpArray: {
-			auto num_elements = code::decode_uint16(code::Instructions(
-					inst.begin() + ip + 1, inst.begin() + ip + 3));
+			auto num_elements = code::decode_uint16(
+					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
 			current_frame().ip_ += 2;
 			auto array = build_array(m_sp - num_elements, m_sp);
 			m_sp = m_sp - num_elements;
@@ -171,8 +172,8 @@ int VM::run() {
 			break;
 		}
 		case code::OpHash: {
-			auto num_elements = code::decode_uint16(code::Instructions(
-					inst.begin() + ip + 1, inst.begin() + ip + 3));
+			auto num_elements = code::decode_uint16(
+					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
 			current_frame().ip_ += 2;
 
 			auto hash = build_hash(m_sp - num_elements, m_sp);
@@ -192,17 +193,20 @@ int VM::run() {
 			break;
 		}
 		case code::OpCall: {
-			const auto fn = dynamic_cast<CompiledFunction*>(m_stack[m_sp-1]);
+			const auto fn = dynamic_cast<CompiledFunction *>(m_stack[m_sp - 1]);
 			if (fn == nullptr)
 				return -1;
 
-			push_frame(std::make_unique<Frame>(fn->m_instructions));
+			auto frame = std::make_unique<Frame>(fn->m_instructions, m_sp);
+			auto new_stack_ptr = frame->base_pointer_ + fn->m_num_locals;
+			push_frame(std::move(frame));
+			m_sp = new_stack_ptr;
 			break;
 		}
 		case code::OpReturnValue: {
 			auto return_value = pop();
-			pop_frame();
-			pop();
+			const auto &frame = pop_frame();
+			m_sp = frame.base_pointer_ - 1;
 
 			auto status = push(return_value);
 			if (status != 0)
@@ -210,12 +214,32 @@ int VM::run() {
 			break;
 		}
 		case code::OpReturn: {
-			pop_frame();
-			pop();
+			const auto &frame = pop_frame();
+			m_sp = frame.base_pointer_ - 1;
 
 			auto status = push(object_constant::null);
 			if (status != 0)
 				return status;
+			break;
+		}
+		case code::OpSetLocal: {
+			auto local_index = (int)((std::uint8_t)inst[ip + 1]);
+			current_frame().ip_ += 1;
+
+			auto &frame = current_frame();
+			m_stack[frame.base_pointer_ + local_index] = pop();
+			break;
+		}
+		case code::OpGetLocal: {
+			auto local_index = (int)((std::uint8_t)inst[ip + 1]);
+			current_frame().ip_ += 1;
+
+			const auto &frame = current_frame();
+			auto status = push(m_stack[frame.base_pointer_ + local_index]);
+			if (status != 0) {
+				return status;
+			}
+			break;
 		}
 		}
 	}
