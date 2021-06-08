@@ -2462,9 +2462,37 @@ TEST(VMTest, CallingFunctionsWithArguments) {
 		{
 			"let sum = func(a, b) { a + b; };"
 			"sum(1, 2);", 3
+		},
+		{
+			"let sum = func(a, b) { let c = a + b; c;}; sum(1, 2);", 3
+		},
+		{
+			"let sum = func(a, b) { let c = a + b; c; }; sum(1, 2) + sum(3, 4)", 10,
 		}
 	};
 
 	auto err = run_vm_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
+}
+
+TEST(VMTest, WrongParameterCountReturnsError) {
+	std::vector<std::string> inputs {
+		{"func() { 1; }(1);"},
+		{"func(a) { a; }();"},
+		{"func(a, b) { a + b; }(1);"}
+	};
+
+	for (const auto& tt : inputs) {
+		auto program = parse_compiler_program_helper(tt);
+		auto comp = new Compiler();
+		auto status = comp->compile(program.get());
+
+		// The compiler does return successful since handling the amount of parameters
+		// isn't the compiler's job.
+		EXPECT_EQ(status, 0);
+
+		auto vm = new VM(comp->bytecode());
+		auto vm_status = vm->run();
+		EXPECT_NE(vm_status, 0) << "Virtual machine run was successful even though it shouldn't be";
+	}
 }

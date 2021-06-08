@@ -193,8 +193,10 @@ int Compiler::compile(Node *node) {
 
 		const auto num_locals = m_symbol_table->definition_num_;
 		auto instructions = leave_scope();
-		auto compiled_fucntion = new CompiledFunction(instructions, num_locals);
-		emit(code::OpConstant, {add_constant(compiled_fucntion)});
+		auto compiled_function = new CompiledFunction(instructions, num_locals);
+		compiled_function->m_num_parameters = func->params.size();
+
+		emit(code::OpConstant, {add_constant(compiled_function)});
 	} else if (type == "ReturnStatement") {
 		auto status = compile(((ReturnStatement*)node)->return_value.get());
 		if (status != 0)

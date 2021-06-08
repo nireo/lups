@@ -52,6 +52,7 @@ public:
 
 	code::Instructions m_instructions;
 	int m_num_locals;
+	int m_num_parameters;
 };
 
 typedef Object *(*built_in)(std::vector<Object *> &);
