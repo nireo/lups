@@ -1280,6 +1280,7 @@ TEST(CodeTest, Make) {
 			{code::OpConstant, std::vector<int>{65534},
 			 std::vector<char>{code::OpConstant, (char)255, (char)254}},
 			{code::OpAdd, std::vector<int>{}, std::vector<char>{code::OpAdd}},
+			{code::OpGetLocal, {255}, {code::OpGetLocal, (char)255}},
 	};
 
 	for (auto &tc : test_cases) {
@@ -1637,12 +1638,13 @@ TEST(CompilerTest, BooleanExpressions) {
 
 TEST(CodeTest, InstructionString) {
 	std::vector<code::Instructions> instructions{
-			{code::make(code::OpAdd, std::vector<int>{})},
-			{code::make(code::OpConstant, std::vector<int>{2})},
-			{code::make(code::OpConstant, std::vector<int>{65535})}};
+			{code::make(code::OpAdd, {})},
+			{code::make(code::OpGetLocal, {1})},
+			{code::make(code::OpConstant, {2})},
+			{code::make(code::OpConstant, {65535})}};
 
 	std::string expected =
-			"0000 OpAdd\n0001 OpConstant 2\n0004 OpConstant 65535\n";
+			"0000 OpAdd\n0001 OpGetLocal 1\n0003 OpConstant 2\n0006 OpConstant 65535\n";
 	auto concatted = concat_instructions(instructions);
 
 	EXPECT_EQ(code::instructions_to_string(concatted), expected);
@@ -1656,7 +1658,8 @@ TEST(CodeTest, ReadOperands) {
 	};
 
 	std::vector<Testcase> test_cases{
-			{code::OpConstant, std::vector<int>{65535}, 2},
+			{code::OpConstant, {65535}, 2},
+			{code::OpGetLocal, {255}, 1}
 	};
 
 	for (const auto &tc : test_cases) {
@@ -1813,21 +1816,61 @@ TEST(CompilerTest, GlobalLetStatements) {
 }
 
 TEST(SymbolTableTest, TestDefine) {
+	std::map<std::string, Symbol> ex{
+		{"a", {"a", scopes::GlobalScope, 0}},
+		{"b", {"b", scopes::GlobalScope, 1}},
+		{"c", {"c", scopes::LocalScope, 0}},
+		{"d", {"d", scopes::LocalScope, 1}},
+		{"e", {"e", scopes::LocalScope, 0}},
+		{"f", {"f", scopes::LocalScope, 1}},
+	};
+
 	auto global = new SymbolTable();
 
 	auto a = global->define("a");
 	EXPECT_NE(a, nullptr);
 
-	EXPECT_EQ(a->name, "a");
-	EXPECT_EQ(a->scope, scopes::GlobalScope);
-	EXPECT_EQ(a->index, 0);
+	EXPECT_EQ(a->name, ex["a"].name);
+	EXPECT_EQ(a->scope, ex["a"].scope);
+	EXPECT_EQ(a->index, ex["a"].index);
 
 	auto b = global->define("b");
 	EXPECT_NE(b, nullptr);
 
-	EXPECT_EQ(b->name, "b");
-	EXPECT_EQ(b->scope, scopes::GlobalScope);
-	EXPECT_EQ(b->index, 1);
+	EXPECT_EQ(b->name, ex["b"].name);
+	EXPECT_EQ(b->scope, ex["b"].scope);
+	EXPECT_EQ(b->index, ex["b"].index);
+
+	auto local1 = new SymbolTable(global);
+
+	auto c = local1->define("c");
+	EXPECT_NE(c, nullptr);
+
+	EXPECT_EQ(c->name, ex["c"].name);
+	EXPECT_EQ(c->scope, ex["c"].scope);
+	EXPECT_EQ(c->index, ex["c"].index);
+
+	auto d = local1->define("d");
+	EXPECT_NE(d, nullptr);
+
+	EXPECT_EQ(d->name, ex["d"].name);
+	EXPECT_EQ(d->scope, ex["d"].scope);
+	EXPECT_EQ(d->index, ex["d"].index);
+
+	auto local2 = new SymbolTable(local1);
+	auto e = local2->define("e");
+	EXPECT_NE(e, nullptr);
+
+	EXPECT_EQ(e->name, ex["e"].name);
+	EXPECT_EQ(e->scope, ex["e"].scope);
+	EXPECT_EQ(e->index, ex["e"].index);
+
+	auto f = local2->define("f");
+	EXPECT_NE(f, nullptr);
+
+	EXPECT_EQ(f->name, ex["f"].name);
+	EXPECT_EQ(f->scope, ex["f"].scope);
+	EXPECT_EQ(f->index, ex["f"].index);
 }
 
 TEST(SymbolTableTest, TestResolveGlobal) {
@@ -1847,6 +1890,82 @@ TEST(SymbolTableTest, TestResolveGlobal) {
 		EXPECT_EQ(res->name, tt.name);
 		EXPECT_EQ(res->scope, tt.scope);
 		EXPECT_EQ(res->index, tt.index);
+	}
+}
+
+TEST(SymbolTableTest, TestResolveLocal) {
+	auto global = new SymbolTable();
+	auto a = global->define("a");
+	auto b = global->define("b");
+
+	auto local = new SymbolTable(global);
+	auto c = local->define("c");
+	auto d = local->define("d");
+
+	std::vector<Symbol> expected{
+			{"a", scopes::GlobalScope, 0},
+			{"b", scopes::GlobalScope, 1},
+			{"c", scopes::LocalScope, 0},
+			{"d", scopes::LocalScope, 1},
+	};
+
+	for (const auto &tt : expected) {
+		const auto& res = local->resolve(tt.name);
+		EXPECT_NE(res, nullptr);
+
+		EXPECT_EQ(res->name, tt.name);
+		EXPECT_EQ(res->scope, tt.scope);
+		EXPECT_EQ(res->index, tt.index);
+	}
+}
+
+TEST(SymbolTableTest, ResolveNestedLocal) {
+	auto global = new SymbolTable();
+	global->define("a");
+	global->define("b");
+
+	auto local1 = new SymbolTable(global);
+	local1->define("c");
+	local1->define("d");
+
+	auto local2 = new SymbolTable(local1);
+	local2->define("e");
+	local2->define("f");
+
+	struct Testcase {
+		SymbolTable *table;
+		std::vector<Symbol> expected;
+	};
+
+	std::vector<Testcase> test_cases {
+		{
+			local1,
+			{
+			{"a", scopes::GlobalScope, 0},
+			{"b", scopes::GlobalScope, 1},
+			{"c", scopes::LocalScope, 0},
+			{"d", scopes::LocalScope, 1},
+			}
+		},
+		{
+			local2,
+			{
+			{"a", scopes::GlobalScope, 0},
+			{"b", scopes::GlobalScope, 1},
+			{"e", scopes::LocalScope, 0},
+			{"f", scopes::LocalScope, 1},
+			}
+		}
+	};
+	for (const auto &tt : test_cases) {
+		for (const auto &sm : tt.expected) {
+			const auto& res = tt.table->resolve(sm.name);
+			EXPECT_NE(res, nullptr);
+
+			EXPECT_EQ(res->name, sm.name);
+			EXPECT_EQ(res->scope, sm.scope);
+			EXPECT_EQ(res->index, sm.index);
+		}
 	}
 }
 
@@ -2038,6 +2157,7 @@ TEST(CompilerTest, CompilerScopes) {
 	auto compiler = new Compiler();
 	EXPECT_EQ(compiler->scope_index, 0);
 
+	auto global_symbol_table = compiler->m_symbol_table;
 	compiler->emit(code::OpMul);
 
 	compiler->enter_scope();
@@ -2049,8 +2169,14 @@ TEST(CompilerTest, CompilerScopes) {
 	auto last = compiler->scopes[compiler->scope_index].last_inst;
 	EXPECT_EQ(last.op, code::OpSub);
 
+	EXPECT_EQ(compiler->m_symbol_table->outer_, global_symbol_table);
+
 	compiler->leave_scope();
 	EXPECT_EQ(compiler->scope_index, 0);
+
+	EXPECT_EQ(compiler->m_symbol_table, global_symbol_table);
+	EXPECT_EQ(compiler->m_symbol_table->outer_, nullptr);
+
 	compiler->emit(code::OpAdd);
 
 	EXPECT_EQ(compiler->scopes[compiler->scope_index].instructions.size(), 2);
@@ -2171,5 +2297,74 @@ TEST(VMTest, Callingfunctions) {
 	};
 
 	auto err = run_vm_tests(tests);
+	EXPECT_EQ(err, "") << err;
+}
+
+TEST(CompilerTest, LetStatementScopes) {
+	std::vector<code::Instructions> func_insts1 {
+		{
+			code::make(code::OpGetGlobal, {0}),
+			code::make(code::OpReturnValue, {}),
+		}
+	};
+
+	std::vector<code::Instructions> func_insts2 {
+		{
+			code::make(code::OpConstant, {0}),
+			code::make(code::OpSetLocal, {0}),
+			code::make(code::OpGetLocal, {0}),
+			code::make(code::OpReturnValue, {}),
+		}
+	};
+
+	std::vector<code::Instructions> func_insts3 {
+		{
+			code::make(code::OpConstant, {0}),
+			code::make(code::OpSetLocal, {0}),
+			code::make(code::OpConstant, {1}),
+			code::make(code::OpSetLocal, {1}),
+			code::make(code::OpGetLocal, {0}),
+			code::make(code::OpGetLocal, {1}),
+			code::make(code::OpAdd, {}),
+			code::make(code::OpReturnValue, {}),
+		}
+	};
+
+
+	std::vector<CompilerTestcase<Object*>> test_cases {
+		{
+			"let num = 55;"
+			"func() { num }",
+			{new Integer(55), new CompiledFunction(concat_instructions(func_insts1))},
+			 {{
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpSetGlobal, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpPop, {}),
+			 }}},
+		{
+			"func() { "
+			"   let num = 55;"
+			"   num"
+			"}",
+			{new Integer(55), new CompiledFunction(concat_instructions(func_insts2))},
+			 {{
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpPop, {}),
+			 }}},
+		{
+			"func() { "
+			"   let a = 55;"
+			"   let b = 77;"
+			"   a + b"
+			"}",
+			{new Integer(55), new Integer(77), new CompiledFunction(concat_instructions(func_insts3))},
+			 {{
+					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpPop, {}),
+			 }}},
+	};
+
+	auto err = run_compiler_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
 }

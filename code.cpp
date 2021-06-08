@@ -57,12 +57,17 @@ std::vector<char> code::make(Opcode op, std::vector<int> operands) {
 
 	std::vector<char> instructions(1, op);
 
+	int offset = 1;
 	for (int i = 0; i < (int)operands.size(); ++i) {
 		auto width = def->operand_widths[i];
 		if (width == 2) {
 			auto encoded = code::encode_uint16((std::uint16_t)operands[i]);
 			instructions.insert(instructions.end(), encoded.begin(), encoded.end());
+		} else if (width == 1) {
+			instructions.push_back(operands[i]);
 		}
+
+		offset += width;
 	}
 
 	return instructions;
@@ -96,6 +101,8 @@ std::pair<std::vector<int>, int> code::read_operands(Definition *def,
 		auto width = def->operand_widths[i];
 		if (width == 2) {
 			operands[i] = (int)code::decode_uint16(Instructions(inst.begin()+offset, inst.end()));
+		} else if (width == 1) {
+			operands[i] = (int)((std::uint8_t)inst[offset]);
 		}
 
 		offset += width;

@@ -126,12 +126,19 @@ int Compiler::compile(Node *node) {
 			return status;
 
 		const auto symbol = m_symbol_table->define(letexp->name->value);
-		emit(code::OpSetGlobal, {symbol->index});
+		if (symbol->scope == scopes::GlobalScope)
+			emit(code::OpSetGlobal, {symbol->index});
+		else
+			emit(code::OpSetLocal, {symbol->index});
 	} else if (type == "Identifier") {
 		const auto symbol = m_symbol_table->resolve(((Identifier*)node)->value);
 		if (symbol == nullptr)
 			return -1;
-		emit(code::OpGetGlobal, {symbol->index});
+
+		if (symbol->scope == scopes::GlobalScope)
+			emit(code::OpGetGlobal, {symbol->index});
+		else
+			emit(code::OpGetLocal, {symbol->index});
 	} else if (type == "StringLiteral") {
 		const auto str = new String(((StringLiteral*)node)->TokenLiteral());
 		emit(code::OpConstant, {add_constant(str)});
@@ -267,18 +274,31 @@ void Compiler::replace_instructions(int pos, const code::Instructions &new_inst)
 }
 
 Symbol *SymbolTable::define(const std::string &name) {
-	auto symbol = new Symbol{name, scopes::GlobalScope, m_definition_num};
-	m_store[name] = symbol;
-	++m_definition_num;
+	auto symbol = new Symbol{};
+	symbol->index = definition_num_;
+	symbol->name = name;
+
+	if (outer_ == nullptr) {
+		symbol->scope = scopes::GlobalScope;
+	} else {
+		symbol->scope = scopes::LocalScope;
+	}
+
+	store_[name] = symbol;
+	++definition_num_;
 
 	return symbol;
 }
 
 Symbol *SymbolTable::resolve(const std::string &name) {
-	if (m_store.count(name) == 0)
-		return nullptr;
+	if (store_.count(name) == 0) {
+		if (outer_ == nullptr)
+			return nullptr;
 
-	return m_store[name];
+		return outer_->resolve(name);
+	}
+
+	return store_[name];
 }
 
 code::Instructions Compiler::current_instructions() {
@@ -294,6 +314,8 @@ void Compiler::enter_scope() {
 
 	scopes.push_back(scope);
 	++scope_index;
+
+	m_symbol_table = new SymbolTable(m_symbol_table);
 }
 
 code::Instructions Compiler::leave_scope() {
@@ -301,6 +323,8 @@ code::Instructions Compiler::leave_scope() {
 
 	scopes = std::vector<CompilationScope>(scopes.begin(), scopes.begin()+scopes.size()-1);
 	--scope_index;
+
+	m_symbol_table = m_symbol_table->outer_;
 
 	return instructions;
 }

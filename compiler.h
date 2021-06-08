@@ -9,6 +9,7 @@ typedef std::string SymbolScope;
 
 namespace scopes {
 const SymbolScope GlobalScope = "GLOBAL";
+const SymbolScope LocalScope = "LOCAL";
 }
 
 struct Bytecode {
@@ -36,21 +37,28 @@ struct Symbol {
 class SymbolTable {
 public:
 	~SymbolTable() {
-		for (auto pr : m_store)
+		for (auto pr : store_)
 			delete pr.second;
 	}
 
 	SymbolTable() {
-		m_definition_num = 0;
-		m_store = std::unordered_map<std::string, Symbol*>();
+		definition_num_ = 0;
+		store_ = std::unordered_map<std::string, Symbol*>();
+		outer_ = nullptr;
+	}
+
+	SymbolTable(SymbolTable *outer) {
+		definition_num_ = 0;
+		store_ = std::unordered_map<std::string, Symbol*>();
+		outer_ = outer;
 	}
 
 	Symbol *define(const std::string &name);
 	Symbol *resolve(const std::string &name);
 
-private:
-	int m_definition_num;
-	std::unordered_map<std::string, Symbol*> m_store;
+	int definition_num_;
+	std::unordered_map<std::string, Symbol*> store_;
+	SymbolTable *outer_;
 };
 
 class Compiler {
@@ -97,14 +105,13 @@ public:
 
 	std::vector<CompilationScope> scopes;
 	int scope_index;
+	SymbolTable *m_symbol_table;
 private:
 	code::Instructions m_instructions;
 	std::vector<Object *> m_constants;
 
 	EmittedInstruction *last_inst;
 	EmittedInstruction *prev_inst;
-
-	SymbolTable *m_symbol_table;
 };
 
 #endif
