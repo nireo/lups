@@ -67,7 +67,7 @@ static const std::unordered_map<Opcode, Definition *> definitions{
 		{Opcodes::OpArray, new Definition{"OpArray", std::vector<int>{2}}},
 		{Opcodes::OpHash, new Definition{"OpHash", std::vector<int>{2}}},
 		{Opcodes::OpIndex, new Definition{"OpIndex", std::vector<int>{}}},
-		{Opcodes::OpCall, new Definition{"OpCall", std::vector<int>{}}},
+		{Opcodes::OpCall, new Definition{"OpCall", std::vector<int>{1}}},
 		{Opcodes::OpReturnValue, new Definition{"OpReturnValue", std::vector<int>{}}},
 		{Opcodes::OpReturn, new Definition{"OpReturn", std::vector<int>{}}},
 		{Opcodes::OpGetLocal, new Definition{"OpGetLocal", std::vector<int>{1}}},

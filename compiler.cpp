@@ -177,8 +177,10 @@ int Compiler::compile(Node *node) {
 		emit(code::OpIndex);
 	} else if (type == "FunctionLiteral") {
 		enter_scope();
-
 		auto func = dynamic_cast<FunctionLiteral*>(node);
+		for (const auto& pr : func->params)
+			m_symbol_table->define(pr->value);
+
 		auto status = compile(func->body.get());
 		if (status != 0)
 			return status;
@@ -204,7 +206,13 @@ int Compiler::compile(Node *node) {
 		if (status != 0)
 			return status;
 
-		emit(code::OpCall);
+		for (const auto& arg : call_exp->arguments) {
+			status = compile(arg.get());
+			if (status != 0)
+				return status;
+		}
+
+		emit(code::OpCall, {(int)call_exp->arguments.size()});
 	}
 
 	return 0;

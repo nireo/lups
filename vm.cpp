@@ -193,14 +193,13 @@ int VM::run() {
 			break;
 		}
 		case code::OpCall: {
-			const auto fn = dynamic_cast<CompiledFunction *>(m_stack[m_sp - 1]);
-			if (fn == nullptr)
-				return -1;
+			auto num_args = (int)((std::uint8_t)inst[ip + 1]);
+			current_frame().ip_ += 1;
 
-			auto frame = std::make_unique<Frame>(fn->m_instructions, m_sp);
-			auto new_stack_ptr = frame->base_pointer_ + fn->m_num_locals;
-			push_frame(std::move(frame));
-			m_sp = new_stack_ptr;
+			auto status = call_function(num_args);
+			if (status != 0)
+				return status;
+
 			break;
 		}
 		case code::OpReturnValue: {
@@ -470,4 +469,18 @@ int VM::execute_hash_index(Object *hash, Object *index) {
 		return push(object_constant::null);
 
 	return push(hashobj->pairs[res.value]->value);
+}
+
+int VM::call_function(int num_args) {
+	const auto fn =
+			dynamic_cast<CompiledFunction *>(m_stack[m_sp - 1 - num_args]);
+	if (fn == nullptr)
+		return -1;
+
+	auto frame = std::make_unique<Frame>(fn->m_instructions, m_sp-num_args);
+	auto new_stack_ptr = frame->base_pointer_ + fn->m_num_locals;
+	push_frame(std::move(frame));
+	m_sp = new_stack_ptr;
+
+	return 0;
 }

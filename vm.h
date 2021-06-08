@@ -57,6 +57,8 @@ public:
 	int execute_array_index(Object *left, Object *index);
 	int execute_hash_index(Object *left, Object *index);
 
+	int call_function(int num_args);
+
 	Object *build_array(int start_index, int end_index);
 	Object *build_hash(int start_index, int end_index);
 

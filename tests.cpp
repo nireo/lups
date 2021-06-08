@@ -2224,7 +2224,7 @@ TEST(CompilerTest, Functions) {
 			{new Integer(24), new CompiledFunction(concat_instructions(func_insts2))},
 			 {{
 					 code::make(code::OpConstant, {1}),
-					 code::make(code::OpCall, {}),
+					 code::make(code::OpCall, {0}),
 					 code::make(code::OpPop, {}),
 			 }}},
 		{
@@ -2235,7 +2235,7 @@ TEST(CompilerTest, Functions) {
 					 code::make(code::OpConstant, {1}),
 					 code::make(code::OpSetGlobal, {0}),
 					 code::make(code::OpGetGlobal, {0}),
-					 code::make(code::OpCall, {}),
+					 code::make(code::OpCall, {0}),
 					 code::make(code::OpPop, {}),
 			 }}},
 		{
@@ -2330,6 +2330,23 @@ TEST(CompilerTest, LetStatementScopes) {
 		}
 	};
 
+	std::vector<code::Instructions> func_insts4 {
+		{
+			code::make(code::OpGetLocal, {0}),
+			code::make(code::OpReturnValue, {}),
+		}
+	};
+
+	std::vector<code::Instructions> func_insts5 {
+		{
+			code::make(code::OpGetLocal, {0}),
+			code::make(code::OpPop, {}),
+			code::make(code::OpGetLocal, {1}),
+			code::make(code::OpPop, {}),
+			code::make(code::OpGetLocal, {2}),
+			code::make(code::OpReturnValue, {}),
+		}
+	};
 
 	std::vector<CompilerTestcase<Object*>> test_cases {
 		{
@@ -2363,6 +2380,34 @@ TEST(CompilerTest, LetStatementScopes) {
 					 code::make(code::OpConstant, {2}),
 					 code::make(code::OpPop, {}),
 			 }}},
+		{
+			"let oneArg = func(a) { a };"
+			"oneArg(24);",
+			{new CompiledFunction(concat_instructions(func_insts4)), new Integer(24)},
+			{{
+					code::make(code::OpConstant, {0}),
+					code::make(code::OpSetGlobal, {0}),
+					code::make(code::OpGetGlobal, {0}),
+					code::make(code::OpConstant, {1}),
+					code::make(code::OpCall,{1}),
+					code::make(code::OpPop, {}),
+				}}
+		},
+		{
+			"let manyArg = func(a, b, c) { a; b; c };"
+			"manyArg(24, 25, 26);",
+			{new CompiledFunction(concat_instructions(func_insts5)), new Integer(24), new Integer(25), new Integer(26)},
+			{{
+					code::make(code::OpConstant, {0}),
+					code::make(code::OpSetGlobal, {0}),
+					code::make(code::OpGetGlobal, {0}),
+					code::make(code::OpConstant, {1}),
+					code::make(code::OpConstant, {2}),
+					code::make(code::OpConstant, {3}),
+					code::make(code::OpCall,{3}),
+					code::make(code::OpPop, {}),
+				}}
+		}
 	};
 
 	auto err = run_compiler_tests(test_cases);
@@ -2401,6 +2446,22 @@ TEST(VMTest, CallingFunctionsWithBindings) {
 			"    globalSeed - num;"
 			"}"
 			"minusOne() + minusTwo();", 97
+		}
+	};
+
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
+}
+
+TEST(VMTest, CallingFunctionsWithArguments) {
+	std::vector<VMTestcase<int>> test_cases {
+		{
+			"let identity = func(a) { a; }"
+			"identity(4);", 4
+		},
+		{
+			"let sum = func(a, b) { a + b; };"
+			"sum(1, 2);", 3
 		}
 	};
 
