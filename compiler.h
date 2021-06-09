@@ -38,29 +38,24 @@ struct Symbol {
 
 class SymbolTable {
 public:
-	~SymbolTable() {
-		for (auto pr : store_)
-			delete pr.second;
-	}
-
 	SymbolTable() {
 		definition_num_ = 0;
-		store_ = std::unordered_map<std::string, Symbol*>();
+		store_ = std::unordered_map<std::string, std::unique_ptr<Symbol>>();
 		outer_ = nullptr;
 	}
 
 	SymbolTable(SymbolTable *outer) {
 		definition_num_ = 0;
-		store_ = std::unordered_map<std::string, Symbol*>();
+		store_ = std::unordered_map<std::string, std::unique_ptr<Symbol>>();
 		outer_ = outer;
 	}
 
-	Symbol *define(const std::string &name);
-	Symbol *define_builtin(int index, const std::string &name);
+	const Symbol& define(const std::string &name);
+	const Symbol& define_builtin(int index, const std::string &name);
 	Symbol *resolve(const std::string &name);
 
 	int definition_num_;
-	std::unordered_map<std::string, Symbol*> store_;
+	std::unordered_map<std::string, std::unique_ptr<Symbol>> store_;
 	SymbolTable *outer_;
 };
 
@@ -107,7 +102,7 @@ public:
 	code::Instructions& scoped_inst() { return curr_scope().instructions; }
 	CompilationScope& curr_scope() { return scopes.back(); }
 
-	void load_symbol(const Symbol *sm);
+	void load_symbol(const Symbol *m);
 
 	void enter_scope();
 	code::Instructions leave_scope();

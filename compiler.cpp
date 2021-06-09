@@ -125,11 +125,11 @@ int Compiler::compile(Node *node) {
 		if (status != 0)
 			return status;
 
-		const auto symbol = m_symbol_table->define(letexp->name->value);
-		if (symbol->scope == scopes::GlobalScope)
-			emit(code::OpSetGlobal, {symbol->index});
+		const auto& symbol = m_symbol_table->define(letexp->name->value);
+		if (symbol.scope == scopes::GlobalScope)
+			emit(code::OpSetGlobal, {symbol.index});
 		else
-			emit(code::OpSetLocal, {symbol->index});
+			emit(code::OpSetLocal, {symbol.index});
 	} else if (type == "Identifier") {
 		auto symbol = m_symbol_table->resolve(((Identifier*)node)->value);
 		if (symbol == nullptr)
@@ -281,8 +281,8 @@ void Compiler::replace_instructions(int pos, const code::Instructions &new_inst)
 	}
 }
 
-Symbol *SymbolTable::define(const std::string &name) {
-	auto symbol = new Symbol{};
+const Symbol& SymbolTable::define(const std::string &name) {
+	auto symbol = std::make_unique<Symbol>();
 	symbol->index = definition_num_;
 	symbol->name = name;
 
@@ -292,10 +292,10 @@ Symbol *SymbolTable::define(const std::string &name) {
 		symbol->scope = scopes::LocalScope;
 	}
 
-	store_[name] = symbol;
+	store_[name] = std::move(symbol);
 	++definition_num_;
 
-	return symbol;
+	return *store_[name];
 }
 
 Symbol *SymbolTable::resolve(const std::string &name) {
@@ -306,14 +306,14 @@ Symbol *SymbolTable::resolve(const std::string &name) {
 		return outer_->resolve(name);
 	}
 
-	return store_[name];
+	return store_[name].get();
 }
 
-Symbol *SymbolTable::define_builtin(int index, const std::string &name) {
-	auto symbol = new Symbol{name, scopes::BuiltinScope, index};
-	store_[name] = symbol;
+const Symbol& SymbolTable::define_builtin(int index, const std::string &name) {
+	std::unique_ptr<Symbol> symbol(new Symbol{name, scopes::BuiltinScope, index});
+	store_[name] = std::move(symbol);
 
-	return symbol;
+	return *store_[name];
 }
 
 code::Instructions Compiler::current_instructions() {

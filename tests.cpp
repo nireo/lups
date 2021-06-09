@@ -1832,50 +1832,44 @@ TEST(SymbolTableTest, TestDefine) {
 
 	auto global = new SymbolTable();
 
-	auto a = global->define("a");
-	EXPECT_NE(a, nullptr);
+	const auto& a = global->define("a");
 
-	EXPECT_EQ(a->name, ex["a"].name);
-	EXPECT_EQ(a->scope, ex["a"].scope);
-	EXPECT_EQ(a->index, ex["a"].index);
+	EXPECT_EQ(a.name, ex["a"].name);
+	EXPECT_EQ(a.scope, ex["a"].scope);
+	EXPECT_EQ(a.index, ex["a"].index);
 
-	auto b = global->define("b");
-	EXPECT_NE(b, nullptr);
+	const auto& b = global->define("b");
 
-	EXPECT_EQ(b->name, ex["b"].name);
-	EXPECT_EQ(b->scope, ex["b"].scope);
-	EXPECT_EQ(b->index, ex["b"].index);
+	EXPECT_EQ(b.name, ex["b"].name);
+	EXPECT_EQ(b.scope, ex["b"].scope);
+	EXPECT_EQ(b.index, ex["b"].index);
 
 	auto local1 = new SymbolTable(global);
 
-	auto c = local1->define("c");
-	EXPECT_NE(c, nullptr);
+	const auto& c = local1->define("c");
 
-	EXPECT_EQ(c->name, ex["c"].name);
-	EXPECT_EQ(c->scope, ex["c"].scope);
-	EXPECT_EQ(c->index, ex["c"].index);
+	EXPECT_EQ(c.name, ex["c"].name);
+	EXPECT_EQ(c.scope, ex["c"].scope);
+	EXPECT_EQ(c.index, ex["c"].index);
 
-	auto d = local1->define("d");
-	EXPECT_NE(d, nullptr);
+	const auto& d = local1->define("d");
 
-	EXPECT_EQ(d->name, ex["d"].name);
-	EXPECT_EQ(d->scope, ex["d"].scope);
-	EXPECT_EQ(d->index, ex["d"].index);
+	EXPECT_EQ(d.name, ex["d"].name);
+	EXPECT_EQ(d.scope, ex["d"].scope);
+	EXPECT_EQ(d.index, ex["d"].index);
 
 	auto local2 = new SymbolTable(local1);
-	auto e = local2->define("e");
-	EXPECT_NE(e, nullptr);
+	const auto& e = local2->define("e");
 
-	EXPECT_EQ(e->name, ex["e"].name);
-	EXPECT_EQ(e->scope, ex["e"].scope);
-	EXPECT_EQ(e->index, ex["e"].index);
+	EXPECT_EQ(e.name, ex["e"].name);
+	EXPECT_EQ(e.scope, ex["e"].scope);
+	EXPECT_EQ(e.index, ex["e"].index);
 
-	auto f = local2->define("f");
-	EXPECT_NE(f, nullptr);
+	const auto& f = local2->define("f");
 
-	EXPECT_EQ(f->name, ex["f"].name);
-	EXPECT_EQ(f->scope, ex["f"].scope);
-	EXPECT_EQ(f->index, ex["f"].index);
+	EXPECT_EQ(f.name, ex["f"].name);
+	EXPECT_EQ(f.scope, ex["f"].scope);
+	EXPECT_EQ(f.index, ex["f"].index);
 }
 
 TEST(SymbolTableTest, TestResolveGlobal) {
