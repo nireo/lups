@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <iostream>
 #include <memory>
-#include <unordered_map>
+#include <map>
 
 // TODO: add better error handling rather than just returning integers. Probably
 // by making some kind of error class or something since enums aren't different
@@ -19,116 +19,7 @@
 // where the string is the error message is the way to go with proper error
 // handling. Since then I don't have to hardcode multiple different errors
 // values into enums or something similar.
-Object *len(std::vector<Object *> &objs) {
-	if (objs.size() != 2) {
-		return new Error("wrong number of arguments. want 2");
-	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
-	}
-
-	auto array = (Array *)objs[0];
-	auto length = array->elements.size();
-	std::vector<Object *> new_elements = array->elements;
-	new_elements.push_back(objs[1]);
-
-	return new Array(new_elements);
-}
-
-Object *println(std::vector<Object *> &objs) {
-	for (const auto& arg : objs) {
-		std::cout << arg->Inspect() << ' ';
-	}
-	std::cout << '\n';
-
-	return nullptr;
-}
-
-Object *array_first(std::vector<Object *> &objs) {
-	if (objs.size() != 1) {
-		return new Error("wrong number of arguments. want 1");
-	}
-
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
-	}
-
-	auto elements = ((Array *)objs[0])->elements;
-	if (elements.size() > 0) {
-		return elements[0];
-	}
-
-	return object_constant::null;
-}
-
-Object *array_last(std::vector<Object *> &objs) {
-	if (objs.size() != 1) {
-		return new Error("wrong number of arguments. want 1");
-	}
-
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
-	}
-
-	auto elements = ((Array *)objs[0])->elements;
-	auto size = elements.size();
-	if (size > 0) {
-		return elements[size - 1];
-	}
-
-	return object_constant::null;
-}
-
-Object *array_tail(std::vector<Object *> &objs) {
-	if (objs.size() != 1) {
-		return new Error("wrong number of arguments. want 1");
-	}
-
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
-	}
-
-	auto elements = ((Array *)objs[0])->elements;
-	auto size = elements.size();
-	if (size > 0) {
-		std::vector<Object *> tailed_elements(elements.begin() + 1, elements.end());
-		return new Array(tailed_elements);
-	}
-
-	return object_constant::null;
-}
-
-Object *array_push(std::vector<Object *> &objs) {
-	if (objs.size() != 2) {
-		return new Error("wrong number of arguments. want 2");
-	}
-
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
-	}
-
-	auto array = (Array *)objs[0];
-	auto length = array->elements.size();
-	std::vector<Object *> new_elements = array->elements;
-	new_elements.push_back(objs[1]);
-
-	return new Array(new_elements);
-}
-
-std::unordered_map<std::string, std::unique_ptr<Builtin>> builtin_functions = {
-	{"len", std::make_unique<Builtin>(*len)},
-	{"println", std::make_unique<Builtin>(*println)},
-	{"first", std::make_unique<Builtin>(*(array_first))},
-	{"last", std::make_unique<Builtin>(*(array_last))},
-	{"tail", std::make_unique<Builtin>(*(array_tail))},
-	{"push", std::make_unique<Builtin>(*(array_push))},
-};
 
 Object *native_bool_to_obj(bool val) {
 	return (val ? object_constant::TRUE_OBJ : object_constant::FALSE_OBJ);

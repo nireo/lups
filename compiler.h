@@ -8,8 +8,9 @@
 typedef std::string SymbolScope;
 
 namespace scopes {
-const SymbolScope GlobalScope = "GLOBAL";
-const SymbolScope LocalScope = "LOCAL";
+static const SymbolScope GlobalScope = "GLOBAL";
+static const SymbolScope LocalScope = "LOCAL";
+	static const SymbolScope BuiltinScope = "BUITLIN";
 }
 
 struct Bytecode {
@@ -54,6 +55,7 @@ public:
 	}
 
 	Symbol *define(const std::string &name);
+	Symbol *define_builtin(int index, const std::string &name);
 	Symbol *resolve(const std::string &name);
 
 	int definition_num_;
@@ -69,6 +71,7 @@ public:
 		last_inst = nullptr;
 		prev_inst = nullptr;
 		m_symbol_table = new SymbolTable();
+
 		scope_index = 0;
 
 		auto main_scope = CompilationScope{

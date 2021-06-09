@@ -312,6 +312,13 @@ Symbol *SymbolTable::resolve(const std::string &name) {
 	return store_[name];
 }
 
+Symbol *SymbolTable::define_builtin(int index, const std::string &name) {
+	auto symbol = new Symbol{name, scopes::BuiltinScope, index};
+	store_[name] = symbol;
+
+	return symbol;
+}
+
 code::Instructions Compiler::current_instructions() {
 	return scopes[scope_index].instructions;
 }

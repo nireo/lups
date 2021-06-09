@@ -1365,33 +1365,40 @@ run_compiler_tests(const std::vector<CompilerTestcase<T>> &tests) {
 
 		if constexpr (std::is_same<int, T>::value) {
 			for (int i = 0; i < (int)test.expected_constants.size(); ++i) {
-				if (!test_integer_object(bytecode->constants[i], test.expected_constants[i]))
+				if (!test_integer_object(bytecode->constants[i],
+																 test.expected_constants[i]))
 					return "integer constants don't match";
 			}
 		} else if constexpr (std::is_same<std::string, T>::value) {
 			for (int i = 0; i < (int)test.expected_constants.size(); ++i) {
-				if (!test_string_constant(test.expected_constants[i], bytecode->constants[i]))
+				if (!test_string_constant(test.expected_constants[i],
+																	bytecode->constants[i]))
 					return "string constants don't match";
 			}
-		} else if constexpr (std::is_same<Object*, T>::value) {
+		} else if constexpr (std::is_same<Object *, T>::value) {
 			for (int i = 0; i < (int)test.expected_constants.size(); ++i) {
-				if (test.expected_constants[i]->Type() == objecttypes::COMPILED_FUNCTION_OBJ) {
-					auto expected_fn = dynamic_cast<CompiledFunction*>(test.expected_constants[i]);
+				if (test.expected_constants[i]->Type() ==
+						objecttypes::COMPILED_FUNCTION_OBJ) {
+					auto expected_fn =
+							dynamic_cast<CompiledFunction *>(test.expected_constants[i]);
 					if (expected_fn == nullptr)
 						return "Cannot convert object into compiled function.";
 
-					auto actual_fn = dynamic_cast<CompiledFunction*>(bytecode->constants[i]);
+					auto actual_fn =
+							dynamic_cast<CompiledFunction *>(bytecode->constants[i]);
 					if (actual_fn == nullptr)
 						return "Cannot convert object into compiled function.";
 
-					if (!test_instructions({expected_fn->m_instructions}, actual_fn->m_instructions))
+					if (!test_instructions({expected_fn->m_instructions},
+																 actual_fn->m_instructions))
 						return "The function instructions don't match";
 				} else if (test.expected_constants[i]->Type() == objecttypes::INTEGER) {
-					auto expected_int = dynamic_cast<Integer*>(test.expected_constants[i]);
+					auto expected_int =
+							dynamic_cast<Integer *>(test.expected_constants[i]);
 					if (expected_int == nullptr)
 						return "Cannot convert object into compiled function.";
 
-					auto actual_int = dynamic_cast<Integer*>(bytecode->constants[i]);
+					auto actual_int = dynamic_cast<Integer *>(bytecode->constants[i]);
 					if (actual_int == nullptr)
 						return "Cannot convert object into compiled function.";
 
@@ -1437,7 +1444,7 @@ const std::string run_vm_tests(const std::vector<VMTestcase<T>> &tests) {
 				if (!test_integer_object(stack_elem, tt.expected))
 					return "The integer object is invalid";
 			}
-		} else if constexpr (std::is_same<std::string,  T>::value) {
+		} else if constexpr (std::is_same<std::string, T>::value) {
 			if (!test_string_constant(tt.expected, stack_elem))
 				return "The string object is invalid";
 		} else if constexpr (std::is_same<bool, T>::value) {
@@ -1452,7 +1459,7 @@ const std::string run_vm_tests(const std::vector<VMTestcase<T>> &tests) {
 					return "The integer object is invalid";
 			}
 		} else if constexpr (std::is_same<std::map<int, int>, T>::value) {
-			auto hash = dynamic_cast<Hash*>(stack_elem);
+			auto hash = dynamic_cast<Hash *>(stack_elem);
 			if (hash == nullptr)
 				return "The class is not a Hash object";
 
@@ -1643,8 +1650,8 @@ TEST(CodeTest, InstructionString) {
 			{code::make(code::OpConstant, {2})},
 			{code::make(code::OpConstant, {65535})}};
 
-	std::string expected =
-			"0000 OpAdd\n0001 OpGetLocal 1\n0003 OpConstant 2\n0006 OpConstant 65535\n";
+	std::string expected = "0000 OpAdd\n0001 OpGetLocal 1\n0003 OpConstant "
+												 "2\n0006 OpConstant 65535\n";
 	auto concatted = concat_instructions(instructions);
 
 	EXPECT_EQ(code::instructions_to_string(concatted), expected);
@@ -1657,10 +1664,8 @@ TEST(CodeTest, ReadOperands) {
 		int bytes_read;
 	};
 
-	std::vector<Testcase> test_cases{
-			{code::OpConstant, {65535}, 2},
-			{code::OpGetLocal, {255}, 1}
-	};
+	std::vector<Testcase> test_cases{{code::OpConstant, {65535}, 2},
+																	 {code::OpGetLocal, {255}, 1}};
 
 	for (const auto &tc : test_cases) {
 		auto instructions = code::make(tc.op, tc.operands);
@@ -1817,12 +1822,12 @@ TEST(CompilerTest, GlobalLetStatements) {
 
 TEST(SymbolTableTest, TestDefine) {
 	std::map<std::string, Symbol> ex{
-		{"a", {"a", scopes::GlobalScope, 0}},
-		{"b", {"b", scopes::GlobalScope, 1}},
-		{"c", {"c", scopes::LocalScope, 0}},
-		{"d", {"d", scopes::LocalScope, 1}},
-		{"e", {"e", scopes::LocalScope, 0}},
-		{"f", {"f", scopes::LocalScope, 1}},
+			{"a", {"a", scopes::GlobalScope, 0}},
+			{"b", {"b", scopes::GlobalScope, 1}},
+			{"c", {"c", scopes::LocalScope, 0}},
+			{"d", {"d", scopes::LocalScope, 1}},
+			{"e", {"e", scopes::LocalScope, 0}},
+			{"f", {"f", scopes::LocalScope, 1}},
 	};
 
 	auto global = new SymbolTable();
@@ -1910,7 +1915,7 @@ TEST(SymbolTableTest, TestResolveLocal) {
 	};
 
 	for (const auto &tt : expected) {
-		const auto& res = local->resolve(tt.name);
+		const auto &res = local->resolve(tt.name);
 		EXPECT_NE(res, nullptr);
 
 		EXPECT_EQ(res->name, tt.name);
@@ -1937,29 +1942,23 @@ TEST(SymbolTableTest, ResolveNestedLocal) {
 		std::vector<Symbol> expected;
 	};
 
-	std::vector<Testcase> test_cases {
-		{
-			local1,
-			{
-			{"a", scopes::GlobalScope, 0},
-			{"b", scopes::GlobalScope, 1},
-			{"c", scopes::LocalScope, 0},
-			{"d", scopes::LocalScope, 1},
-			}
-		},
-		{
-			local2,
-			{
-			{"a", scopes::GlobalScope, 0},
-			{"b", scopes::GlobalScope, 1},
-			{"e", scopes::LocalScope, 0},
-			{"f", scopes::LocalScope, 1},
-			}
-		}
-	};
+	std::vector<Testcase> test_cases{{local1,
+																		{
+																				{"a", scopes::GlobalScope, 0},
+																				{"b", scopes::GlobalScope, 1},
+																				{"c", scopes::LocalScope, 0},
+																				{"d", scopes::LocalScope, 1},
+																		}},
+																	 {local2,
+																		{
+																				{"a", scopes::GlobalScope, 0},
+																				{"b", scopes::GlobalScope, 1},
+																				{"e", scopes::LocalScope, 0},
+																				{"f", scopes::LocalScope, 1},
+																		}}};
 	for (const auto &tt : test_cases) {
 		for (const auto &sm : tt.expected) {
-			const auto& res = tt.table->resolve(sm.name);
+			const auto &res = tt.table->resolve(sm.name);
 			EXPECT_NE(res, nullptr);
 
 			EXPECT_EQ(res->name, sm.name);
@@ -2029,9 +2028,10 @@ TEST(CompilerTest, ArrayLiterals) {
 }
 
 TEST(VMTest, ArrayLiterals) {
-	std::vector<VMTestcase<std::vector<int>>> test_cases{{"[]", {}},
-																	 {"[1, 2, 3]", {1, 2, 3}},
-																	 {"[1 + 2, 3 * 4, 5 + 6]", {3, 12, 11}}};
+	std::vector<VMTestcase<std::vector<int>>> test_cases{
+			{"[]", {}},
+			{"[1, 2, 3]", {1, 2, 3}},
+			{"[1 + 2, 3 * 4, 5 + 6]", {3, 12, 11}}};
 	auto err = run_vm_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
 }
@@ -2075,7 +2075,6 @@ TEST(CompilerTest, HashLiterals) {
 	EXPECT_EQ(err, "") << err;
 }
 
-
 TEST(CompilerTest, CIndexExpression) {
 	std::vector<CompilerTestcase<int>> test_cases{
 			{"[1, 2, 3][1 + 1]",
@@ -2110,43 +2109,38 @@ TEST(CompilerTest, CIndexExpression) {
 }
 
 TEST(VMTest, HashLiterals) {
-	std::vector<VMTestcase<std::map<int, int>>> test_cases {
-		{
-			"{}",
-		},
-		{
-			"{1: 2, 2: 3}",
+	std::vector<VMTestcase<std::map<int, int>>> test_cases{
 			{
-			{(new Integer(1))->hash_key().value, 2},
-			{(new Integer(2))->hash_key().value, 3},
-			}
-		},
-		{
-			"{1 + 1: 2 * 2, 3 + 3: 4 * 4}",
-			{
-			{(new Integer(2))->hash_key().value, 4},
-			{(new Integer(6))->hash_key().value, 16},
-			}
-		}
-	};
+					"{}",
+			},
+			{"{1: 2, 2: 3}",
+			 {
+					 {(new Integer(1))->hash_key().value, 2},
+					 {(new Integer(2))->hash_key().value, 3},
+			 }},
+			{"{1 + 1: 2 * 2, 3 + 3: 4 * 4}",
+			 {
+					 {(new Integer(2))->hash_key().value, 4},
+					 {(new Integer(6))->hash_key().value, 16},
+			 }}};
 
 	auto err = run_vm_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
 }
 
 TEST(VMTest, IndexExpressions) {
-	std::vector<VMTestcase<int>> test_cases {
-		{"[1, 2, 3][1]", 2},
-		{"[1, 2, 3][0 + 2]", 3},
-		{"[[1, 1, 1]][0][0]", 1},
-		// -1 means null
-		{"[][0]", -1},
-		{"[1, 2, 3][99]", -1},
-		{"[1][-1]", -1},
-		{"{1: 1, 2: 2}[1]", 1},
-		{"{1: 1, 2: 2}[2]", 2},
-		{"{1: 1}[0]", -1},
-		{"{}[0]", -1},
+	std::vector<VMTestcase<int>> test_cases{
+			{"[1, 2, 3][1]", 2},
+			{"[1, 2, 3][0 + 2]", 3},
+			{"[[1, 1, 1]][0][0]", 1},
+			// -1 means null
+			{"[][0]", -1},
+			{"[1, 2, 3][99]", -1},
+			{"[1][-1]", -1},
+			{"{1: 1, 2: 2}[1]", 1},
+			{"{1: 1, 2: 2}[2]", 2},
+			{"{1: 1}[0]", -1},
+			{"{}[0]", -1},
 	};
 
 	auto err = run_vm_tests(test_cases);
@@ -2189,48 +2183,42 @@ TEST(CompilerTest, CompilerScopes) {
 }
 
 TEST(CompilerTest, Functions) {
-	std::vector<code::Instructions> func_insts1 {
-		{
-				code::make(code::OpConstant, {0}),
-				code::make(code::OpConstant, {1}),
-				code::make(code::OpAdd, {}),
-				code::make(code::OpReturnValue, {}),
-			}
-	};
+	std::vector<code::Instructions> func_insts1{{
+			code::make(code::OpConstant, {0}),
+			code::make(code::OpConstant, {1}),
+			code::make(code::OpAdd, {}),
+			code::make(code::OpReturnValue, {}),
+	}};
 
-	std::vector<code::Instructions> func_insts2 {
-		{
-				code::make(code::OpConstant, {0}),
-				code::make(code::OpReturnValue, {}),
-			}
-	};
+	std::vector<code::Instructions> func_insts2{{
+			code::make(code::OpConstant, {0}),
+			code::make(code::OpReturnValue, {}),
+	}};
 
-	std::vector<code::Instructions> func_insts3 {
-		{
+	std::vector<code::Instructions> func_insts3{{
 			code::make(code::OpReturn, {}),
-		}
-	};
+	}};
 
-	std::vector<CompilerTestcase<Object*>> test_cases {
-		{
-			"func() { return 5 + 10 }",
-			{new Integer(5), new Integer(10), new CompiledFunction(concat_instructions(func_insts1))},
+	std::vector<CompilerTestcase<Object *>> test_cases{
+			{"func() { return 5 + 10 }",
+			 {new Integer(5), new Integer(10),
+				new CompiledFunction(concat_instructions(func_insts1))},
 			 {{
 					 code::make(code::OpConstant, {2}),
 					 code::make(code::OpPop, {}),
 			 }}},
-		{
-			"func() { 24 }();",
-			{new Integer(24), new CompiledFunction(concat_instructions(func_insts2))},
+			{"func() { 24 }();",
+			 {new Integer(24),
+				new CompiledFunction(concat_instructions(func_insts2))},
 			 {{
 					 code::make(code::OpConstant, {1}),
 					 code::make(code::OpCall, {0}),
 					 code::make(code::OpPop, {}),
 			 }}},
-		{
-			"let noArg = func() { 24 };"
-			"noArg();",
-			{new Integer(24), new CompiledFunction(concat_instructions(func_insts2))},
+			{"let noArg = func() { 24 };"
+			 "noArg();",
+			 {new Integer(24),
+				new CompiledFunction(concat_instructions(func_insts2))},
 			 {{
 					 code::make(code::OpConstant, {1}),
 					 code::make(code::OpSetGlobal, {0}),
@@ -2238,9 +2226,8 @@ TEST(CompilerTest, Functions) {
 					 code::make(code::OpCall, {0}),
 					 code::make(code::OpPop, {}),
 			 }}},
-		{
-			"func () { }",
-			{new CompiledFunction(concat_instructions(func_insts3))},
+			{"func () { }",
+			 {new CompiledFunction(concat_instructions(func_insts3))},
 			 {{
 					 code::make(code::OpConstant, {0}),
 					 code::make(code::OpPop, {}),
@@ -2252,73 +2239,61 @@ TEST(CompilerTest, Functions) {
 }
 
 TEST(VMTest, Callingfunctions) {
-	std::vector<VMTestcase<int>> tests {
-		{
-			"let fivePlusTen = func() { 5 + 10; };"
-			"fivePlusTen()",
-			15,
-		},
-		{
-			"let one = func() { 1; };"
-			"let two = func() { 2; };"
-			"one() + two()",
-			3,
-		},
-		{
-			"let a = func() { 1 };"
-			"let b = func() { a() + 1};"
-			"let c = func() { b() + 1};"
-			"c();", 3
-		},
-		{
-			"let earlyExit = func() { return 99; 100; };"
-			"earlyExit();", 99
-		},
-		{
-			"let earlyExit = func() { return 99; return 100; };"
-			"earlyExit();", 99
-		},
-		{
-			// -1 is null
-			"let noReturn = func() { };"
-			"noReturn();", -1
-		},
-		{
-			"let noReturn = func() { };"
-			"let noReturnTwo = func() { noReturn(); };"
-			"noReturn();"
-			"noReturnTwo();", -1
-		},
-		{
-		"let returnsOne = func() { 1; };"
-		"let returnsOneReturner = func() { returnsOne; };"
-		"returnsOneReturner()();", 1
-		}
-	};
+	std::vector<VMTestcase<int>> tests{
+			{
+					"let fivePlusTen = func() { 5 + 10; };"
+					"fivePlusTen()",
+					15,
+			},
+			{
+					"let one = func() { 1; };"
+					"let two = func() { 2; };"
+					"one() + two()",
+					3,
+			},
+			{"let a = func() { 1 };"
+			 "let b = func() { a() + 1};"
+			 "let c = func() { b() + 1};"
+			 "c();",
+			 3},
+			{"let earlyExit = func() { return 99; 100; };"
+			 "earlyExit();",
+			 99},
+			{"let earlyExit = func() { return 99; return 100; };"
+			 "earlyExit();",
+			 99},
+			{// -1 is null
+			 "let noReturn = func() { };"
+			 "noReturn();",
+			 -1},
+			{"let noReturn = func() { };"
+			 "let noReturnTwo = func() { noReturn(); };"
+			 "noReturn();"
+			 "noReturnTwo();",
+			 -1},
+			{"let returnsOne = func() { 1; };"
+			 "let returnsOneReturner = func() { returnsOne; };"
+			 "returnsOneReturner()();",
+			 1}};
 
 	auto err = run_vm_tests(tests);
 	EXPECT_EQ(err, "") << err;
 }
 
 TEST(CompilerTest, LetStatementScopes) {
-	std::vector<code::Instructions> func_insts1 {
-		{
+	std::vector<code::Instructions> func_insts1{{
 			code::make(code::OpGetGlobal, {0}),
 			code::make(code::OpReturnValue, {}),
-		}
-	};
+	}};
 
-	std::vector<code::Instructions> func_insts2 {
-		{
+	std::vector<code::Instructions> func_insts2{{
 			code::make(code::OpConstant, {0}),
 			code::make(code::OpSetLocal, {0}),
 			code::make(code::OpGetLocal, {0}),
 			code::make(code::OpReturnValue, {}),
-		}
-	};
+	}};
 
-	std::vector<code::Instructions> func_insts3 {
-		{
+	std::vector<code::Instructions> func_insts3{{
 			code::make(code::OpConstant, {0}),
 			code::make(code::OpSetLocal, {0}),
 			code::make(code::OpConstant, {1}),
@@ -2327,172 +2302,212 @@ TEST(CompilerTest, LetStatementScopes) {
 			code::make(code::OpGetLocal, {1}),
 			code::make(code::OpAdd, {}),
 			code::make(code::OpReturnValue, {}),
-		}
-	};
+	}};
 
-	std::vector<code::Instructions> func_insts4 {
-		{
+	std::vector<code::Instructions> func_insts4{{
 			code::make(code::OpGetLocal, {0}),
 			code::make(code::OpReturnValue, {}),
-		}
-	};
+	}};
 
-	std::vector<code::Instructions> func_insts5 {
-		{
+	std::vector<code::Instructions> func_insts5{{
 			code::make(code::OpGetLocal, {0}),
 			code::make(code::OpPop, {}),
 			code::make(code::OpGetLocal, {1}),
 			code::make(code::OpPop, {}),
 			code::make(code::OpGetLocal, {2}),
 			code::make(code::OpReturnValue, {}),
-		}
-	};
+	}};
 
-	std::vector<CompilerTestcase<Object*>> test_cases {
-		{
-			"let num = 55;"
-			"func() { num }",
-			{new Integer(55), new CompiledFunction(concat_instructions(func_insts1))},
+	std::vector<CompilerTestcase<Object *>> test_cases{
+			{"let num = 55;"
+			 "func() { num }",
+			 {new Integer(55),
+				new CompiledFunction(concat_instructions(func_insts1))},
 			 {{
 					 code::make(code::OpConstant, {0}),
 					 code::make(code::OpSetGlobal, {0}),
 					 code::make(code::OpConstant, {1}),
 					 code::make(code::OpPop, {}),
 			 }}},
-		{
-			"func() { "
-			"   let num = 55;"
-			"   num"
-			"}",
-			{new Integer(55), new CompiledFunction(concat_instructions(func_insts2))},
+			{"func() { "
+			 "   let num = 55;"
+			 "   num"
+			 "}",
+			 {new Integer(55),
+				new CompiledFunction(concat_instructions(func_insts2))},
 			 {{
 					 code::make(code::OpConstant, {1}),
 					 code::make(code::OpPop, {}),
 			 }}},
-		{
-			"func() { "
-			"   let a = 55;"
-			"   let b = 77;"
-			"   a + b"
-			"}",
-			{new Integer(55), new Integer(77), new CompiledFunction(concat_instructions(func_insts3))},
+			{"func() { "
+			 "   let a = 55;"
+			 "   let b = 77;"
+			 "   a + b"
+			 "}",
+			 {new Integer(55), new Integer(77),
+				new CompiledFunction(concat_instructions(func_insts3))},
 			 {{
 					 code::make(code::OpConstant, {2}),
 					 code::make(code::OpPop, {}),
 			 }}},
-		{
-			"let oneArg = func(a) { a };"
-			"oneArg(24);",
-			{new CompiledFunction(concat_instructions(func_insts4)), new Integer(24)},
-			{{
-					code::make(code::OpConstant, {0}),
-					code::make(code::OpSetGlobal, {0}),
-					code::make(code::OpGetGlobal, {0}),
-					code::make(code::OpConstant, {1}),
-					code::make(code::OpCall,{1}),
-					code::make(code::OpPop, {}),
-				}}
-		},
-		{
-			"let manyArg = func(a, b, c) { a; b; c };"
-			"manyArg(24, 25, 26);",
-			{new CompiledFunction(concat_instructions(func_insts5)), new Integer(24), new Integer(25), new Integer(26)},
-			{{
-					code::make(code::OpConstant, {0}),
-					code::make(code::OpSetGlobal, {0}),
-					code::make(code::OpGetGlobal, {0}),
-					code::make(code::OpConstant, {1}),
-					code::make(code::OpConstant, {2}),
-					code::make(code::OpConstant, {3}),
-					code::make(code::OpCall,{3}),
-					code::make(code::OpPop, {}),
-				}}
-		}
-	};
+			{"let oneArg = func(a) { a };"
+			 "oneArg(24);",
+			 {new CompiledFunction(concat_instructions(func_insts4)),
+				new Integer(24)},
+			 {{
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpSetGlobal, {0}),
+					 code::make(code::OpGetGlobal, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpCall, {1}),
+					 code::make(code::OpPop, {}),
+			 }}},
+			{"let manyArg = func(a, b, c) { a; b; c };"
+			 "manyArg(24, 25, 26);",
+			 {new CompiledFunction(concat_instructions(func_insts5)), new Integer(24),
+				new Integer(25), new Integer(26)},
+			 {{
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpSetGlobal, {0}),
+					 code::make(code::OpGetGlobal, {0}),
+					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpConstant, {3}),
+					 code::make(code::OpCall, {3}),
+					 code::make(code::OpPop, {}),
+			 }}}};
 
 	auto err = run_compiler_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
 }
 
 TEST(VMTest, CallingFunctionsWithBindings) {
-	std::vector<VMTestcase<int>> test_cases {
-		{
-			"let one = func() { let one = 1; one };"
-			"one();",
-			1
-		},
-		{
-			"let oneAndTwo = func() { let one = 1; let two = 2; one + two; };"
-			"oneAndTwo();", 3
-		},
-		{
-			"let oneAndTwo = func() { let one = 1; let two = 2; one + two; };"
-			"let threeAndFour = func() { let three = 3; let four = 4; three + four; };"
-			"oneAndTwo() + threeAndFour();", 10
-		},
-		{
-			"let firstFoobar = func() { let foobar = 50; foobar; };"
-			"let secondFoobar = func() { let foobar = 100; foobar; };"
-			"firstFoobar() + secondFoobar();", 150
-		},
-		{
-			"let globalSeed = 50;"
-			"let minusOne = func() {"
-			"    let num = 1;"
-			"    globalSeed - num;"
-			"}"
-			"let minusTwo = func() {"
-			"    let num = 2;"
-			"    globalSeed - num;"
-			"}"
-			"minusOne() + minusTwo();", 97
-		}
-	};
+	std::vector<VMTestcase<int>> test_cases{
+			{"let one = func() { let one = 1; one };"
+			 "one();",
+			 1},
+			{"let oneAndTwo = func() { let one = 1; let two = 2; one + two; };"
+			 "oneAndTwo();",
+			 3},
+			{"let oneAndTwo = func() { let one = 1; let two = 2; one + two; };"
+			 "let threeAndFour = func() { let three = 3; let four = 4; three + four; "
+			 "};"
+			 "oneAndTwo() + threeAndFour();",
+			 10},
+			{"let firstFoobar = func() { let foobar = 50; foobar; };"
+			 "let secondFoobar = func() { let foobar = 100; foobar; };"
+			 "firstFoobar() + secondFoobar();",
+			 150},
+			{"let globalSeed = 50;"
+			 "let minusOne = func() {"
+			 "    let num = 1;"
+			 "    globalSeed - num;"
+			 "}"
+			 "let minusTwo = func() {"
+			 "    let num = 2;"
+			 "    globalSeed - num;"
+			 "}"
+			 "minusOne() + minusTwo();",
+			 97}};
 
 	auto err = run_vm_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
 }
 
 TEST(VMTest, CallingFunctionsWithArguments) {
-	std::vector<VMTestcase<int>> test_cases {
-		{
-			"let identity = func(a) { a; }"
-			"identity(4);", 4
-		},
-		{
-			"let sum = func(a, b) { a + b; };"
-			"sum(1, 2);", 3
-		},
-		{
-			"let sum = func(a, b) { let c = a + b; c;}; sum(1, 2);", 3
-		},
-		{
-			"let sum = func(a, b) { let c = a + b; c; }; sum(1, 2) + sum(3, 4)", 10,
-		}
-	};
+	std::vector<VMTestcase<int>> test_cases{
+			{"let identity = func(a) { a; }"
+			 "identity(4);",
+			 4},
+			{"let sum = func(a, b) { a + b; };"
+			 "sum(1, 2);",
+			 3},
+			{"let sum = func(a, b) { let c = a + b; c;}; sum(1, 2);", 3},
+			{
+					"let sum = func(a, b) { let c = a + b; c; }; sum(1, 2) + sum(3, 4)",
+					10,
+			}};
 
 	auto err = run_vm_tests(test_cases);
 	EXPECT_EQ(err, "") << err;
 }
 
 TEST(VMTest, WrongParameterCountReturnsError) {
-	std::vector<std::string> inputs {
-		{"func() { 1; }(1);"},
-		{"func(a) { a; }();"},
-		{"func(a, b) { a + b; }(1);"}
-	};
+	std::vector<std::string> inputs{{"func() { 1; }(1);"},
+																	{"func(a) { a; }();"},
+																	{"func(a, b) { a + b; }(1);"}};
 
-	for (const auto& tt : inputs) {
+	for (const auto &tt : inputs) {
 		auto program = parse_compiler_program_helper(tt);
 		auto comp = new Compiler();
 		auto status = comp->compile(program.get());
 
-		// The compiler does return successful since handling the amount of parameters
-		// isn't the compiler's job.
+		// The compiler does return successful since handling the amount of
+		// parameters isn't the compiler's job.
 		EXPECT_EQ(status, 0);
 
 		auto vm = new VM(comp->bytecode());
 		auto vm_status = vm->run();
-		EXPECT_NE(vm_status, 0) << "Virtual machine run was successful even though it shouldn't be";
+		EXPECT_NE(vm_status, 0)
+				<< "Virtual machine run was successful even though it shouldn't be";
+	}
+}
+
+TEST(CompilerTest, BuiltinFunctions) {
+	std::vector<code::Instructions> func_inst1{
+			{code::make(code::OpGetBuiltin, {0}), code::make(code::OpArray, {0}),
+			 code::make(code::OpCall, {1}), code::make(code::OpReturnValue, {})}};
+
+	std::vector<CompilerTestcase<Object *>> test_cases{
+			{"len([]);"
+			 "push([], 1);",
+			 {new Integer(1)},
+			 {{
+					 code::make(code::OpGetBuiltin, {0}),
+					 code::make(code::OpArray, {0}),
+					 code::make(code::OpCall, {1}),
+					 code::make(code::OpPop, {}),
+					 code::make(code::OpGetBuiltin, {5}),
+					 code::make(code::OpArray, {0}),
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpCall, {2}),
+					 code::make(code::OpPop, {}),
+			 }}},
+			{"func() { len([]) }",
+			 {new CompiledFunction(concat_instructions(func_inst1))},
+			 {{
+					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpPop, {}),
+			 }}}};
+
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
+}
+
+TEST(SymbolTableTest, DefineResolveBuiltins) {
+	auto global = new SymbolTable();
+	auto local1 = new SymbolTable(global);
+	auto local2 = new SymbolTable(local1);
+
+	std::vector<Symbol> expected{
+		{"a", scopes::BuiltinScope, 0},
+		{"b", scopes::BuiltinScope, 1},
+		{"c", scopes::BuiltinScope, 2},
+		{"d", scopes::BuiltinScope, 3},
+	};
+
+	for (const auto &sm : expected)
+		global->define_builtin(sm.index, sm.name);
+
+	std::vector<SymbolTable*> tables {global, local1, local2};
+	for (const auto &tb : tables) {
+		for (const auto &sm : expected) {
+			const auto &res = tb->resolve(sm.name);
+			EXPECT_NE(res, nullptr);
+
+			EXPECT_EQ(res->name, sm.name);
+			EXPECT_EQ(res->scope, sm.scope);
+			EXPECT_EQ(res->index, sm.index);
+		}
 	}
 }
