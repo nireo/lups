@@ -34,6 +34,8 @@ add_executable(
 	compiler.cpp
 	vm.h
 	vm.cpp
+	builtins.h
+	builtins.cpp
 )
 target_link_libraries(
 	lups_test

@@ -131,14 +131,11 @@ int Compiler::compile(Node *node) {
 		else
 			emit(code::OpSetLocal, {symbol->index});
 	} else if (type == "Identifier") {
-		const auto symbol = m_symbol_table->resolve(((Identifier*)node)->value);
+		auto symbol = m_symbol_table->resolve(((Identifier*)node)->value);
 		if (symbol == nullptr)
 			return -1;
 
-		if (symbol->scope == scopes::GlobalScope)
-			emit(code::OpGetGlobal, {symbol->index});
-		else
-			emit(code::OpGetLocal, {symbol->index});
+		load_symbol(symbol);
 	} else if (type == "StringLiteral") {
 		const auto str = new String(((StringLiteral*)node)->TokenLiteral());
 		emit(code::OpConstant, {add_constant(str)});
@@ -358,4 +355,13 @@ void Compiler::replace_last_pop_with_return() {
 	auto last_pos = scopes[scope_index].last_inst.pos;
 	replace_instructions(last_pos, code::make(code::OpReturnValue, {}));
 	scopes[scope_index].last_inst.op= code::OpReturnValue;
+}
+
+void Compiler::load_symbol(const Symbol *sm) {
+	if (sm->scope == scopes::GlobalScope)
+		emit(code::OpGetGlobal, {sm->index});
+	else if (sm->scope == scopes::LocalScope)
+		emit(code::OpGetLocal, {sm->index});
+	else if (sm->scope == scopes::BuiltinScope)
+		emit(code::OpGetBuiltin, {sm->index});
 }

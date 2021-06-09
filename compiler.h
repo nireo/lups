@@ -3,6 +3,7 @@
 
 #include "code.h"
 #include "object.h"
+#include "builtins.h"
 #include <unordered_map>
 
 typedef std::string SymbolScope;
@@ -72,6 +73,9 @@ public:
 		prev_inst = nullptr;
 		m_symbol_table = new SymbolTable();
 
+		for (int i = 0; i < (int)builtin_functions::functions.size(); ++i)
+			m_symbol_table->define_builtin(i, builtin_functions::functions[i].first);
+
 		scope_index = 0;
 
 		auto main_scope = CompilationScope{
@@ -102,6 +106,8 @@ public:
 
 	code::Instructions& scoped_inst() { return curr_scope().instructions; }
 	CompilationScope& curr_scope() { return scopes.back(); }
+
+	void load_symbol(const Symbol *sm);
 
 	void enter_scope();
 	code::Instructions leave_scope();

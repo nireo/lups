@@ -2,7 +2,16 @@
 #include <iostream>
 #include "eval.h"
 
-Object *builtins::len(std::vector<Object *> &objs) {
+const std::array<std::pair<std::string, Builtin *>, 6> builtin_functions::functions = {
+		std::make_pair("len", new Builtin(*builtin_functions::len)),
+		std::make_pair("println", new Builtin(*builtin_functions::println)),
+		std::make_pair("first", new Builtin(*builtin_functions::array_first)),
+		std::make_pair("last", new Builtin(*builtin_functions::array_last)),
+		std::make_pair("tail", new Builtin(*builtin_functions::array_tail)),
+		std::make_pair("push", new Builtin(*builtin_functions::array_push)),
+};
+
+Object *builtin_functions::len(std::vector<Object *> &objs) {
 	if (objs.size() != 2) {
 		return new Error("wrong number of arguments. want 2");
 	}
@@ -20,7 +29,7 @@ Object *builtins::len(std::vector<Object *> &objs) {
 	return new Array(new_elements);
 }
 
-Object *builtins::println(std::vector<Object *> &objs) {
+Object *builtin_functions::println(std::vector<Object *> &objs) {
 	for (const auto& arg : objs) {
 		std::cout << arg->Inspect() << ' ';
 	}
@@ -29,7 +38,7 @@ Object *builtins::println(std::vector<Object *> &objs) {
 	return nullptr;
 }
 
-Object *builtins::array_first(std::vector<Object *> &objs) {
+Object *builtin_functions::array_first(std::vector<Object *> &objs) {
 	if (objs.size() != 1) {
 		return new Error("wrong number of arguments. want 1");
 	}
@@ -47,7 +56,7 @@ Object *builtins::array_first(std::vector<Object *> &objs) {
 	return object_constant::null;
 }
 
-Object *builtins::array_last(std::vector<Object *> &objs) {
+Object *builtin_functions::array_last(std::vector<Object *> &objs) {
 	if (objs.size() != 1) {
 		return new Error("wrong number of arguments. want 1");
 	}
@@ -66,7 +75,7 @@ Object *builtins::array_last(std::vector<Object *> &objs) {
 	return object_constant::null;
 }
 
-Object *builtins::array_tail(std::vector<Object *> &objs) {
+Object *builtin_functions::array_tail(std::vector<Object *> &objs) {
 	if (objs.size() != 1) {
 		return new Error("wrong number of arguments. want 1");
 	}
@@ -86,7 +95,7 @@ Object *builtins::array_tail(std::vector<Object *> &objs) {
 	return object_constant::null;
 }
 
-Object *builtins::array_push(std::vector<Object *> &objs) {
+Object *builtin_functions::array_push(std::vector<Object *> &objs) {
 	if (objs.size() != 2) {
 		return new Error("wrong number of arguments. want 2");
 	}
