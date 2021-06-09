@@ -1,4 +1,5 @@
 #include "vm.h"
+#include "builtins.h"
 #include "code.h"
 #include "compiler.h"
 #include "eval.h"
@@ -202,7 +203,7 @@ int VM::run() {
 			auto num_args = (int)((std::uint8_t)inst[ip + 1]);
 			current_frame().ip_ += 1;
 
-			auto status = call_function(num_args);
+			auto status = execute_call(num_args);
 			if (status != 0)
 				return status;
 
@@ -245,6 +246,17 @@ int VM::run() {
 				return status;
 			}
 			break;
+		}
+		case code::OpGetBuiltin: {
+			auto builtin_index = (int)((std::uint8_t)inst[ip+1]);
+			current_frame().ip_ += 1;
+
+			// the compiler ensures that this index exists
+			auto def = builtin_functions::functions[builtin_index];
+
+			auto status = push(def.second);
+			if (status != 0)
+				return status;
 		}
 		}
 	}
@@ -477,9 +489,8 @@ int VM::execute_hash_index(Object *hash, Object *index) {
 	return push(hashobj->pairs[res.value]->value);
 }
 
-int VM::call_function(int num_args) {
-	const auto fn =
-			dynamic_cast<CompiledFunction *>(m_stack[m_sp - 1 - num_args]);
+int VM::call_function(Object *func, int num_args) {
+	const auto fn = dynamic_cast<CompiledFunction *>(func);
 	if (fn == nullptr)
 		return -1;
 
@@ -490,6 +501,35 @@ int VM::call_function(int num_args) {
 	auto new_stack_ptr = frame->base_pointer_ + fn->m_num_locals;
 	push_frame(std::move(frame));
 	m_sp = new_stack_ptr;
+
+	return 0;
+}
+
+int VM::execute_call(int num_args) {
+	const auto callee = m_stack[m_sp-1-num_args];
+
+	if (callee->Type() == objecttypes::COMPILED_FUNCTION_OBJ)
+		return call_function(callee, num_args);
+	else if (callee->Type() == objecttypes::BUILTIN)
+		return call_builtin(callee, num_args);
+
+	// calling a non-function.
+	return -1;
+}
+
+int VM::call_builtin(Object *builtin, int num_args) {
+	const auto builtin_func = dynamic_cast<Builtin*>(builtin);
+	if (builtin_func == nullptr)
+		return -1;
+
+	auto args = std::vector<Object*>(m_stack.begin()+m_sp-num_args, m_stack.begin()+m_sp);
+	auto res = (builtin_func->func(args));
+
+	if (res != nullptr) {
+		push(res);
+	} else {
+		push(object_constant::null);
+	}
 
 	return 0;
 }

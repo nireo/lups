@@ -57,7 +57,11 @@ public:
 	int execute_array_index(Object *left, Object *index);
 	int execute_hash_index(Object *left, Object *index);
 
-	int call_function(int num_args);
+	// functions
+	int call_function(Object *fn, int num_args);
+	int call_builtin(Object *fn, int num_args);
+
+	int execute_call(int num_args);
 
 	Object *build_array(int start_index, int end_index);
 	Object *build_hash(int start_index, int end_index);

@@ -1440,6 +1440,9 @@ const std::string run_vm_tests(const std::vector<VMTestcase<T>> &tests) {
 			if (tt.expected == -1) {
 				if (stack_elem->Type() != objecttypes::NULLOBJ)
 					return "stack_elem is not null even though it should";
+			} else if (tt.expected == -2) {
+				if (stack_elem->Type() != objecttypes::ERROR)
+					return "stack_elem is not an error even though it should be.";
 			} else {
 				if (!test_integer_object(stack_elem, tt.expected))
 					return "The integer object is invalid";
@@ -2504,4 +2507,29 @@ TEST(SymbolTableTest, DefineResolveBuiltins) {
 			EXPECT_EQ(res->index, sm.index);
 		}
 	}
+}
+
+TEST(VMTest, BuiltinFunctions) {
+	// -2 means that it should return an error object
+	std::vector<VMTestcase<int>> test_cases {
+		{"len(\"\")", 0},
+		{"len(\"four\")", 4},
+		{"len(\"hello world\")", 11},
+		{"len(1)", -2},
+		{"len(\"one\", \"two\")", -2},
+		{"len([1, 2, 3])", 3},
+
+		{"println(\"hello\", \"world\")", -1},
+
+		{"first([1, 2, 3])", 1},
+		{"first([])", -1},
+		{"first(1)", -2},
+
+		{"last([1, 2, 3])", 3},
+		{"last([])", -1},
+		{"last(1)", -2},
+
+		{"tail([])", -1},
+		{"push(1, 1)", -2},
+	};
 }

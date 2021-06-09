@@ -16,17 +16,19 @@ Object *builtin_functions::len(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 2");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
+	if (objs[0]->Type() != objecttypes::ARRAY_OBJ && objs[0]->Type() != objecttypes::STRING) {
 		return new Error("the argument must be of type array, got: " +
 										 objs[0]->Type());
 	}
 
-	auto array = (Array *)objs[0];
-	auto length = array->elements.size();
-	std::vector<Object *> new_elements = array->elements;
-	new_elements.push_back(objs[1]);
+	if (objs[0]->Type() == objecttypes::ARRAY_OBJ) {
+		return new Integer(((Array*)objs[0])->elements.size());
+	} else if (objs[0]->Type() == objecttypes::STRING) {
+		return new Integer(((String*)objs[0])->value.size());
+	}
 
-	return new Array(new_elements);
+	// shouldn't be possible to reach this.
+	return object_constant::null;
 }
 
 Object *builtin_functions::println(std::vector<Object *> &objs) {
