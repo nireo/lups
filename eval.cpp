@@ -14,7 +14,7 @@ Boolean *FALSE_OBJ = new Boolean(false);
 
 bool eval::is_error(Object *obj) {
 	if (obj != nullptr) {
-		return obj->Type() == objecttypes::ERROR;
+		return obj->Type() == ObjType::Error;
 	}
 
 	return false;
@@ -25,9 +25,8 @@ Object *eval::len(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 1");
 	}
 
-	if (objs[0]->Type() != objecttypes::STRING) {
-		return new Error("len function is not supported for type: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::String) {
+		return new Error("len function is not supported for type");
 	}
 
 	int length = ((String *)objs[0])->value.size();
@@ -50,9 +49,8 @@ Object *eval::array_first(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 1");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::Array) {
+		return new Error("the argument must be of type array");
 	}
 
 	auto elements = ((Array *)objs[0])->elements;
@@ -68,9 +66,8 @@ Object *eval::array_last(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 1");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::Array) {
+		return new Error("the argument must be of type array");
 	}
 
 	auto elements = ((Array *)objs[0])->elements;
@@ -87,9 +84,8 @@ Object *eval::array_tail(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 1");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::Array) {
+		return new Error("the argument must be of type array");
 	}
 
 	auto elements = ((Array *)objs[0])->elements;
@@ -107,9 +103,8 @@ Object *eval::array_push(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 2");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::Array) {
+		return new Error("the argument must be of type array");
 	}
 
 	auto array = (Array *)objs[0];
@@ -224,9 +219,9 @@ Object *eval::eval_statements(Node *program, Environment *env) {
 		res = eval::Eval(st.get(), env);
 
 		if (res != nullptr) {
-			if (res->Type() == objecttypes::RETURN)
+			if (res->Type() == ObjType::Return)
 				return ((Return *)res)->value;
-			else if (res->Type() == objecttypes::ERROR)
+			else if (res->Type() == ObjType::Error)
 				return ((Error *)res);
 		}
 	}
@@ -241,7 +236,7 @@ Object *eval::eval_prefix_expression(std::string opr, Object *right) {
 		return eval::eval_minus_exp(right);
 	}
 
-	return new Error("unknown operation: " + opr + right->Type());
+	return new Error("unknown operation");
 }
 
 Object *eval::eval_bang_exp(Object *right) {
@@ -257,23 +252,22 @@ Object *eval::eval_bang_exp(Object *right) {
 }
 
 Object *eval::eval_minus_exp(Object *right) {
-	if (right->Type() == objecttypes::INTEGER) {
+	if (right->Type() == ObjType::Integer) {
 		Integer *obj = new Integer(-((Integer *)right)->value);
 		return obj;
 	}
 
-	return new Error("unknown operation: -" + right->Type());
+	return new Error("unknown operation for minus operation");
 }
 
 Object *eval::eval_infix_exp(std::string opr, Object *right, Object *left) {
-	if (left->Type() == objecttypes::INTEGER &&
-			right->Type() == objecttypes::INTEGER)
+	if (left->Type() == ObjType::Integer &&
+			right->Type() == ObjType::Integer)
 		return eval::eval_integer_infix(opr, right, left);
 	else if (left->Type() != right->Type()) {
-		return new Error("wrong types: " + left->Type() + " " + opr + " " +
-										 right->Type());
-	} else if (left->Type() == objecttypes::STRING &&
-						 right->Type() == objecttypes::STRING) {
+		return new Error("wrong types");
+	} else if (left->Type() == ObjType::String &&
+						 right->Type() == ObjType::String) {
 		return eval::eval_string_infix(opr, right, left);
 	} else if (opr == "==") {
 		return eval::boolean_to_object(left == right);
@@ -281,8 +275,7 @@ Object *eval::eval_infix_exp(std::string opr, Object *right, Object *left) {
 		return eval::boolean_to_object(left != right);
 	}
 
-	return new Error("unknown operation: " + left->Type() + " " + opr + " " +
-									 right->Type());
+	return new Error("unknown operation");
 }
 
 Object *eval::eval_integer_infix(std::string opr, Object *right, Object *left) {
@@ -306,8 +299,7 @@ Object *eval::eval_integer_infix(std::string opr, Object *right, Object *left) {
 	else if (opr == "!=")
 		return eval::boolean_to_object(left_val != right_val);
 
-	return new Error("unknown operation: " + left->Type() + " " + opr + " " +
-									 right->Type());
+	return new Error("unknown operation");
 }
 
 Object *eval::boolean_to_object(bool value) {
@@ -347,7 +339,7 @@ Object *eval::eval_blockstatement(Node *blockexp, Environment *env) {
 
 		if (res != nullptr) {
 			auto tp = res->Type();
-			if (tp == objecttypes::RETURN || tp == objecttypes::ERROR)
+			if (tp == ObjType::Return || tp == ObjType::Error)
 				return res;
 		}
 	}
@@ -359,7 +351,7 @@ Object *eval::eval_identifier(Node *ident, Environment *env) {
 	auto id = dynamic_cast<Identifier *>(ident);
 
 	auto value = env->get(id->value);
-	if (value->Type() == objecttypes::ERROR &&
+	if (value->Type() == ObjType::Error &&
 			builtin_functions.find(id->value) != builtin_functions.end()) {
 		return builtin_functions[id->value];
 	}
@@ -390,7 +382,7 @@ std::vector<Object *> eval::eval_expressions(std::vector<Expression *> &exps,
 
 	for (const auto &exp : exps) {
 		auto evaluated = eval::Eval(exp, env);
-		if (evaluated != nullptr && evaluated->Type() == objecttypes::ERROR) {
+		if (evaluated != nullptr && evaluated->Type() == ObjType::Error) {
 			auto other = std::vector<Object *>();
 			other.reserve(1);
 			other.push_back(evaluated);
@@ -406,7 +398,7 @@ std::vector<Object *> eval::eval_expressions(std::vector<Expression *> &exps,
 Object *eval::eval_call_expression(Node *node, Environment *env) {
 	auto callexp = dynamic_cast<CallExpression *>(node);
 	auto func = eval::Eval(callexp->func.get(), env);
-	if (func != nullptr && func->Type() == objecttypes::ERROR)
+	if (func != nullptr && func->Type() == ObjType::Error)
 		return func;
 	auto args = std::vector<Expression *>();
 	args.reserve(callexp->arguments.size());
@@ -415,17 +407,17 @@ Object *eval::eval_call_expression(Node *node, Environment *env) {
 
 	auto eval_args = eval::eval_expressions(args, env);
 	// an error has occured with evaluating the arguments
-	if (eval_args.size() == 1 && eval_args[0]->Type() == objecttypes::ERROR)
+	if (eval_args.size() == 1 && eval_args[0]->Type() == ObjType::Error)
 		return eval_args[0];
 	return eval::apply_function(func, eval_args);
 }
 
 Object *eval::apply_function(Object *func, std::vector<Object *> &args) {
-	if (func->Type() == objecttypes::BUILTIN)
+	if (func->Type() == ObjType::Builtin)
 		return ((Builtin *)func)->func(args);
 
-	if (func->Type() != objecttypes::FUNCTION)
-		return new Error("not a function, got: " + func->Type());
+	if (func->Type() != ObjType::Function)
+		return new Error("not a function");
 
 	auto extended = eval::extend_function_env(func, args);
 	auto evaluated = eval::Eval(((Function *)func)->body, extended);
@@ -445,7 +437,7 @@ Environment *eval::extend_function_env(Object *func,
 }
 
 Object *eval::unwrap_return(Object *obj) {
-	if (obj->Type() == objecttypes::RETURN)
+	if (obj->Type() == ObjType::Return)
 		return (((Return *)obj)->value);
 	return obj;
 }
@@ -453,8 +445,7 @@ Object *eval::unwrap_return(Object *obj) {
 Object *eval::eval_string_infix(const std::string &opr, Object *right,
 																Object *left) {
 	if (opr != "+") {
-		return new Error("unknown operation: " + left->Type() + " " + opr + " " +
-										 right->Type());
+		return new Error("unknown operation");
 	}
 
 	auto left_val = ((String *)left)->value;
@@ -476,14 +467,14 @@ Object *eval::eval_array_literal(Node *node, Environment *env) {
 
 Object *eval::eval_index_expression(Object *left, Object *index,
 																		Environment *env) {
-	if (left->Type() == objecttypes::ARRAY_OBJ &&
-			index->Type() == objecttypes::INTEGER) {
+	if (left->Type() == ObjType::Array &&
+			index->Type() == ObjType::Integer) {
 		return eval::eval_array_index_expression((Array *)left, (Integer *)index);
-	} else if (left->Type() == objecttypes::HASH) {
+	} else if (left->Type() == ObjType::Hash) {
 		return eval::eval_hash_index_expression(left, index, env);
 	}
 
-	return new Error("index operation not found: " + left->Type());
+	return new Error("index operation not found");
 }
 
 Object *eval::eval_array_index_expression(Array *arr, Integer *index) {
@@ -509,9 +500,9 @@ Object *eval::eval_hash_literal(Node *node, Environment *env) {
 			return key_object;
 
 		// check that the key is of an hashable type.
-		if (!(key_object->Type() == objecttypes::INTEGER ||
-					key_object->Type() == objecttypes::STRING ||
-					key_object->Type() == objecttypes::BOOLEAN))
+		if (!(key_object->Type() == ObjType::Integer ||
+					key_object->Type() == ObjType::String ||
+					key_object->Type() == ObjType::Boolean))
 			return new Error("unsuable as a hash key");
 
 		// evaluate the value expression.
@@ -522,11 +513,11 @@ Object *eval::eval_hash_literal(Node *node, Environment *env) {
 		HashKey res;
 		// we only need to check these types since the previous if expressions
 		// guarantees that the object is one of them.
-		if (key_object->Type() == objecttypes::INTEGER)
+		if (key_object->Type() == ObjType::Integer)
 			res = ((Integer *)key_object)->hash_key();
-		else if (key_object->Type() == objecttypes::STRING)
+		else if (key_object->Type() == ObjType::String)
 			res = ((String *)key_object)->hash_key();
-		else if (key_object->Type() == objecttypes::BOOLEAN)
+		else if (key_object->Type() == ObjType::Boolean)
 			res = ((Boolean *)key_object)->hash_key();
 
 		result_table->pairs[res.value] = new HashPair{key_object, value_object};
@@ -543,19 +534,19 @@ Object *eval::eval_hash_index_expression(Object *left, Object *index,
 	}
 
 	// check that the key is of an hashable type.
-	if (!(index->Type() == objecttypes::INTEGER ||
-				index->Type() == objecttypes::STRING ||
-				index->Type() == objecttypes::BOOLEAN))
+	if (!(index->Type() == ObjType::Integer ||
+				index->Type() == ObjType::String ||
+				index->Type() == ObjType::Boolean))
 		return new Error("unsuable as a hash key");
 
 	HashKey res;
 	// we only need to check these types since the previous if expressions
 	// guarantees that the object is one of them.
-	if (index->Type() == objecttypes::INTEGER)
+	if (index->Type() == ObjType::Integer)
 		res = ((Integer *)index)->hash_key();
-	else if (index->Type() == objecttypes::STRING)
+	else if (index->Type() == ObjType::String)
 		res = ((String *)index)->hash_key();
-	else if (index->Type() == objecttypes::BOOLEAN)
+	else if (index->Type() == ObjType::Boolean)
 		res = ((Boolean *)index)->hash_key();
 
 	auto pr = hashtable->pairs[res.value];

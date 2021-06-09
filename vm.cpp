@@ -30,9 +30,9 @@ bool is_truthy(Object *obj) {
 	if (obj == nullptr)
 		return false;
 
-	if (obj->Type() == objecttypes::BOOLEAN)
+	if (obj->Type() == ObjType::Boolean)
 		return ((Boolean *)obj)->value;
-	else if (obj->Type() == objecttypes::NULLOBJ)
+	else if (obj->Type() == ObjType::Null)
 		return false;
 
 	return true;
@@ -291,11 +291,11 @@ int VM::execute_binary_operation(code::Opcode op) {
 	auto left = pop();
 
 	// check that types support a certain operation.
-	if (left->Type() == objecttypes::INTEGER &&
-			right->Type() == objecttypes::INTEGER) {
+	if (left->Type() == ObjType::Integer &&
+			right->Type() == ObjType::Integer) {
 		return execute_binary_integer_operation(op, left, right);
-	} else if (left->Type() == objecttypes::STRING &&
-						 right->Type() == objecttypes::STRING) {
+	} else if (left->Type() == ObjType::String &&
+						 right->Type() == ObjType::String) {
 		return execute_binary_string_operation(op, left, right);
 	} else {
 		// the types don't have a supported binary expression
@@ -335,8 +335,8 @@ int VM::execute_comparison(code::Opcode op) {
 	auto left = pop();
 
 	// check that types support a certain operation.
-	if (left->Type() == objecttypes::INTEGER &&
-			right->Type() == objecttypes::INTEGER) {
+	if (left->Type() == ObjType::Integer &&
+			right->Type() == ObjType::Integer) {
 		return execute_integer_comparison(op, left, right);
 	}
 
@@ -382,7 +382,7 @@ int VM::execute_bang_operator() {
 
 int VM::execute_minus_operator() {
 	auto oper = pop();
-	if (oper->Type() != objecttypes::INTEGER)
+	if (oper->Type() != ObjType::Integer)
 		// type cannot be used in conjunction with integer type
 		return -1;
 
@@ -417,19 +417,19 @@ Object *VM::build_hash(int start_index, int end_index) {
 		auto value = m_stack[i + 1];
 		auto pair = new HashPair{key, value};
 
-		if (!(key->Type() == objecttypes::INTEGER ||
-					key->Type() == objecttypes::STRING ||
-					key->Type() == objecttypes::BOOLEAN))
+		if (!(key->Type() == ObjType::Integer ||
+					key->Type() == ObjType::String ||
+					key->Type() == ObjType::Boolean))
 			return nullptr;
 
 		HashKey res;
 		// we only need to check these types since the previous if expressions
 		// guarantees that the object is one of them.
-		if (key->Type() == objecttypes::INTEGER)
+		if (key->Type() == ObjType::Integer)
 			res = ((Integer *)key)->hash_key();
-		else if (key->Type() == objecttypes::STRING)
+		else if (key->Type() == ObjType::String)
 			res = ((String *)key)->hash_key();
-		else if (key->Type() == objecttypes::BOOLEAN)
+		else if (key->Type() == ObjType::Boolean)
 			res = ((Boolean *)key)->hash_key();
 		hashtable->pairs[res.value] = pair;
 	}
@@ -438,10 +438,10 @@ Object *VM::build_hash(int start_index, int end_index) {
 }
 
 int VM::execute_index_expression(Object *left, Object *index) {
-	if (left->Type() == objecttypes::ARRAY_OBJ &&
-			index->Type() == objecttypes::INTEGER)
+	if (left->Type() == ObjType::Array &&
+			index->Type() == ObjType::Integer)
 		return execute_array_index(left, index);
-	else if (left->Type() == objecttypes::HASH)
+	else if (left->Type() == ObjType::Hash)
 		return execute_hash_index(left, index);
 
 	// the index operator is not supported for this type
@@ -468,19 +468,19 @@ int VM::execute_hash_index(Object *hash, Object *index) {
 	if (hashobj == nullptr)
 		return -1;
 
-	if (!(index->Type() == objecttypes::INTEGER ||
-				index->Type() == objecttypes::STRING ||
-				index->Type() == objecttypes::BOOLEAN))
+	if (!(index->Type() == ObjType::Integer ||
+				index->Type() == ObjType::String ||
+				index->Type() == ObjType::Boolean))
 		return -1;
 
 	HashKey res;
 	// we only need to check these types since the previous if expressions
 	// guarantees that the object is one of them.
-	if (index->Type() == objecttypes::INTEGER)
+	if (index->Type() == ObjType::Integer)
 		res = ((Integer *)index)->hash_key();
-	else if (index->Type() == objecttypes::STRING)
+	else if (index->Type() == ObjType::String)
 		res = ((String *)index)->hash_key();
-	else if (index->Type() == objecttypes::BOOLEAN)
+	else if (index->Type() == ObjType::Boolean)
 		res = ((Boolean *)index)->hash_key();
 
 	if (hashobj->pairs.count(res.value) == 0)
@@ -508,9 +508,9 @@ int VM::call_function(Object *func, int num_args) {
 int VM::execute_call(int num_args) {
 	const auto callee = m_stack[m_sp-1-num_args];
 
-	if (callee->Type() == objecttypes::COMPILED_FUNCTION_OBJ)
+	if (callee->Type() == ObjType::CompiledFunction)
 		return call_function(callee, num_args);
-	else if (callee->Type() == objecttypes::BUILTIN)
+	else if (callee->Type() == ObjType::Builtin)
 		return call_builtin(callee, num_args);
 
 	// calling a non-function.

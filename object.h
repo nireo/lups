@@ -9,33 +9,32 @@
 #include <unordered_map>
 #include <vector>
 
-typedef std::string ObjectType;
 class Boolean;
 
-namespace objecttypes {
-static const ObjectType INTEGER = "INTEGER";
-static const ObjectType BOOLEAN = "BOOLEAN";
-static const ObjectType NULLOBJ = "NULL";
-static const ObjectType RETURN = "RETURN";
-static const ObjectType ERROR = "ERROR";
-static const ObjectType FUNCTION = "FUNCTION";
-static const ObjectType STRING = "STRING";
-static const ObjectType BUILTIN = "BUILTIN";
-static const ObjectType ARRAY_OBJ = "ARRAY";
-static const ObjectType HASH = "HASH";
-static const ObjectType COMPILED_FUNCTION_OBJ = "COMPILED_FUNCTION_OBJ";
-} // namespace objecttypes
+enum class ObjType {
+	Integer,
+	Boolean,
+	Null,
+	Return,
+	Error,
+	Function,
+	String,
+	Builtin,
+	Array,
+	Hash,
+	CompiledFunction
+};
 
 typedef long long HashValue;
 struct HashKey {
-	ObjectType type;
+	ObjType type;
 	HashValue value;
 };
 
 class Object {
 public:
 	virtual ~Object() {}
-	virtual ObjectType Type() = 0;
+	virtual ObjType Type() = 0;
 	virtual std::string Inspect() = 0;
 };
 
@@ -47,7 +46,7 @@ public:
 	CompiledFunction(code::Instructions inst, int num_locals)
 			: Object(), m_instructions(inst), m_num_locals(num_locals) {}
 
-	ObjectType Type() { return objecttypes::COMPILED_FUNCTION_OBJ; }
+	ObjType Type() { return ObjType::CompiledFunction; }
 	std::string Inspect() { return "compiled-function"; }
 
 	code::Instructions m_instructions;
@@ -60,18 +59,17 @@ typedef Object *(*built_in)(std::vector<Object *> &);
 class Integer : public Object {
 public:
 	Integer(int v) : Object(), value(v) {}
-	ObjectType Type() { return objecttypes::INTEGER; }
+	ObjType Type() { return ObjType::Integer; }
 	std::string Inspect() { return std::to_string(value); }
 
 	HashKey hash_key() { return HashKey{Type(), (HashValue)value}; }
-
 	int value;
 };
 
 class Boolean : public Object {
 public:
 	Boolean(bool b) : Object(), value(b) {}
-	ObjectType Type() { return objecttypes::BOOLEAN; }
+	ObjType Type() { return ObjType::Boolean; }
 	std::string Inspect() { return value ? "true" : "false"; }
 
 	HashKey hash_key() { return HashKey{Type(), (HashValue)(value ? 1 : 0)}; }
@@ -81,7 +79,7 @@ public:
 
 class Null : public Object {
 public:
-	ObjectType Type() { return objecttypes::NULLOBJ; }
+	ObjType Type() { return ObjType::Null; }
 	std::string Inspect() { return "NULL"; }
 };
 
@@ -89,7 +87,7 @@ class Return : public Object {
 public:
 	Return(Object *v) : Object(), value(v) {}
 	~Return() { delete value; }
-	ObjectType Type() { return objecttypes::RETURN; }
+	ObjType Type() { return ObjType::Return; }
 	std::string Inspect() { return value->Inspect(); }
 
 	Object *value;
@@ -99,7 +97,7 @@ class Error : public Object {
 public:
 	Error(std::string msg) : Object(), message(msg) {}
 	std::string Inspect() { return "err: " + message; }
-	ObjectType Type() { return objecttypes::ERROR; }
+	ObjType Type() { return ObjType::Error; }
 
 	std::string message;
 };
@@ -147,8 +145,8 @@ public:
 		for (auto pr : params)
 			delete pr;
 	}
-	ObjectType Type() { return objecttypes::FUNCTION; }
-	std::string Inspect() { return "function :D"; }
+	ObjType Type() { return ObjType::Function; }
+	std::string Inspect() { return "function"; }
 
 	Environment *env;
 	std::vector<Identifier *> params;
@@ -158,7 +156,7 @@ public:
 class String : public Object {
 public:
 	String(const std::string &str) : Object(), value(str) {}
-	ObjectType Type() { return objecttypes::STRING; }
+	ObjType Type() { return ObjType::String; }
 	std::string Inspect() { return value; }
 
 	HashKey hash_key() {
@@ -175,7 +173,8 @@ public:
 		for (auto elem : elements)
 			delete elem;
 	}
-	ObjectType Type() { return objecttypes::ARRAY_OBJ; }
+
+	ObjType Type() { return ObjType::Array; }
 	std::string Inspect() {
 		std::string res = "[";
 		for (auto elem : elements) {
@@ -191,7 +190,7 @@ public:
 class Builtin : public Object {
 public:
 	Builtin(built_in fn) : Object(), func(fn) {}
-	ObjectType Type() { return objecttypes::BUILTIN; }
+	ObjType Type() { return ObjType::Builtin; }
 	std::string Inspect() { return "builtin function"; }
 
 	built_in func;
@@ -216,7 +215,7 @@ public:
 			delete pr.second;
 	}
 
-	ObjectType Type() { return objecttypes::HASH; }
+	ObjType Type() { return ObjType::Hash; }
 	std::string Inspect() {
 		std::string result;
 		result += "{";

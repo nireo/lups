@@ -16,14 +16,13 @@ Object *builtin_functions::len(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 2");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ && objs[0]->Type() != objecttypes::STRING) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::Array && objs[0]->Type() != ObjType::String) {
+		return new Error("the argument to 'len' must be of type array or string");
 	}
 
-	if (objs[0]->Type() == objecttypes::ARRAY_OBJ) {
+	if (objs[0]->Type() == ObjType::Array) {
 		return new Integer(((Array*)objs[0])->elements.size());
-	} else if (objs[0]->Type() == objecttypes::STRING) {
+	} else if (objs[0]->Type() == ObjType::String) {
 		return new Integer(((String*)objs[0])->value.size());
 	}
 
@@ -45,9 +44,8 @@ Object *builtin_functions::array_first(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 1");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::Array) {
+		return new Error("the argument must be of type array");
 	}
 
 	auto elements = ((Array *)objs[0])->elements;
@@ -63,9 +61,8 @@ Object *builtin_functions::array_last(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 1");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::Array) {
+		return new Error("the argument must be of type array");
 	}
 
 	auto elements = ((Array *)objs[0])->elements;
@@ -82,9 +79,8 @@ Object *builtin_functions::array_tail(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 1");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::Array) {
+		return new Error("the argument must be of type array");
 	}
 
 	auto elements = ((Array *)objs[0])->elements;
@@ -102,9 +98,8 @@ Object *builtin_functions::array_push(std::vector<Object *> &objs) {
 		return new Error("wrong number of arguments. want 2");
 	}
 
-	if (objs[0]->Type() != objecttypes::ARRAY_OBJ) {
-		return new Error("the argument must be of type array, got: " +
-										 objs[0]->Type());
+	if (objs[0]->Type() != ObjType::Array) {
+		return new Error("the argument must be of type array");
 	}
 
 	auto array = (Array *)objs[0];

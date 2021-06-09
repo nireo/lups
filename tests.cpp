@@ -1025,7 +1025,7 @@ TEST(EvalTest, ErrorHandling) {
 	for (auto &tc : test_cases) {
 		auto obj = eval_test(tc.input);
 		EXPECT_NE(obj, nullptr) << "The evaluated object was null.";
-		EXPECT_EQ(obj->Type(), objecttypes::ERROR) << "The object wasn't an error";
+		EXPECT_EQ(obj->Type(), ObjType::Error) << "The object wasn't an error";
 	}
 }
 
@@ -1126,7 +1126,7 @@ TEST(EvalTest, BuiltInFunction) {
 		EXPECT_NE(obj, nullptr);
 
 		if (tc.expected == -1) {
-			EXPECT_EQ(obj->Type(), objecttypes::ERROR);
+			EXPECT_EQ(obj->Type(), ObjType::Error);
 		} else {
 			auto res = dynamic_cast<Integer *>(obj);
 			EXPECT_NE(res, nullptr);
@@ -1143,7 +1143,7 @@ TEST(EvalTest, ArrayLiteralEvaluation) {
 	auto arr = dynamic_cast<Array *>(obj);
 	EXPECT_NE(arr, nullptr);
 
-	EXPECT_EQ(arr->Type(), objecttypes::ARRAY_OBJ);
+	EXPECT_EQ(arr->Type(), ObjType::Array);
 
 	EXPECT_TRUE(test_integer_object(arr->elements[0], 1))
 			<< "first value is not 1";
@@ -1176,7 +1176,7 @@ TEST(EvalTest, ArrayIndexExpressions) {
 		EXPECT_NE(obj, nullptr);
 
 		if (tc.expected == -1) {
-			EXPECT_EQ(objecttypes::NULLOBJ, obj->Type())
+			EXPECT_EQ(ObjType::Null, obj->Type())
 					<< "The object isn't of type null";
 		} else {
 			EXPECT_TRUE(test_integer_object(obj, tc.expected))
@@ -1262,7 +1262,7 @@ TEST(EvalTest, HashIndexExpressions) {
 		EXPECT_NE(obj, nullptr);
 
 		if (tc.expected == -1) {
-			EXPECT_EQ(objecttypes::NULLOBJ, obj->Type());
+			EXPECT_EQ(ObjType::Null, obj->Type());
 		} else {
 			EXPECT_TRUE(test_integer_object(obj, tc.expected));
 		}
@@ -1378,7 +1378,7 @@ run_compiler_tests(const std::vector<CompilerTestcase<T>> &tests) {
 		} else if constexpr (std::is_same<Object *, T>::value) {
 			for (int i = 0; i < (int)test.expected_constants.size(); ++i) {
 				if (test.expected_constants[i]->Type() ==
-						objecttypes::COMPILED_FUNCTION_OBJ) {
+						ObjType::CompiledFunction) {
 					auto expected_fn =
 							dynamic_cast<CompiledFunction *>(test.expected_constants[i]);
 					if (expected_fn == nullptr)
@@ -1392,7 +1392,7 @@ run_compiler_tests(const std::vector<CompilerTestcase<T>> &tests) {
 					if (!test_instructions({expected_fn->m_instructions},
 																 actual_fn->m_instructions))
 						return "The function instructions don't match";
-				} else if (test.expected_constants[i]->Type() == objecttypes::INTEGER) {
+				} else if (test.expected_constants[i]->Type() == ObjType::Integer) {
 					auto expected_int =
 							dynamic_cast<Integer *>(test.expected_constants[i]);
 					if (expected_int == nullptr)
@@ -1438,10 +1438,10 @@ const std::string run_vm_tests(const std::vector<VMTestcase<T>> &tests) {
 		if constexpr (std::is_same<int, T>::value) {
 			// In some test cases -1 is used to indicate that it should return null.
 			if (tt.expected == -1) {
-				if (stack_elem->Type() != objecttypes::NULLOBJ)
+				if (stack_elem->Type() != ObjType::Null)
 					return "stack_elem is not null even though it should";
 			} else if (tt.expected == -2) {
-				if (stack_elem->Type() != objecttypes::ERROR)
+				if (stack_elem->Type() != ObjType::Error)
 					return "stack_elem is not an error even though it should be.";
 			} else {
 				if (!test_integer_object(stack_elem, tt.expected))

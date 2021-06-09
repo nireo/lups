@@ -85,8 +85,8 @@ private:
 	std::vector<Object *> m_stack;
 	std::vector<Object *> m_globals;
 
-	std::array<std::unique_ptr<Frame>, MaxFrames> frames_;
-	int frames_index_;
+				std::array<std::unique_ptr<Frame>, MaxFrames> frames_;
+				int frames_index_;
 };
 
 #endif
