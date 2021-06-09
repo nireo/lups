@@ -7,11 +7,31 @@
 #include <unordered_map>
 #include <vector>
 
+enum class AstType {
+	Program,
+	Identifier,
+	LetStatement,
+	ReturnStatement,
+	ExpressionStatement,
+	HashLiteral,
+	ArrayLiteral,
+	CallExpression,
+	StringLiteral,
+	IndexExpression,
+	PrefixExpression,
+	InfixExpression,
+	BlockStatement,
+	IfExpression,
+	IntegerLiteral,
+	BooleanExpression,
+	FunctionLiteral,
+};
+
 class Node {
 public:
 	virtual std::string TokenLiteral() = 0;
 	virtual std::string String() = 0;
-	virtual std::string Type() = 0;
+	virtual AstType Type() = 0;
 };
 
 class Statement : public Node {
@@ -19,21 +39,21 @@ public:
 	virtual void statementNode() = 0;
 	virtual std::string TokenLiteral() = 0;
 	virtual std::string String() = 0;
-	virtual std::string Type() = 0;
+	virtual AstType Type() = 0;
 };
 
 class Expression : public Node {
 public:
 	virtual std::string TokenLiteral() = 0;
 	virtual std::string String() = 0;
-	virtual std::string Type() = 0;
+	virtual AstType Type() = 0;
 };
 
 class Program : public Node {
 public:
 	std::string TokenLiteral();
 	std::string String();
-	std::string Type() { return "Program"; }
+	AstType Type() { return AstType::Program; }
 
 	std::vector<std::unique_ptr<Statement>> statements;
 };
@@ -42,7 +62,7 @@ class Identifier : public Expression {
 public:
 	std::string TokenLiteral() { return token.literal; }
 	std::string String() { return value; }
-	std::string Type() { return "Identifier"; }
+	AstType Type() { return AstType::Identifier; }
 
 	Token token;
 	std::string value;
@@ -53,7 +73,7 @@ public:
 	void statementNode() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
-	std::string Type() { return "LetStatement"; }
+	AstType Type() { return AstType::LetStatement; }
 
 	Token token;
 	std::unique_ptr<Identifier> name;
@@ -65,7 +85,7 @@ public:
 	void statementNode() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
-	std::string Type() { return "ReturnStatement"; }
+	AstType Type() { return AstType::ReturnStatement; }
 
 	Token token;
 	std::unique_ptr<Expression> return_value;
@@ -76,7 +96,7 @@ public:
 	void statementNode() {}
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
-	std::string Type() { return "ExpressionStatement"; }
+	AstType Type() { return AstType::ExpressionStatement; }
 
 	Token token;
 	std::unique_ptr<Expression> expression;
@@ -86,7 +106,7 @@ class IntegerLiteral : public Expression {
 public:
 	std::string TokenLiteral() { return token.literal; }
 	std::string String() { return token.literal; }
-	std::string Type() { return "IntegerLiteral"; }
+	AstType Type() { return AstType::IntegerLiteral; }
 
 	Token token;
 	int value;
@@ -96,7 +116,7 @@ class PrefixExpression : public Expression {
 public:
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
-	std::string Type() { return "PrefixExpression"; }
+	AstType Type() { return AstType::PrefixExpression; }
 
 	Token token;
 
@@ -109,7 +129,7 @@ class InfixExpression : public Expression {
 public:
 	std::string TokenLiteral() { return token.literal; }
 	std::string String();
-	std::string Type() { return "InfixExpression"; }
+	AstType Type() { return AstType::InfixExpression; }
 
 	Token token;
 	std::string opr;
@@ -120,8 +140,8 @@ public:
 class BooleanExpression : public Expression {
 public:
 	std::string String() { return token.literal; }
-	std::string Type() { return "BooleanExpression"; }
 	std::string TokenLiteral() { return token.literal; }
+	AstType Type() { return AstType::BooleanExpression; }
 
 	Token token;
 	bool value;
@@ -131,8 +151,8 @@ class BlockStatement : public Statement {
 public:
 	void statementNode() {}
 	std::string String() { return token.literal; }
-	std::string Type() { return "BlockExpression"; }
 	std::string TokenLiteral() { return token.literal; }
+	AstType Type() { return AstType::BlockStatement; }
 
 	Token token;
 	std::vector<std::unique_ptr<Statement>> statements;
@@ -141,8 +161,8 @@ public:
 class IfExpression : public Expression {
 public:
 	std::string String() { return token.literal; }
-	std::string Type() { return "IfExpression"; }
 	std::string TokenLiteral() { return token.literal; }
+	AstType Type() { return AstType::IfExpression; }
 
 	Token token;
 	std::unique_ptr<Expression> cond;
@@ -153,8 +173,8 @@ public:
 class FunctionLiteral : public Expression {
 public:
 	std::string String() { return token.literal; }
-	std::string Type() { return "FunctionLiteral"; }
 	std::string TokenLiteral() { return token.literal; }
+	AstType Type() { return AstType::FunctionLiteral; }
 
 	Token token;
 	std::vector<std::unique_ptr<Identifier>> params;
@@ -165,7 +185,7 @@ class CallExpression : public Expression {
 public:
 	std::string String();
 	std::string TokenLiteral() { return token.literal; }
-	std::string Type() { return "CallExpression"; }
+	AstType Type() { return AstType::CallExpression; }
 
 	Token token;
 	std::vector<std::unique_ptr<Expression>> arguments;
@@ -176,7 +196,7 @@ class StringLiteral : public Expression {
 public:
 	std::string String() { return value; }
 	std::string TokenLiteral() { return token.literal; }
-	std::string Type() { return "StringLiteral"; }
+	AstType Type() { return AstType::StringLiteral; }
 
 	Token token;
 	std::string value;
@@ -186,7 +206,7 @@ class ArrayLiteral : public Expression {
 public:
 	std::string String();
 	std::string TokenLiteral() { return token.literal; }
-	std::string Type() { return "ArrayLiteral"; }
+	AstType Type() { return AstType::ArrayLiteral; }
 
 	std::vector<std::unique_ptr<Expression>> elements;
 	Token token;
@@ -196,7 +216,7 @@ class IndexExpression : public Expression {
 public:
 	std::string String();
 	std::string TokenLiteral() { return token.literal; }
-	std::string Type() { return "IndexExpression"; }
+	AstType Type() { return AstType::IndexExpression; }
 
 	Token token;
 	std::unique_ptr<Expression> left;
@@ -207,13 +227,16 @@ class HashLiteral : public Expression {
 public:
 	std::string String() { return "hashliteral string"; };
 	std::string TokenLiteral() { return token.literal; }
-	std::string Type() { return "HashLiteral"; }
+	AstType Type() { return AstType::HashLiteral; }
 
 	Token token;
 
-	// we can use maps put there i found some errors for iterating them when it consists only of
-	// unique pointers. That is why it is a vector and we don't need to query anything so it just works.
-	std::vector<std::pair<std::unique_ptr<Expression>, std::unique_ptr<Expression>>> pairs;
+	// we can use maps put there i found some errors for iterating them when it
+	// consists only of unique pointers. That is why it is a vector and we don't
+	// need to query anything from the ast node so it just works.
+	std::vector<
+			std::pair<std::unique_ptr<Expression>, std::unique_ptr<Expression>>>
+			pairs;
 };
 
 #endif

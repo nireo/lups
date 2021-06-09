@@ -131,55 +131,72 @@ std::unordered_map<std::string, Builtin *> builtin_functions = {
 
 Object *eval::Eval(Node *node, Environment *env) {
 	auto type = node->Type();
-	if (type == "IntegerLiteral") {
+	switch (type) {
+	case AstType::IntegerLiteral: {
 		Integer *obj = new Integer(((IntegerLiteral *)node)->value);
 		return obj;
-	} else if (type == "Program") {
+	}
+	case AstType::Program: {
 		return eval::eval_statements(node, env);
-	} else if (type == "ExpressionStatement") {
+	}
+	case AstType::ExpressionStatement: {
 		auto exps = (ExpressionStatement *)node;
 		return eval::Eval(exps->expression.get(), env);
-	} else if (type == "BooleanExpression") {
+	}
+	case AstType::BooleanExpression: {
 		bool truthy = ((BooleanExpression *)node)->value;
 		if (truthy) {
 			return object_constant::TRUE_OBJ;
 		}
 		return object_constant::FALSE_OBJ;
-	} else if (type == "PrefixExpression") {
+	}
+	case AstType::PrefixExpression: {
 		auto pre = (PrefixExpression *)node;
 		auto right = Eval(pre->right.get(), env);
 		return eval::eval_prefix_expression(pre->opr, right);
-	} else if (type == "InfixExpression") {
+	}
+	case AstType::InfixExpression: {
 		auto inf = (InfixExpression *)node;
 		auto right = eval::Eval(inf->right.get(), env);
 		auto left = eval::Eval(inf->left.get(), env);
 
 		return eval::eval_infix_exp(inf->opr, right, left);
-	} else if (type == "BlockExpression") {
+	}
+	case AstType::BlockStatement: {
 		return eval::eval_blockstatement(node, env);
-	} else if (type == "IfExpression") {
+	}
+	case AstType::IfExpression: {
 		auto ifexp = (IfExpression *)node;
 		return eval::eval_if_expression(ifexp, env);
-	} else if (type == "LetStatement") {
+	}
+	case AstType::LetStatement: {
 		auto value = eval::Eval(((LetStatement *)node)->value.get(), env);
 		if (eval::is_error(value))
 			return value;
 		env->set(((LetStatement *)node)->name->value, value);
-	} else if (type == "ReturnStatement") {
+		break;
+	}
+	case AstType::ReturnStatement: {
 		auto val = eval::Eval(((ReturnStatement *)node)->return_value.get(), env);
 		return new Return(val);
-	} else if (type == "Identifier") {
+	}
+	case AstType::Identifier: {
 		return eval::eval_identifier((Identifier *)node, env);
-	} else if (type == "FunctionLiteral") {
+	}
+	case AstType::FunctionLiteral: {
 		return eval::eval_function_literal(node, env);
-	} else if (type == "CallExpression") {
+	}
+	case AstType::CallExpression: {
 		return eval::eval_call_expression(node, env);
-	} else if (type == "StringLiteral") {
+	}
+	case AstType::StringLiteral: {
 		// for some reason the value doesn't work but the function literal works
 		return new String(((StringLiteral *)node)->TokenLiteral());
-	} else if (type == "ArrayLiteral") {
+	}
+	case AstType::ArrayLiteral: {
 		return eval::eval_array_literal(node, env);
-	} else if (type == "IndexExpression") {
+	}
+	case AstType::IndexExpression: {
 		auto array = eval::Eval(((IndexExpression *)node)->left.get(), env);
 		if (eval::is_error(array)) {
 			return array;
@@ -190,8 +207,10 @@ Object *eval::Eval(Node *node, Environment *env) {
 		}
 
 		return eval_index_expression(array, index, env);
-	} else if (type == "HashLiteral") {
+	}
+	case AstType::HashLiteral: {
 		return eval::eval_hash_literal(node, env);
+	}
 	}
 
 	return nullptr;

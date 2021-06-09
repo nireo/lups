@@ -206,7 +206,7 @@ TEST(ParserTest, LetStatements) {
 
 	std::string names[3] = {"x", "y", "foobar"};
 	for (int i = 0; i < (int)program->statements.size(); ++i) {
-		EXPECT_EQ(program->statements[i]->Type(), "LetStatement");
+		EXPECT_EQ(program->statements[i]->Type(), AstType::LetStatement);
 		EXPECT_EQ(program->statements[i]->TokenLiteral(), "let");
 
 		auto let_class = dynamic_cast<LetStatement *>(program->statements[i].get());
@@ -234,7 +234,7 @@ TEST(ParserTest, ReturnStatements) {
 	EXPECT_EQ(errors.size(), 0) << "There are errors in the parsing";
 
 	for (int i = 0; i < program->statements.size(); ++i) {
-		EXPECT_EQ(program->statements[i]->Type(), "ReturnStatement");
+		EXPECT_EQ(program->statements[i]->Type(), AstType::ReturnStatement);
 		EXPECT_EQ(program->statements[i]->TokenLiteral(), "return");
 
 		auto return_class =

@@ -6,19 +6,24 @@
 #include <vector>
 
 int Compiler::compile(Node *node) {
-	auto type = node->Type();
-	if (type == "Program") {
+	AstType type = node->Type();
+	switch (type) {
+	case AstType::Program: {
 		for (const auto &statement : ((Program *)node)->statements) {
 			auto status = compile(statement.get());
 			if (status != 0)
 				return status;
 		}
-	} else if (type == "ExpressionStatement") {
+		break;
+	}
+	case AstType::ExpressionStatement: {
 		auto status = compile(((ExpressionStatement *)node)->expression.get());
 		if (status != 0)
 			return status;
 		emit(code::OpPop);
-	} else if (type == "InfixExpression") {
+		break;
+	}
+	case AstType::InfixExpression: {
 		if (((InfixExpression *)node)->opr == "<") {
 			// this is the same as the code below, but it adds the infix expressions
 			// in a different order such that we only need one type of greater than
@@ -34,7 +39,6 @@ int Compiler::compile(Node *node) {
 			emit(code::OpGreaterThan);
 			return 0;
 		}
-
 		auto status = compile(((InfixExpression *)node)->left.get());
 		if (status != 0)
 			return status;
@@ -60,16 +64,22 @@ int Compiler::compile(Node *node) {
 			emit(code::OpNotEqual);
 		} else
 			return -1;
-	} else if (type == "IntegerLiteral") {
+		break;
+	}
+	case AstType::IntegerLiteral: {
 		auto integer = new Integer(((IntegerLiteral *)node)->value);
 		emit(code::OpConstant, {add_constant(integer)});
-	} else if (type == "BooleanExpression") {
+		break;
+	}
+	case AstType::BooleanExpression: {
 		auto value = ((BooleanExpression *)node)->value;
 		if (value)
 			emit(code::OpTrue);
 		else
 			emit(code::OpFalse);
-	} else if (type == "PrefixExpression") {
+		break;
+	}
+	case AstType::PrefixExpression: {
 		const auto prex = dynamic_cast<PrefixExpression *>(node);
 		auto status = compile(prex->right.get());
 		if (status != 0)
@@ -81,14 +91,15 @@ int Compiler::compile(Node *node) {
 			emit(code::OpMinus);
 		else
 			return -1;
-	} else if (type == "IfExpression") {
+		break;
+	}
+	case AstType::IfExpression: {
 		const auto ifx = dynamic_cast<IfExpression *>(node);
 		auto status = compile(ifx->cond.get());
 		if (status != 0)
 			return status;
 
-		const auto jump_not_truthy_pos =
-				emit(code::OpJumpNotTruthy, {9999});
+		const auto jump_not_truthy_pos = emit(code::OpJumpNotTruthy, {9999});
 
 		status = compile(ifx->after.get());
 		if (status != 0)
@@ -113,42 +124,54 @@ int Compiler::compile(Node *node) {
 		}
 		const auto after_other_pos = current_instructions().size();
 		change_operand(jump_pos, after_other_pos);
-	} else if (type == "BlockExpression") {
+		break;
+	}
+	case AstType::BlockStatement: {
 		for (auto &st : ((BlockStatement *)node)->statements) {
 			auto status = compile(st.get());
 			if (status != 0)
 				return status;
 		}
-	} else if (type == "LetStatement") {
-		const auto letexp = dynamic_cast<LetStatement*>(node);
+		break;
+	}
+	case AstType::LetStatement: {
+		const auto letexp = dynamic_cast<LetStatement *>(node);
 		const auto status = compile(letexp->value.get());
 		if (status != 0)
 			return status;
 
-		const auto& symbol = m_symbol_table->define(letexp->name->value);
+		const auto &symbol = m_symbol_table->define(letexp->name->value);
 		if (symbol.scope == scopes::GlobalScope)
 			emit(code::OpSetGlobal, {symbol.index});
 		else
 			emit(code::OpSetLocal, {symbol.index});
-	} else if (type == "Identifier") {
-		auto symbol = m_symbol_table->resolve(((Identifier*)node)->value);
+		break;
+	}
+	case AstType::Identifier: {
+		auto symbol = m_symbol_table->resolve(((Identifier *)node)->value);
 		if (symbol == nullptr)
 			return -1;
 
 		load_symbol(symbol);
-	} else if (type == "StringLiteral") {
-		const auto str = new String(((StringLiteral*)node)->TokenLiteral());
+		break;
+	}
+	case AstType::StringLiteral: {
+		const auto str = new String(((StringLiteral *)node)->TokenLiteral());
 		emit(code::OpConstant, {add_constant(str)});
-	} else if (type == "ArrayLiteral") {
-		for (const auto &el : ((ArrayLiteral*)node)->elements) {
+		break;
+	}
+	case AstType::ArrayLiteral: {
+		for (const auto &el : ((ArrayLiteral *)node)->elements) {
 			const auto status = compile(el.get());
 			if (status != 0)
 				return status;
 		}
 
-		emit(code::OpArray, {(int)((ArrayLiteral*)node)->elements.size()});
-	} else if (type == "HashLiteral") {
-		auto hash_lit = dynamic_cast<HashLiteral*>(node);
+		emit(code::OpArray, {(int)((ArrayLiteral *)node)->elements.size()});
+		break;
+	}
+	case AstType::HashLiteral: {
+		auto hash_lit = dynamic_cast<HashLiteral *>(node);
 
 		// TODO: probably sort the elements or maybe not it works either way
 		for (auto const &pr : hash_lit->pairs) {
@@ -162,8 +185,10 @@ int Compiler::compile(Node *node) {
 		}
 
 		emit(code::OpHash, {(int)hash_lit->pairs.size() * 2});
-	} else if (type == "IndexExpression") {
-		auto index_expression = dynamic_cast<IndexExpression*>(node);
+		break;
+	}
+	case AstType::IndexExpression: {
+		auto index_expression = dynamic_cast<IndexExpression *>(node);
 		auto status = compile(index_expression->left.get());
 		if (status != 0)
 			return status;
@@ -172,10 +197,12 @@ int Compiler::compile(Node *node) {
 		if (status != 0)
 			return status;
 		emit(code::OpIndex);
-	} else if (type == "FunctionLiteral") {
+		break;
+	}
+	case AstType::FunctionLiteral: {
 		enter_scope();
-		auto func = dynamic_cast<FunctionLiteral*>(node);
-		for (const auto& pr : func->params)
+		auto func = dynamic_cast<FunctionLiteral *>(node);
+		for (const auto &pr : func->params)
 			m_symbol_table->define(pr->value);
 
 		auto status = compile(func->body.get());
@@ -194,24 +221,30 @@ int Compiler::compile(Node *node) {
 		compiled_function->m_num_parameters = func->params.size();
 
 		emit(code::OpConstant, {add_constant(compiled_function)});
-	} else if (type == "ReturnStatement") {
-		auto status = compile(((ReturnStatement*)node)->return_value.get());
+		break;
+	}
+	case AstType::ReturnStatement: {
+		auto status = compile(((ReturnStatement *)node)->return_value.get());
 		if (status != 0)
 			return status;
 		emit(code::OpReturnValue);
-	} else if (type == "CallExpression") {
-		const auto call_exp = dynamic_cast<CallExpression*>(node);
+		break;
+	}
+	case AstType::CallExpression: {
+		const auto call_exp = dynamic_cast<CallExpression *>(node);
 		auto status = compile(call_exp->func.get());
 		if (status != 0)
 			return status;
 
-		for (const auto& arg : call_exp->arguments) {
+		for (const auto &arg : call_exp->arguments) {
 			status = compile(arg.get());
 			if (status != 0)
 				return status;
 		}
 
 		emit(code::OpCall, {(int)call_exp->arguments.size()});
+		break;
+	}
 	}
 
 	return 0;
@@ -261,7 +294,7 @@ void Compiler::remove_last_pop() {
 	auto prev = scopes[scope_index].prev_inst;
 
 	auto old = current_instructions();
-	auto new_inst = code::Instructions(old.begin(), old.begin()+last.pos);
+	auto new_inst = code::Instructions(old.begin(), old.begin() + last.pos);
 
 	scopes[scope_index].instructions = new_inst;
 	scopes[scope_index].last_inst = prev;
@@ -274,14 +307,15 @@ void Compiler::change_operand(int op_pos, int operand) {
 	replace_instructions(op_pos, new_inst);
 }
 
-void Compiler::replace_instructions(int pos, const code::Instructions &new_inst) {
-	auto& ins = scoped_inst();
+void Compiler::replace_instructions(int pos,
+																		const code::Instructions &new_inst) {
+	auto &ins = scoped_inst();
 	for (int i = 0; i < (int)new_inst.size(); ++i) {
 		ins[pos + i] = new_inst[i];
 	}
 }
 
-const Symbol& SymbolTable::define(const std::string &name) {
+const Symbol &SymbolTable::define(const std::string &name) {
 	auto symbol = std::make_unique<Symbol>();
 	symbol->index = definition_num_;
 	symbol->name = name;
@@ -309,7 +343,7 @@ Symbol *SymbolTable::resolve(const std::string &name) {
 	return store_[name].get();
 }
 
-const Symbol& SymbolTable::define_builtin(int index, const std::string &name) {
+const Symbol &SymbolTable::define_builtin(int index, const std::string &name) {
 	std::unique_ptr<Symbol> symbol(new Symbol{name, scopes::BuiltinScope, index});
 	store_[name] = std::move(symbol);
 
@@ -322,9 +356,9 @@ code::Instructions Compiler::current_instructions() {
 
 void Compiler::enter_scope() {
 	auto scope = CompilationScope{
-		code::Instructions(),
-		EmittedInstruction{},
-		EmittedInstruction{},
+			code::Instructions(),
+			EmittedInstruction{},
+			EmittedInstruction{},
 	};
 
 	scopes.push_back(scope);
@@ -336,7 +370,8 @@ void Compiler::enter_scope() {
 code::Instructions Compiler::leave_scope() {
 	auto instructions = current_instructions();
 
-	scopes = std::vector<CompilationScope>(scopes.begin(), scopes.begin()+scopes.size()-1);
+	scopes = std::vector<CompilationScope>(scopes.begin(),
+																				 scopes.begin() + scopes.size() - 1);
 	--scope_index;
 
 	m_symbol_table = m_symbol_table->outer_;
@@ -354,7 +389,7 @@ bool Compiler::last_instruction_is(const code::Opcode &op) {
 void Compiler::replace_last_pop_with_return() {
 	auto last_pos = scopes[scope_index].last_inst.pos;
 	replace_instructions(last_pos, code::make(code::OpReturnValue, {}));
-	scopes[scope_index].last_inst.op= code::OpReturnValue;
+	scopes[scope_index].last_inst.op = code::OpReturnValue;
 }
 
 void Compiler::load_symbol(const Symbol *sm) {
