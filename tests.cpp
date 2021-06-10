@@ -1354,8 +1354,8 @@ run_compiler_tests(const std::vector<CompilerTestcase<T>> &tests) {
 
 		auto compiler = new Compiler();
 		auto status = compiler->compile(program.get());
-		if (status != 0)
-			return "The compilation was unsuccessful";
+		if (status.has_value())
+			return status.value();
 
 		auto bytecode = compiler->bytecode();
 		if (!test_instructions(test.expected_instructions, bytecode->instructions))
@@ -1422,8 +1422,8 @@ const std::string run_vm_tests(const std::vector<VMTestcase<T>> &tests) {
 		auto program = parse_compiler_program_helper(tt.input);
 		auto comp = new Compiler();
 		auto status = comp->compile(program.get());
-		if (status != 0)
-			return "The compilation was unsuccessful";
+		if (status.has_value())
+			return status.value();
 
 		auto vm = new VM(comp->bytecode());
 		auto vm_status = vm->run();
@@ -2151,7 +2151,7 @@ TEST(CompilerTest, CompilerScopes) {
 	auto compiler = new Compiler();
 	EXPECT_EQ(compiler->scope_index, 0);
 
-	auto global_symbol_table = compiler->m_symbol_table;
+	auto global_symbol_table = compiler->symbol_table_;
 	compiler->emit(code::OpMul);
 
 	compiler->enter_scope();
@@ -2163,13 +2163,13 @@ TEST(CompilerTest, CompilerScopes) {
 	auto last = compiler->scopes[compiler->scope_index].last_inst;
 	EXPECT_EQ(last.op, code::OpSub);
 
-	EXPECT_EQ(compiler->m_symbol_table->outer_, global_symbol_table);
+	EXPECT_EQ(compiler->symbol_table_->outer_, global_symbol_table);
 
 	compiler->leave_scope();
 	EXPECT_EQ(compiler->scope_index, 0);
 
-	EXPECT_EQ(compiler->m_symbol_table, global_symbol_table);
-	EXPECT_EQ(compiler->m_symbol_table->outer_, nullptr);
+	EXPECT_EQ(compiler->symbol_table_, global_symbol_table);
+	EXPECT_EQ(compiler->symbol_table_->outer_, nullptr);
 
 	compiler->emit(code::OpAdd);
 
@@ -2444,7 +2444,7 @@ TEST(VMTest, WrongParameterCountReturnsError) {
 
 		// The compiler does return successful since handling the amount of
 		// parameters isn't the compiler's job.
-		EXPECT_EQ(status, 0);
+		EXPECT_FALSE(status.has_value());
 
 		auto vm = new VM(comp->bytecode());
 		auto vm_status = vm->run();

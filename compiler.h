@@ -72,10 +72,10 @@ public:
 		m_constants = std::vector<Object *>();
 		last_inst = nullptr;
 		prev_inst = nullptr;
-		m_symbol_table = new SymbolTable();
+		symbol_table_ = new SymbolTable();
 
 		for (int i = 0; i < (int)builtin_functions::functions.size(); ++i)
-			m_symbol_table->define_builtin(i, builtin_functions::functions[i].first);
+			symbol_table_->define_builtin(i, builtin_functions::functions[i].first);
 
 		scope_index = 0;
 
@@ -88,15 +88,14 @@ public:
 		scopes = std::vector<CompilationScope>(1, main_scope);
 	}
 
-	// int is the statuscode
-	// TODO: start using optionals that contain a error message
-	// for more informative errors with little code.
-	int compile(Node *node);
+	// The main compiling function. It returns an optional string containing an error.
+	// so if compilation was successful then compile(node).has_value() == false
+	std::optional<std::string> compile(Node *node);
+
 	int add_constant(Object *obj);
 	int emit(code::Opcode op, std::vector<int> operands);
 	int emit(code::Opcode op);
 	int add_instruction(std::vector<char> inst);
-
 	void set_last_instruction(code::Opcode, int pos);
 	bool last_instruction_is(const code::Opcode &op);
 	void remove_last_pop();
@@ -120,8 +119,7 @@ public:
 
 	std::vector<CompilationScope> scopes;
 	int scope_index;
-	SymbolTable *m_symbol_table;
-
+	SymbolTable* symbol_table_;
 private:
 	code::Instructions m_instructions;
 	std::vector<Object *> m_constants;

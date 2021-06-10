@@ -3,24 +3,25 @@
 #include "code.h"
 #include "object.h"
 #include <algorithm>
+#include <memory>
 #include <vector>
 #include <optional>
 
-int Compiler::compile(Node *node) {
+std::optional<std::string> Compiler::compile(Node *node) {
 	AstType type = node->Type();
 	switch (type) {
 	case AstType::Program: {
 		for (const auto &statement : ((Program *)node)->statements) {
 			auto status = compile(statement.get());
-			if (status != 0)
+			if (status.has_value())
 				return status;
 		}
 		break;
 	}
 	case AstType::ExpressionStatement: {
 		auto status = compile(((ExpressionStatement *)node)->expression.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error while compiling expression statement expression.";
 		emit(code::OpPop);
 		break;
 	}
@@ -30,23 +31,23 @@ int Compiler::compile(Node *node) {
 			// in a different order such that we only need one type of greater than
 			// opcode.
 			auto status = compile(((InfixExpression *)node)->right.get());
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return "error compiling right side of infix expression";
 
 			status = compile(((InfixExpression *)node)->left.get());
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return "error compiling the left side of infix expression";
 
 			emit(code::OpGreaterThan);
-			return 0;
+			return std::nullopt;
 		}
 		auto status = compile(((InfixExpression *)node)->left.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling the left side of infix expression";
 
 		status = compile(((InfixExpression *)node)->right.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling the right side of infix expression";
 
 		auto opr = ((InfixExpression *)node)->opr;
 		if (opr == "+")
@@ -64,7 +65,7 @@ int Compiler::compile(Node *node) {
 		} else if (opr == "!=") {
 			emit(code::OpNotEqual);
 		} else
-			return -1;
+			return "error: unrecognized infix operation";
 		break;
 	}
 	case AstType::IntegerLiteral: {
@@ -83,28 +84,28 @@ int Compiler::compile(Node *node) {
 	case AstType::PrefixExpression: {
 		const auto prex = dynamic_cast<PrefixExpression *>(node);
 		auto status = compile(prex->right.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling the right side of prefix expression";
 
 		if (prex->opr == "!")
 			emit(code::OpBang);
 		else if (prex->opr == "-")
 			emit(code::OpMinus);
 		else
-			return -1;
+			return "error: unrecognized prefix operation";
 		break;
 	}
 	case AstType::IfExpression: {
 		const auto ifx = dynamic_cast<IfExpression *>(node);
 		auto status = compile(ifx->cond.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling the if expression conditional";
 
 		const auto jump_not_truthy_pos = emit(code::OpJumpNotTruthy, {9999});
 
 		status = compile(ifx->after.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling if expression true body";
 
 		if (last_instruction_is(code::OpPop))
 			remove_last_pop();
@@ -117,8 +118,8 @@ int Compiler::compile(Node *node) {
 			emit(code::OpNull);
 		} else {
 			status = compile(ifx->other.get());
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return "error compiling if expression false body";
 
 			if (last_instruction_is(code::OpPop))
 				remove_last_pop();
@@ -130,18 +131,18 @@ int Compiler::compile(Node *node) {
 	case AstType::BlockStatement: {
 		for (auto &st : ((BlockStatement *)node)->statements) {
 			auto status = compile(st.get());
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return "error compiling block statement";
 		}
 		break;
 	}
 	case AstType::LetStatement: {
 		const auto letexp = dynamic_cast<LetStatement *>(node);
 		const auto status = compile(letexp->value.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling let statement";
 
-		const auto &symbol = m_symbol_table->define(letexp->name->value);
+		const auto &symbol = symbol_table_->define(letexp->name->value);
 		if (symbol.scope == scopes::GlobalScope)
 			emit(code::OpSetGlobal, {symbol.index});
 		else
@@ -149,9 +150,9 @@ int Compiler::compile(Node *node) {
 		break;
 	}
 	case AstType::Identifier: {
-		auto symbol = m_symbol_table->resolve(((Identifier *)node)->value);
+		auto symbol = symbol_table_->resolve(((Identifier *)node)->value);
 		if (!symbol.has_value())
-			return -1;
+			return "Symbol is not found in symbol table.";
 
 		load_symbol(symbol.value());
 		break;
@@ -164,8 +165,8 @@ int Compiler::compile(Node *node) {
 	case AstType::ArrayLiteral: {
 		for (const auto &el : ((ArrayLiteral *)node)->elements) {
 			const auto status = compile(el.get());
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return "error compiling array element";
 		}
 
 		emit(code::OpArray, {(int)((ArrayLiteral *)node)->elements.size()});
@@ -177,12 +178,12 @@ int Compiler::compile(Node *node) {
 		// TODO: probably sort the elements or maybe not it works either way
 		for (auto const &pr : hash_lit->pairs) {
 			auto status = compile(pr.first.get());
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return "error compiling first part of hash pair";
 
 			status = compile(pr.second.get());
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return "error compiling second part of hash pair";
 		}
 
 		emit(code::OpHash, {(int)hash_lit->pairs.size() * 2});
@@ -191,12 +192,12 @@ int Compiler::compile(Node *node) {
 	case AstType::IndexExpression: {
 		auto index_expression = dynamic_cast<IndexExpression *>(node);
 		auto status = compile(index_expression->left.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling index expression left side";
 
 		status = compile(index_expression->index.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling index expression index";
 		emit(code::OpIndex);
 		break;
 	}
@@ -204,11 +205,11 @@ int Compiler::compile(Node *node) {
 		enter_scope();
 		auto func = dynamic_cast<FunctionLiteral *>(node);
 		for (const auto &pr : func->params)
-			m_symbol_table->define(pr->value);
+			symbol_table_->define(pr->value);
 
 		auto status = compile(func->body.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling function body";
 
 		if (last_instruction_is(code::OpPop))
 			replace_last_pop_with_return();
@@ -216,7 +217,7 @@ int Compiler::compile(Node *node) {
 		if (!last_instruction_is(code::OpReturnValue))
 			emit(code::OpReturn);
 
-		const auto num_locals = m_symbol_table->definition_num_;
+		const auto num_locals = symbol_table_->definition_num_;
 		auto instructions = leave_scope();
 		auto compiled_function = new CompiledFunction(instructions, num_locals);
 		compiled_function->m_num_parameters = func->params.size();
@@ -228,21 +229,21 @@ int Compiler::compile(Node *node) {
 	}
 	case AstType::ReturnStatement: {
 		auto status = compile(((ReturnStatement *)node)->return_value.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling return value";
 		emit(code::OpReturnValue);
 		break;
 	}
 	case AstType::CallExpression: {
 		const auto call_exp = dynamic_cast<CallExpression *>(node);
 		auto status = compile(call_exp->func.get());
-		if (status != 0)
-			return status;
+		if (status.has_value())
+			return "error compiling call function";
 
 		for (const auto &arg : call_exp->arguments) {
 			status = compile(arg.get());
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return "error compiling call argument";
 		}
 
 		emit(code::OpCall, {(int)call_exp->arguments.size()});
@@ -250,7 +251,7 @@ int Compiler::compile(Node *node) {
 	}
 	}
 
-	return 0;
+	return std::nullopt;
 }
 
 int Compiler::add_constant(Object *obj) {
@@ -375,7 +376,7 @@ void Compiler::enter_scope() {
 	scopes.push_back(scope);
 	++scope_index;
 
-	m_symbol_table = new SymbolTable(m_symbol_table);
+	symbol_table_ = new SymbolTable(symbol_table_);
 }
 
 code::Instructions Compiler::leave_scope() {
@@ -385,7 +386,7 @@ code::Instructions Compiler::leave_scope() {
 																				 scopes.begin() + scopes.size() - 1);
 	--scope_index;
 
-	m_symbol_table = m_symbol_table->outer_;
+	symbol_table_ = symbol_table_->outer_;
 
 	return instructions;
 }
