@@ -1,9 +1,10 @@
 #ifndef LUPS_COMPILER_H
 #define LUPS_COMPILER_H
 
+#include "builtins.h"
 #include "code.h"
 #include "object.h"
-#include "builtins.h"
+#include <optional>
 #include <unordered_map>
 
 typedef std::string SymbolScope;
@@ -11,8 +12,8 @@ typedef std::string SymbolScope;
 namespace scopes {
 static const SymbolScope GlobalScope = "GLOBAL";
 static const SymbolScope LocalScope = "LOCAL";
-	static const SymbolScope BuiltinScope = "BUITLIN";
-}
+static const SymbolScope BuiltinScope = "BUITLIN";
+} // namespace scopes
 
 struct Bytecode {
 	code::Instructions instructions;
@@ -50,9 +51,9 @@ public:
 		outer_ = outer;
 	}
 
-	const Symbol& define(const std::string &name);
-	const Symbol& define_builtin(int index, const std::string &name);
-	Symbol *resolve(const std::string &name);
+	const Symbol &define(const std::string &name);
+	const Symbol &define_builtin(int index, const std::string &name);
+	std::optional<Symbol> resolve(const std::string &name);
 
 	int definition_num_;
 	std::unordered_map<std::string, std::unique_ptr<Symbol>> store_;
@@ -74,9 +75,9 @@ public:
 		scope_index = 0;
 
 		auto main_scope = CompilationScope{
-			code::Instructions(),
-			EmittedInstruction{},
-			EmittedInstruction{},
+				code::Instructions(),
+				EmittedInstruction{},
+				EmittedInstruction{},
 		};
 
 		scopes = std::vector<CompilationScope>(1, main_scope);
@@ -95,14 +96,16 @@ public:
 	void change_operand(int op_pos, int operand);
 	code::Instructions current_instructions();
 	int add_instructions(std::vector<char> &inst);
-	Bytecode *bytecode() { return new Bytecode{current_instructions(), m_constants}; }
+	Bytecode *bytecode() {
+		return new Bytecode{current_instructions(), m_constants};
+	}
 
 	void replace_last_pop_with_return();
 
-	code::Instructions& scoped_inst() { return curr_scope().instructions; }
-	CompilationScope& curr_scope() { return scopes.back(); }
+	code::Instructions &scoped_inst() { return curr_scope().instructions; }
+	CompilationScope &curr_scope() { return scopes.back(); }
 
-	void load_symbol(const Symbol *m);
+	void load_symbol(const Symbol &m);
 
 	void enter_scope();
 	code::Instructions leave_scope();
@@ -110,6 +113,7 @@ public:
 	std::vector<CompilationScope> scopes;
 	int scope_index;
 	SymbolTable *m_symbol_table;
+
 private:
 	code::Instructions m_instructions;
 	std::vector<Object *> m_constants;

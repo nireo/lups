@@ -1891,11 +1891,11 @@ TEST(SymbolTableTest, TestResolveGlobal) {
 
 	for (const auto &tt : expected) {
 		auto res = global->resolve(tt.name);
-		EXPECT_NE(res, nullptr);
+		EXPECT_TRUE(res.has_value());
 
-		EXPECT_EQ(res->name, tt.name);
-		EXPECT_EQ(res->scope, tt.scope);
-		EXPECT_EQ(res->index, tt.index);
+		EXPECT_EQ(res.value().name, tt.name);
+		EXPECT_EQ(res.value().scope, tt.scope);
+		EXPECT_EQ(res.value().index, tt.index);
 	}
 }
 
@@ -1917,11 +1917,11 @@ TEST(SymbolTableTest, TestResolveLocal) {
 
 	for (const auto &tt : expected) {
 		const auto &res = local->resolve(tt.name);
-		EXPECT_NE(res, nullptr);
+		EXPECT_TRUE(res.has_value());
 
-		EXPECT_EQ(res->name, tt.name);
-		EXPECT_EQ(res->scope, tt.scope);
-		EXPECT_EQ(res->index, tt.index);
+		EXPECT_EQ(res.value().name, tt.name);
+		EXPECT_EQ(res.value().scope, tt.scope);
+		EXPECT_EQ(res.value().index, tt.index);
 	}
 }
 
@@ -1960,11 +1960,11 @@ TEST(SymbolTableTest, ResolveNestedLocal) {
 	for (const auto &tt : test_cases) {
 		for (const auto &sm : tt.expected) {
 			const auto &res = tt.table->resolve(sm.name);
-			EXPECT_NE(res, nullptr);
+			EXPECT_TRUE(res.has_value());
 
-			EXPECT_EQ(res->name, sm.name);
-			EXPECT_EQ(res->scope, sm.scope);
-			EXPECT_EQ(res->index, sm.index);
+			EXPECT_EQ(res.value().name, sm.name);
+			EXPECT_EQ(res.value().scope, sm.scope);
+			EXPECT_EQ(res.value().index, sm.index);
 		}
 	}
 }
@@ -2504,11 +2504,11 @@ TEST(SymbolTableTest, DefineResolveBuiltins) {
 	for (const auto &tb : tables) {
 		for (const auto &sm : expected) {
 			const auto &res = tb->resolve(sm.name);
-			EXPECT_NE(res, nullptr);
+		EXPECT_TRUE(res.has_value());
 
-			EXPECT_EQ(res->name, sm.name);
-			EXPECT_EQ(res->scope, sm.scope);
-			EXPECT_EQ(res->index, sm.index);
+		EXPECT_EQ(res.value().name, sm.name);
+		EXPECT_EQ(res.value().scope, sm.scope);
+		EXPECT_EQ(res.value().index, sm.index);
 		}
 	}
 }

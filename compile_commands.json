@@ -1,0 +1,67 @@
+[
+{
+  "directory": "/home/eemil/dev/c++/lups",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -std=gnu++17 -o CMakeFiles/lups_test.dir/tests.cpp.o -c /home/eemil/dev/c++/lups/tests.cpp",
+  "file": "/home/eemil/dev/c++/lups/tests.cpp"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -std=gnu++17 -o CMakeFiles/lups_test.dir/lexer.cpp.o -c /home/eemil/dev/c++/lups/lexer.cpp",
+  "file": "/home/eemil/dev/c++/lups/lexer.cpp"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -std=gnu++17 -o CMakeFiles/lups_test.dir/parser.cpp.o -c /home/eemil/dev/c++/lups/parser.cpp",
+  "file": "/home/eemil/dev/c++/lups/parser.cpp"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -std=gnu++17 -o CMakeFiles/lups_test.dir/ast.cpp.o -c /home/eemil/dev/c++/lups/ast.cpp",
+  "file": "/home/eemil/dev/c++/lups/ast.cpp"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -std=gnu++17 -o CMakeFiles/lups_test.dir/eval.cpp.o -c /home/eemil/dev/c++/lups/eval.cpp",
+  "file": "/home/eemil/dev/c++/lups/eval.cpp"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -std=gnu++17 -o CMakeFiles/lups_test.dir/code.cpp.o -c /home/eemil/dev/c++/lups/code.cpp",
+  "file": "/home/eemil/dev/c++/lups/code.cpp"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -std=gnu++17 -o CMakeFiles/lups_test.dir/compiler.cpp.o -c /home/eemil/dev/c++/lups/compiler.cpp",
+  "file": "/home/eemil/dev/c++/lups/compiler.cpp"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -std=gnu++17 -o CMakeFiles/lups_test.dir/vm.cpp.o -c /home/eemil/dev/c++/lups/vm.cpp",
+  "file": "/home/eemil/dev/c++/lups/vm.cpp"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -std=gnu++17 -o CMakeFiles/lups_test.dir/builtins.cpp.o -c /home/eemil/dev/c++/lups/builtins.cpp",
+  "file": "/home/eemil/dev/c++/lups/builtins.cpp"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups/_deps/googletest-build/googlemock",
+  "command": "/usr/bin/c++  -I/home/eemil/dev/c++/lups/_deps/googletest-src/googlemock/include -I/home/eemil/dev/c++/lups/_deps/googletest-src/googlemock -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -Wall -Wshadow -Werror -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++17 -o CMakeFiles/gmock.dir/src/gmock-all.cc.o -c /home/eemil/dev/c++/lups/_deps/googletest-src/googlemock/src/gmock-all.cc",
+  "file": "/home/eemil/dev/c++/lups/_deps/googletest-src/googlemock/src/gmock-all.cc"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups/_deps/googletest-build/googlemock",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googlemock/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googlemock -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -Wall -Wshadow -Werror -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++17 -o CMakeFiles/gmock_main.dir/src/gmock_main.cc.o -c /home/eemil/dev/c++/lups/_deps/googletest-src/googlemock/src/gmock_main.cc",
+  "file": "/home/eemil/dev/c++/lups/_deps/googletest-src/googlemock/src/gmock_main.cc"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups/_deps/googletest-build/googletest",
+  "command": "/usr/bin/c++  -I/home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -I/home/eemil/dev/c++/lups/_deps/googletest-src/googletest -Wall -Wshadow -Werror -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++17 -o CMakeFiles/gtest.dir/src/gtest-all.cc.o -c /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/src/gtest-all.cc",
+  "file": "/home/eemil/dev/c++/lups/_deps/googletest-src/googletest/src/gtest-all.cc"
+},
+{
+  "directory": "/home/eemil/dev/c++/lups/_deps/googletest-build/googletest",
+  "command": "/usr/bin/c++  -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/include -isystem /home/eemil/dev/c++/lups/_deps/googletest-src/googletest -Wall -Wshadow -Werror -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++17 -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c /home/eemil/dev/c++/lups/_deps/googletest-src/googletest/src/gtest_main.cc",
+  "file": "/home/eemil/dev/c++/lups/_deps/googletest-src/googletest/src/gtest_main.cc"
+}
+]

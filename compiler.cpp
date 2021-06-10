@@ -4,6 +4,7 @@
 #include "object.h"
 #include <algorithm>
 #include <vector>
+#include <optional>
 
 int Compiler::compile(Node *node) {
 	AstType type = node->Type();
@@ -149,10 +150,10 @@ int Compiler::compile(Node *node) {
 	}
 	case AstType::Identifier: {
 		auto symbol = m_symbol_table->resolve(((Identifier *)node)->value);
-		if (symbol == nullptr)
+		if (!symbol.has_value())
 			return -1;
 
-		load_symbol(symbol);
+		load_symbol(symbol.value());
 		break;
 	}
 	case AstType::StringLiteral: {
@@ -334,15 +335,22 @@ const Symbol &SymbolTable::define(const std::string &name) {
 	return *store_[name];
 }
 
-Symbol *SymbolTable::resolve(const std::string &name) {
-	if (store_.count(name) == 0) {
-		if (outer_ == nullptr)
-			return nullptr;
+std::optional<Symbol> SymbolTable::resolve(const std::string &name) {
+	const auto iter = store_.find(name);
+	if (iter != store_.end())
+		return *iter->second;
 
-		return outer_->resolve(name);
-	}
+	if (outer_ == nullptr)
+		return std::nullopt;
 
-	return store_[name].get();
+	auto res = outer_->resolve(name);
+	if (!res.has_value())
+		return std::nullopt;
+
+	if (res->scope == scopes::GlobalScope || res->scope == scopes::BuiltinScope)
+		return res;
+
+	return *store_[name];
 }
 
 const Symbol &SymbolTable::define_builtin(int index, const std::string &name) {
@@ -394,11 +402,11 @@ void Compiler::replace_last_pop_with_return() {
 	scopes[scope_index].last_inst.op = code::OpReturnValue;
 }
 
-void Compiler::load_symbol(const Symbol *sm) {
-	if (sm->scope == scopes::GlobalScope)
-		emit(code::OpGetGlobal, {sm->index});
-	else if (sm->scope == scopes::LocalScope)
-		emit(code::OpGetLocal, {sm->index});
-	else if (sm->scope == scopes::BuiltinScope)
-		emit(code::OpGetBuiltin, {sm->index});
+void Compiler::load_symbol(const Symbol &sm) {
+	if (sm.scope == scopes::GlobalScope)
+		emit(code::OpGetGlobal, {sm.index});
+	else if (sm.scope == scopes::LocalScope)
+		emit(code::OpGetLocal, {sm.index});
+	else if (sm.scope == scopes::BuiltinScope)
+		emit(code::OpGetBuiltin, {sm.index});
 }
