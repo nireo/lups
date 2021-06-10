@@ -1281,6 +1281,7 @@ TEST(CodeTest, Make) {
 			 std::vector<char>{code::OpConstant, (char)255, (char)254}},
 			{code::OpAdd, std::vector<int>{}, std::vector<char>{code::OpAdd}},
 			{code::OpGetLocal, {255}, {code::OpGetLocal, (char)255}},
+			{code::OpClosure, {65534, 255}, {code::OpClosure, (char)255, (char)254, (char)255 }},
 	};
 
 	for (auto &tc : test_cases) {
@@ -1314,8 +1315,6 @@ code::Instructions concat_instructions(std::vector<code::Instructions> &instr) {
 bool test_instructions(std::vector<code::Instructions> inst,
 											 code::Instructions actual) {
 	auto concatted = concat_instructions(inst);
-	std::cerr << "result: " << code::instructions_to_string(concatted) << '\n';
-	std::cerr << "expected: " << code::instructions_to_string(actual) << '\n';
 
 	if (concatted.size() != actual.size())
 		return false;
@@ -1651,13 +1650,16 @@ TEST(CodeTest, InstructionString) {
 			{code::make(code::OpAdd, {})},
 			{code::make(code::OpGetLocal, {1})},
 			{code::make(code::OpConstant, {2})},
-			{code::make(code::OpConstant, {65535})}};
+			{code::make(code::OpConstant, {65535})},
+			{code::make(code::OpClosure, {65535, 255})}};
 
 	std::string expected = "0000 OpAdd\n0001 OpGetLocal 1\n0003 OpConstant "
-												 "2\n0006 OpConstant 65535\n";
+												 "2\n0006 OpConstant 65535\n0009 OpClosure 65535 255\n";
+	std::cerr << expected;
 	auto concatted = concat_instructions(instructions);
 
 	EXPECT_EQ(code::instructions_to_string(concatted), expected);
+	std::cerr << code::instructions_to_string(concatted);
 }
 
 TEST(CodeTest, ReadOperands) {
@@ -1668,7 +1670,9 @@ TEST(CodeTest, ReadOperands) {
 	};
 
 	std::vector<Testcase> test_cases{{code::OpConstant, {65535}, 2},
-																	 {code::OpGetLocal, {255}, 1}};
+																	 {code::OpGetLocal, {255}, 1},
+																	 {code::OpClosure, {65535, 255}, 3}
+	};
 
 	for (const auto &tc : test_cases) {
 		auto instructions = code::make(tc.op, tc.operands);
@@ -2201,14 +2205,14 @@ TEST(CompilerTest, Functions) {
 			 {new Integer(5), new Integer(10),
 				new CompiledFunction(concat_instructions(func_insts1))},
 			 {{
-					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpClosure, {2, 0}),
 					 code::make(code::OpPop, {}),
 			 }}},
 			{"func() { 24 }();",
 			 {new Integer(24),
 				new CompiledFunction(concat_instructions(func_insts2))},
 			 {{
-					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpClosure, {1, 0}),
 					 code::make(code::OpCall, {0}),
 					 code::make(code::OpPop, {}),
 			 }}},
@@ -2217,7 +2221,7 @@ TEST(CompilerTest, Functions) {
 			 {new Integer(24),
 				new CompiledFunction(concat_instructions(func_insts2))},
 			 {{
-					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpClosure, {1, 0}),
 					 code::make(code::OpSetGlobal, {0}),
 					 code::make(code::OpGetGlobal, {0}),
 					 code::make(code::OpCall, {0}),
@@ -2226,7 +2230,7 @@ TEST(CompilerTest, Functions) {
 			{"func () { }",
 			 {new CompiledFunction(concat_instructions(func_insts3))},
 			 {{
-					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpClosure, {0, 0}),
 					 code::make(code::OpPop, {}),
 			 }}},
 	};
@@ -2323,7 +2327,7 @@ TEST(CompilerTest, LetStatementScopes) {
 			 {{
 					 code::make(code::OpConstant, {0}),
 					 code::make(code::OpSetGlobal, {0}),
-					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpClosure, {1, 0}),
 					 code::make(code::OpPop, {}),
 			 }}},
 			{"func() { "
@@ -2333,7 +2337,7 @@ TEST(CompilerTest, LetStatementScopes) {
 			 {new Integer(55),
 				new CompiledFunction(concat_instructions(func_insts2))},
 			 {{
-					 code::make(code::OpConstant, {1}),
+					 code::make(code::OpClosure, {1, 0}),
 					 code::make(code::OpPop, {}),
 			 }}},
 			{"func() { "
@@ -2344,7 +2348,7 @@ TEST(CompilerTest, LetStatementScopes) {
 			 {new Integer(55), new Integer(77),
 				new CompiledFunction(concat_instructions(func_insts3))},
 			 {{
-					 code::make(code::OpConstant, {2}),
+					 code::make(code::OpClosure, {2, 0}),
 					 code::make(code::OpPop, {}),
 			 }}},
 			{"let oneArg = func(a) { a };"
@@ -2352,7 +2356,7 @@ TEST(CompilerTest, LetStatementScopes) {
 			 {new CompiledFunction(concat_instructions(func_insts4)),
 				new Integer(24)},
 			 {{
-					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpClosure, {0, 0}),
 					 code::make(code::OpSetGlobal, {0}),
 					 code::make(code::OpGetGlobal, {0}),
 					 code::make(code::OpConstant, {1}),
@@ -2364,7 +2368,7 @@ TEST(CompilerTest, LetStatementScopes) {
 			 {new CompiledFunction(concat_instructions(func_insts5)), new Integer(24),
 				new Integer(25), new Integer(26)},
 			 {{
-					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpClosure, {0, 0}),
 					 code::make(code::OpSetGlobal, {0}),
 					 code::make(code::OpGetGlobal, {0}),
 					 code::make(code::OpConstant, {1}),
@@ -2473,7 +2477,7 @@ TEST(CompilerTest, BuiltinFunctions) {
 			{"func() { len([]) }",
 			 {new CompiledFunction(concat_instructions(func_inst1))},
 			 {{
-					 code::make(code::OpConstant, {0}),
+					 code::make(code::OpClosure, {0, 0}),
 					 code::make(code::OpPop, {}),
 			 }}}};
 

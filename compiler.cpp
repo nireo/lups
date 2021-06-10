@@ -220,7 +220,9 @@ int Compiler::compile(Node *node) {
 		auto compiled_function = new CompiledFunction(instructions, num_locals);
 		compiled_function->m_num_parameters = func->params.size();
 
-		emit(code::OpConstant, {add_constant(compiled_function)});
+		auto fn_index = add_constant(compiled_function);
+
+		emit(code::OpClosure, {fn_index, 0});
 		break;
 	}
 	case AstType::ReturnStatement: {

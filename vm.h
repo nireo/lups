@@ -12,22 +12,22 @@ static constexpr int MaxFrames = 1024;
 class Frame {
 public:
 	Frame(code::Instructions inst) {
-		func_ = std::make_unique<CompiledFunction>(inst);
+		cl_ = std::make_unique<Closure>(new CompiledFunction(inst));
 		ip_ = -1;
 		base_pointer_ = 0;
 	}
 
 	Frame(code::Instructions inst, int base_pointer) {
-		func_ = std::make_unique<CompiledFunction>(inst);
+		cl_ = std::make_unique<Closure>(new CompiledFunction(inst));
 		ip_ = -1;
 		base_pointer_ = base_pointer;
 	}
 
-	code::Instructions &instructions() { return func_->m_instructions; }
+	code::Instructions &instructions() { return cl_->func_->m_instructions; }
 
 	int ip_;
 	int base_pointer_;
-	std::unique_ptr<CompiledFunction> func_;
+	std::unique_ptr<Closure> cl_;
 };
 
 class VM {
@@ -58,10 +58,10 @@ public:
 	int execute_hash_index(Object *left, Object *index);
 
 	// functions
-	int call_function(Object *fn, int num_args);
+	int call_closure(Object *cl, int num_args);
 	int call_builtin(Object *fn, int num_args);
-
 	int execute_call(int num_args);
+	int push_closure(int const_index);
 
 	Object *build_array(int start_index, int end_index);
 	Object *build_hash(int start_index, int end_index);

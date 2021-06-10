@@ -258,6 +258,16 @@ int VM::run() {
 			if (status != 0)
 				return status;
 		}
+		case code::OpClosure: {
+			auto const_index = code::decode_uint16(
+					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
+			current_frame().ip_ += 3;
+
+			auto status = push_closure(const_index);
+			if (status != 0)
+				return status;
+			break;
+		}
 		}
 	}
 
@@ -489,16 +499,16 @@ int VM::execute_hash_index(Object *hash, Object *index) {
 	return push(hashobj->pairs[res.value]->value);
 }
 
-int VM::call_function(Object *func, int num_args) {
-	const auto fn = dynamic_cast<CompiledFunction *>(func);
-	if (fn == nullptr)
+int VM::call_closure(Object *cl, int num_args) {
+	const auto closure = dynamic_cast<Closure *>(cl);
+	if (closure == nullptr)
 		return -1;
 
-	if (num_args != fn->m_num_parameters)
+	if (num_args != closure->func_->m_num_parameters)
 		return -1;
 
-	auto frame = std::make_unique<Frame>(fn->m_instructions, m_sp - num_args);
-	auto new_stack_ptr = frame->base_pointer_ + fn->m_num_locals;
+	auto frame = std::make_unique<Frame>(closure->func_->m_instructions, m_sp - num_args);
+	auto new_stack_ptr = frame->base_pointer_ + closure->func_->m_num_locals;
 	push_frame(std::move(frame));
 	m_sp = new_stack_ptr;
 
@@ -508,8 +518,8 @@ int VM::call_function(Object *func, int num_args) {
 int VM::execute_call(int num_args) {
 	const auto callee = m_stack[m_sp-1-num_args];
 
-	if (callee->Type() == ObjType::CompiledFunction)
-		return call_function(callee, num_args);
+	if (callee->Type() == ObjType::Closure)
+		return call_closure(callee, num_args);
 	else if (callee->Type() == ObjType::Builtin)
 		return call_builtin(callee, num_args);
 
@@ -532,4 +542,15 @@ int VM::call_builtin(Object *builtin, int num_args) {
 	}
 
 	return 0;
+}
+
+int VM::push_closure(int const_index) {
+	auto constant = m_constants[const_index];
+
+	auto fn = dynamic_cast<CompiledFunction*>(constant);
+	if (fn == nullptr)
+		return -1;
+
+	auto closure = new Closure(fn);
+	return push(closure);
 }

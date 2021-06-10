@@ -121,7 +121,8 @@ std::string code::fmt_instructions(Definition *def, std::vector<int> operands) {
 		return def->name;
 	case 1:
 		return def->name + " " + std::to_string(operands[0]);
-		break;
+	case 2:
+		return def->name + " " + std::to_string(operands[0]) + " " + std::to_string(operands[1]);
 	}
 
 	return "ERROR: unhandled operand count for " + def->name + '\n';

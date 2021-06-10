@@ -22,7 +22,8 @@ enum class ObjType {
 	Builtin,
 	Array,
 	Hash,
-	CompiledFunction
+	CompiledFunction,
+	Closure
 };
 
 typedef long long HashValue;
@@ -229,6 +230,25 @@ public:
 	}
 
 	std::unordered_map<HashValue, HashPair *> pairs;
+};
+
+class Closure : public Object {
+public:
+	Closure(CompiledFunction *func) {
+		free_ = std::vector<Object*>();
+		func_ = func;
+	}
+
+	~Closure() {
+		for (auto obj : free_)
+			delete obj;
+	}
+
+	ObjType Type() { return ObjType::Closure; }
+	std::string Inspect() { return "closure"; }
+
+	CompiledFunction* func_;
+	std::vector<Object*> free_;
 };
 
 #endif
