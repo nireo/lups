@@ -13,6 +13,7 @@ namespace scopes {
 static const SymbolScope GlobalScope = "GLOBAL";
 static const SymbolScope LocalScope = "LOCAL";
 static const SymbolScope BuiltinScope = "BUITLIN";
+static const SymbolScope FreeScope = "FREE";
 } // namespace scopes
 
 struct Bytecode {
@@ -43,6 +44,7 @@ public:
 		definition_num_ = 0;
 		store_ = std::unordered_map<std::string, std::unique_ptr<Symbol>>();
 		outer_ = nullptr;
+		free_symbols_ = std::vector<Symbol>();
 	}
 
 	SymbolTable(SymbolTable *outer) {
@@ -52,12 +54,15 @@ public:
 	}
 
 	const Symbol &define(const std::string &name);
+	const Symbol &define_free(const Symbol &symbol);
 	const Symbol &define_builtin(int index, const std::string &name);
 	std::optional<Symbol> resolve(const std::string &name);
 
 	int definition_num_;
-	std::unordered_map<std::string, std::unique_ptr<Symbol>> store_;
 	SymbolTable *outer_;
+
+	std::unordered_map<std::string, std::unique_ptr<Symbol>> store_;
+	std::vector<Symbol> free_symbols_;
 };
 
 class Compiler {
@@ -84,11 +89,14 @@ public:
 	}
 
 	// int is the statuscode
+	// TODO: start using optionals that contain a error message
+	// for more informative errors with little code.
 	int compile(Node *node);
 	int add_constant(Object *obj);
 	int emit(code::Opcode op, std::vector<int> operands);
 	int emit(code::Opcode op);
 	int add_instruction(std::vector<char> inst);
+
 	void set_last_instruction(code::Opcode, int pos);
 	bool last_instruction_is(const code::Opcode &op);
 	void remove_last_pop();

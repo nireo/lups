@@ -350,7 +350,8 @@ std::optional<Symbol> SymbolTable::resolve(const std::string &name) {
 	if (res->scope == scopes::GlobalScope || res->scope == scopes::BuiltinScope)
 		return res;
 
-	return *store_[name];
+	auto free = define_free(res.value());
+	return free;
 }
 
 const Symbol &SymbolTable::define_builtin(int index, const std::string &name) {
@@ -409,4 +410,13 @@ void Compiler::load_symbol(const Symbol &sm) {
 		emit(code::OpGetLocal, {sm.index});
 	else if (sm.scope == scopes::BuiltinScope)
 		emit(code::OpGetBuiltin, {sm.index});
+}
+
+const Symbol &SymbolTable::define_free(const Symbol &org) {
+	free_symbols_.push_back(org);
+
+	std::unique_ptr<Symbol> symbol(new Symbol{org.name, scopes::FreeScope, (int)free_symbols_.size() - 1});
+	store_[org.name] = std::move(symbol);
+
+	return *store_[org.name];
 }

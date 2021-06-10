@@ -1176,8 +1176,7 @@ TEST(EvalTest, ArrayIndexExpressions) {
 		EXPECT_NE(obj, nullptr);
 
 		if (tc.expected == -1) {
-			EXPECT_EQ(ObjType::Null, obj->Type())
-					<< "The object isn't of type null";
+			EXPECT_EQ(ObjType::Null, obj->Type()) << "The object isn't of type null";
 		} else {
 			EXPECT_TRUE(test_integer_object(obj, tc.expected))
 					<< "The value don't match";
@@ -1281,7 +1280,9 @@ TEST(CodeTest, Make) {
 			 std::vector<char>{code::OpConstant, (char)255, (char)254}},
 			{code::OpAdd, std::vector<int>{}, std::vector<char>{code::OpAdd}},
 			{code::OpGetLocal, {255}, {code::OpGetLocal, (char)255}},
-			{code::OpClosure, {65534, 255}, {code::OpClosure, (char)255, (char)254, (char)255 }},
+			{code::OpClosure,
+			 {65534, 255},
+			 {code::OpClosure, (char)255, (char)254, (char)255}},
 	};
 
 	for (auto &tc : test_cases) {
@@ -1376,8 +1377,7 @@ run_compiler_tests(const std::vector<CompilerTestcase<T>> &tests) {
 			}
 		} else if constexpr (std::is_same<Object *, T>::value) {
 			for (int i = 0; i < (int)test.expected_constants.size(); ++i) {
-				if (test.expected_constants[i]->Type() ==
-						ObjType::CompiledFunction) {
+				if (test.expected_constants[i]->Type() == ObjType::CompiledFunction) {
 					auto expected_fn =
 							dynamic_cast<CompiledFunction *>(test.expected_constants[i]);
 					if (expected_fn == nullptr)
@@ -1671,8 +1671,7 @@ TEST(CodeTest, ReadOperands) {
 
 	std::vector<Testcase> test_cases{{code::OpConstant, {65535}, 2},
 																	 {code::OpGetLocal, {255}, 1},
-																	 {code::OpClosure, {65535, 255}, 3}
-	};
+																	 {code::OpClosure, {65535, 255}, 3}};
 
 	for (const auto &tc : test_cases) {
 		auto instructions = code::make(tc.op, tc.operands);
@@ -1839,13 +1838,13 @@ TEST(SymbolTableTest, TestDefine) {
 
 	auto global = new SymbolTable();
 
-	const auto& a = global->define("a");
+	const auto &a = global->define("a");
 
 	EXPECT_EQ(a.name, ex["a"].name);
 	EXPECT_EQ(a.scope, ex["a"].scope);
 	EXPECT_EQ(a.index, ex["a"].index);
 
-	const auto& b = global->define("b");
+	const auto &b = global->define("b");
 
 	EXPECT_EQ(b.name, ex["b"].name);
 	EXPECT_EQ(b.scope, ex["b"].scope);
@@ -1853,26 +1852,26 @@ TEST(SymbolTableTest, TestDefine) {
 
 	auto local1 = new SymbolTable(global);
 
-	const auto& c = local1->define("c");
+	const auto &c = local1->define("c");
 
 	EXPECT_EQ(c.name, ex["c"].name);
 	EXPECT_EQ(c.scope, ex["c"].scope);
 	EXPECT_EQ(c.index, ex["c"].index);
 
-	const auto& d = local1->define("d");
+	const auto &d = local1->define("d");
 
 	EXPECT_EQ(d.name, ex["d"].name);
 	EXPECT_EQ(d.scope, ex["d"].scope);
 	EXPECT_EQ(d.index, ex["d"].index);
 
 	auto local2 = new SymbolTable(local1);
-	const auto& e = local2->define("e");
+	const auto &e = local2->define("e");
 
 	EXPECT_EQ(e.name, ex["e"].name);
 	EXPECT_EQ(e.scope, ex["e"].scope);
 	EXPECT_EQ(e.index, ex["e"].index);
 
-	const auto& f = local2->define("f");
+	const auto &f = local2->define("f");
 
 	EXPECT_EQ(f.name, ex["f"].name);
 	EXPECT_EQ(f.scope, ex["f"].scope);
@@ -2491,49 +2490,156 @@ TEST(SymbolTableTest, DefineResolveBuiltins) {
 	auto local2 = new SymbolTable(local1);
 
 	std::vector<Symbol> expected{
-		{"a", scopes::BuiltinScope, 0},
-		{"b", scopes::BuiltinScope, 1},
-		{"c", scopes::BuiltinScope, 2},
-		{"d", scopes::BuiltinScope, 3},
+			{"a", scopes::BuiltinScope, 0},
+			{"b", scopes::BuiltinScope, 1},
+			{"c", scopes::BuiltinScope, 2},
+			{"d", scopes::BuiltinScope, 3},
 	};
 
 	for (const auto &sm : expected)
 		global->define_builtin(sm.index, sm.name);
 
-	std::vector<SymbolTable*> tables {global, local1, local2};
+	std::vector<SymbolTable *> tables{global, local1, local2};
 	for (const auto &tb : tables) {
 		for (const auto &sm : expected) {
 			const auto &res = tb->resolve(sm.name);
-		EXPECT_TRUE(res.has_value());
+			EXPECT_TRUE(res.has_value());
 
-		EXPECT_EQ(res.value().name, sm.name);
-		EXPECT_EQ(res.value().scope, sm.scope);
-		EXPECT_EQ(res.value().index, sm.index);
+			EXPECT_EQ(res.value().name, sm.name);
+			EXPECT_EQ(res.value().scope, sm.scope);
+			EXPECT_EQ(res.value().index, sm.index);
 		}
 	}
 }
 
 TEST(VMTest, BuiltinFunctions) {
 	// -2 means that it should return an error object
-	std::vector<VMTestcase<int>> test_cases {
-		{"len(\"\")", 0},
-		{"len(\"four\")", 4},
-		{"len(\"hello world\")", 11},
-		{"len(1)", -2},
-		{"len(\"one\", \"two\")", -2},
-		{"len([1, 2, 3])", 3},
+	std::vector<VMTestcase<int>> test_cases{
+			{"len(\"\")", 0},
+			{"len(\"four\")", 4},
+			{"len(\"hello world\")", 11},
+			{"len(1)", -2},
+			{"len(\"one\", \"two\")", -2},
+			{"len([1, 2, 3])", 3},
 
-		{"println(\"hello\", \"world\")", -1},
+			{"println(\"hello\", \"world\")", -1},
 
-		{"first([1, 2, 3])", 1},
-		{"first([])", -1},
-		{"first(1)", -2},
+			{"first([1, 2, 3])", 1},
+			{"first([])", -1},
+			{"first(1)", -2},
 
-		{"last([1, 2, 3])", 3},
-		{"last([])", -1},
-		{"last(1)", -2},
+			{"last([1, 2, 3])", 3},
+			{"last([])", -1},
+			{"last(1)", -2},
 
-		{"tail([])", -1},
-		{"push(1, 1)", -2},
+			{"tail([])", -1},
+			{"push(1, 1)", -2},
 	};
+}
+
+TEST(SymbolTableTest, ResolveFree) {
+	auto global = new SymbolTable();
+	global->define("a");
+	global->define("b");
+
+	auto local1 = new SymbolTable(global);
+	local1->define("c");
+	local1->define("d");
+
+	auto local2 = new SymbolTable(local1);
+	local2->define("e");
+	local2->define("f");
+
+	struct Testcase {
+		SymbolTable *table;
+		std::vector<Symbol> expected_symbols;
+		std::vector<Symbol> expected_free_symbols;
+	};
+
+	std::vector<Testcase> test_cases {
+		{
+			local1,
+			{
+				{"a", scopes::GlobalScope, 0},
+				{"b", scopes::GlobalScope, 1},
+				{"c", scopes::LocalScope, 0},
+				{"d", scopes::LocalScope, 1}
+			},
+			{}
+		},
+		{
+			local2,
+			{
+				{"a", scopes::GlobalScope, 0},
+				{"b", scopes::GlobalScope, 1},
+				{"c", scopes::FreeScope, 0},
+				{"d", scopes::FreeScope, 1},
+				{"e", scopes::LocalScope, 0},
+				{"f", scopes::LocalScope, 1}
+			},
+			{
+				{"c", scopes::LocalScope, 0},
+				{"d", scopes::LocalScope, 1},
+			}
+		}
+	};
+
+	for (const auto &tt : test_cases) {
+		for (const auto &sym : tt.expected_symbols) {
+			const auto &res = tt.table->resolve(sym.name);
+			EXPECT_TRUE(res.has_value());
+
+			EXPECT_EQ(res.value().name, sym.name);
+			EXPECT_EQ(res.value().scope, sym.scope);
+			EXPECT_EQ(res.value().index, sym.index);
+		}
+
+		EXPECT_EQ(tt.table->free_symbols_.size(), tt.expected_free_symbols.size());
+
+		for (int i = 0; i < (int)tt.expected_free_symbols.size(); ++i) {
+			const auto& res = tt.table->free_symbols_[i];
+
+			EXPECT_EQ(res.name, tt.expected_free_symbols[i].name);
+			EXPECT_EQ(res.scope, tt.expected_free_symbols[i].scope);
+			EXPECT_EQ(res.index, tt.expected_free_symbols[i].index);
+		}
+	}
+}
+
+TEST(SymbolTableTest, ResolveUnresolvableFree) {
+	auto global = new SymbolTable();
+	global->define("a");
+
+	auto local1 = new SymbolTable(global);
+	local1->define("c");
+
+	auto local2 = new SymbolTable(local1);
+	local2->define("e");
+	local2->define("f");
+
+	std::vector<Symbol> expected {
+		{"a", scopes::GlobalScope, 0},
+		{"c", scopes::FreeScope, 0},
+		{"e", scopes::LocalScope, 0},
+		{"f", scopes::LocalScope, 1}
+	};
+
+	for (const auto &sym : expected) {
+		const auto& res = local2->resolve(sym.name);
+		EXPECT_TRUE(res.has_value());
+
+		EXPECT_EQ(res.value().name, sym.name);
+		EXPECT_EQ(res.value().scope, sym.scope);
+		EXPECT_EQ(res.value().index, sym.index);
+	}
+
+	std::vector<std::string> expected_unresolvable {
+		"b",
+		"d"
+	};
+
+	for (const auto &nm : expected_unresolvable) {
+		const auto &res = local2->resolve(nm);
+		EXPECT_FALSE(res.has_value());
+	}
 }
