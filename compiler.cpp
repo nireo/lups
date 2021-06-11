@@ -138,11 +138,12 @@ std::optional<std::string> Compiler::compile(Node *node) {
 	}
 	case AstType::LetStatement: {
 		const auto letexp = dynamic_cast<LetStatement *>(node);
+		const auto &symbol = symbol_table_->define(letexp->name->value);
+
 		const auto status = compile(letexp->value.get());
 		if (status.has_value())
 			return "error compiling let statement";
 
-		const auto &symbol = symbol_table_->define(letexp->name->value);
 		if (symbol.scope == scopes::GlobalScope)
 			emit(code::OpSetGlobal, {symbol.index});
 		else
