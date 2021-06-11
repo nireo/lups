@@ -218,13 +218,18 @@ std::optional<std::string> Compiler::compile(Node *node) {
 			emit(code::OpReturn);
 
 		const auto num_locals = symbol_table_->definition_num_;
+		const auto &free_symbols = symbol_table_->free_symbols_;
 		auto instructions = leave_scope();
+
+		for (const auto &sym : free_symbols)
+			load_symbol(sym);
+
 		auto compiled_function = new CompiledFunction(instructions, num_locals);
 		compiled_function->m_num_parameters = func->params.size();
 
 		auto fn_index = add_constant(compiled_function);
 
-		emit(code::OpClosure, {fn_index, 0});
+		emit(code::OpClosure, {fn_index, (int)free_symbols.size()});
 		break;
 	}
 	case AstType::ReturnStatement: {
@@ -411,6 +416,8 @@ void Compiler::load_symbol(const Symbol &sm) {
 		emit(code::OpGetLocal, {sm.index});
 	else if (sm.scope == scopes::BuiltinScope)
 		emit(code::OpGetBuiltin, {sm.index});
+	else if (sm.scope == scopes::FreeScope)
+		emit(code::OpGetFree, {sm.index});
 }
 
 const Symbol &SymbolTable::define_free(const Symbol &org) {

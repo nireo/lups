@@ -39,6 +39,7 @@ enum Opcodes {
 	OpSetLocal,
 	OpGetBuiltin,
 	OpClosure,
+	OpGetFree,
 };
 
 struct Definition {
@@ -75,7 +76,8 @@ static const std::unordered_map<Opcode, Definition *> definitions{
 		{Opcodes::OpGetLocal, new Definition{"OpGetLocal", {1}}},
 		{Opcodes::OpSetLocal, new Definition{"OpSetLocal", {1}}},
 		{Opcodes::OpGetBuiltin, new Definition{"OpGetBuiltin", {1}}},
-		{Opcodes::OpClosure, new Definition{"OpClosure", {2, 1}}}};
+		{Opcodes::OpClosure, new Definition{"OpClosure", {2, 1}}},
+		{Opcodes::OpGetFree, new Definition{"OpGetFree", {1}}}};
 
 Definition *look_up(char op_code);
 std::vector<char> make(Opcode op, std::vector<int> operands);

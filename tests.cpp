@@ -2643,3 +2643,79 @@ TEST(SymbolTableTest, ResolveUnresolvableFree) {
 		EXPECT_FALSE(res.has_value());
 	}
 }
+
+TEST(CompilerTest, Closures) {
+	std::vector<code::Instructions> func_inst1 {
+		code::make(code::OpGetFree, {0}),
+		code::make(code::OpGetLocal, {0}),
+		code::make(code::OpAdd, {}),
+		code::make(code::OpReturnValue, {}),
+	};
+
+	std::vector<code::Instructions> func_inst2 {
+		code::make(code::OpGetLocal, {0}),
+		code::make(code::OpClosure, {0, 1}),
+		code::make(code::OpReturnValue, {}),
+	};
+
+	std::vector<code::Instructions> func_inst3 {
+		code::make(code::OpGetFree, {0}),
+		code::make(code::OpGetFree, {1}),
+		code::make(code::OpAdd, {}),
+		code::make(code::OpGetLocal, {0}),
+		code::make(code::OpAdd, {}),
+		code::make(code::OpReturnValue, {}),
+	};
+
+	std::vector<code::Instructions> func_inst4 {
+		code::make(code::OpGetFree, {0}),
+		code::make(code::OpGetLocal, {0}),
+		code::make(code::OpClosure, {0, 2}),
+		code::make(code::OpReturnValue, {}),
+	};
+
+	std::vector<code::Instructions> func_inst5 {
+		code::make(code::OpGetLocal, {0}),
+		code::make(code::OpClosure, {1, 1}),
+		code::make(code::OpReturnValue, {}),
+	};
+
+	std::vector<CompilerTestcase<Object*>> test_cases {
+		{
+			"func(a) {"
+			"   func (b) {"
+			"      a + b"
+			"   }"
+			"}",
+			{
+				new CompiledFunction(concat_instructions(func_inst1)),
+				new CompiledFunction(concat_instructions(func_inst2))
+			},
+			{
+				code::make(code::OpClosure, {1, 0}),
+				code::make(code::OpPop, {})
+			}
+		},
+		{
+			"func(a) {"
+			"   func(b) {"
+			"        func(c) {"
+			"            a + b + c"
+			"        }"
+			"   }"
+			"}",
+			{
+				new CompiledFunction(concat_instructions(func_inst3)),
+				new CompiledFunction(concat_instructions(func_inst4)),
+				new CompiledFunction(concat_instructions(func_inst5))
+			},
+			{
+				code::make(code::OpClosure, {2, 0}),
+				code::make(code::OpPop, {}),
+			}
+		}
+	};
+
+	auto err = run_compiler_tests(test_cases);
+	EXPECT_EQ(err, "");
+}
