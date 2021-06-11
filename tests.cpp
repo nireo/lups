@@ -2719,3 +2719,15 @@ TEST(CompilerTest, Closures) {
 	auto err = run_compiler_tests(test_cases);
 	EXPECT_EQ(err, "");
 }
+
+TEST(VMTest, Closures) {
+	std::vector<VMTestcase<int>> test_cases {
+		{
+			"let newClosure = func(a) {"
+			"    func() { a; };"
+			"};"
+			"let closure = newClosure(99);"
+			"closure();", 99
+		}
+	};
+}

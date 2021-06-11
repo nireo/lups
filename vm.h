@@ -23,7 +23,8 @@ public:
 		base_pointer_ = base_pointer;
 	}
 
-	code::Instructions &instructions() { return cl_->func_->m_instructions; }
+	code::Instructions &instructions() noexcept { return cl_->func_->m_instructions; }
+	const Closure& closure() const noexcept { return *cl_; };
 
 	int ip_;
 	int base_pointer_;
@@ -61,7 +62,7 @@ public:
 	int call_closure(Object *cl, int num_args);
 	int call_builtin(Object *fn, int num_args);
 	int execute_call(int num_args);
-	int push_closure(int const_index);
+	int push_closure(int const_index, int num_free);
 
 	Object *build_array(int start_index, int end_index);
 	Object *build_hash(int start_index, int end_index);

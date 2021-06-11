@@ -261,11 +261,23 @@ int VM::run() {
 		case code::OpClosure: {
 			auto const_index = code::decode_uint16(
 					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
+			auto num_free = (int)((uint8_t)inst[ip+3]);
 			current_frame().ip_ += 3;
 
-			auto status = push_closure(const_index);
+			auto status = push_closure(const_index, num_free);
 			if (status != 0)
 				return status;
+			break;
+		}
+		case code::OpGetFree: {
+			auto free_idx= (int)((uint8_t)inst[ip+1]);
+			current_frame().ip_ += 1;
+
+			const auto& curr_closure = current_frame().closure();
+			auto status = push(curr_closure.free_[free_idx]);
+			if (status != 0)
+				return status;
+
 			break;
 		}
 		}
@@ -544,13 +556,20 @@ int VM::call_builtin(Object *builtin, int num_args) {
 	return 0;
 }
 
-int VM::push_closure(int const_index) {
+int VM::push_closure(int const_index, int num_free) {
 	auto constant = m_constants[const_index];
 
 	auto fn = dynamic_cast<CompiledFunction*>(constant);
 	if (fn == nullptr)
 		return -1;
 
+	std::vector<Object*> free_vec(num_free, nullptr);
+	for (int i = 0; i < num_free; ++i)
+		free_vec[i] = m_stack[m_sp-num_free+i];
+	m_sp = m_sp - num_free;
+
 	auto closure = new Closure(fn);
+	closure->free_ = free_vec;
+
 	return push(closure);
 }
