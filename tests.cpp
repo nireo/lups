@@ -1353,7 +1353,7 @@ run_compiler_tests(const std::vector<CompilerTestcase<T>> &tests) {
 		auto program = parse_compiler_program_helper(test.input);
 
 		auto compiler = new Compiler();
-		auto status = compiler->compile(program.get());
+		auto status = compiler->compile(*program);
 		if (status.has_value())
 			return status.value();
 
@@ -1421,7 +1421,7 @@ const std::string run_vm_tests(const std::vector<VMTestcase<T>> &tests) {
 	for (auto const &tt : tests) {
 		auto program = parse_compiler_program_helper(tt.input);
 		auto comp = new Compiler();
-		auto status = comp->compile(program.get());
+		auto status = comp->compile(*program);
 		if (status.has_value())
 			return status.value();
 
@@ -2440,7 +2440,7 @@ TEST(VMTest, WrongParameterCountReturnsError) {
 	for (const auto &tt : inputs) {
 		auto program = parse_compiler_program_helper(tt);
 		auto comp = new Compiler();
-		auto status = comp->compile(program.get());
+		auto status = comp->compile(*program);
 
 		// The compiler does return successful since handling the amount of
 		// parameters isn't the compiler's job.

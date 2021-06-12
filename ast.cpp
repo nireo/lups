@@ -1,6 +1,6 @@
 #include "ast.h"
 
-std::string Program::TokenLiteral() {
+std::string Program::TokenLiteral() const {
 	if (statements.size() > 0) {
 		return statements[0].get()->TokenLiteral();
 	}

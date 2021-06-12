@@ -4,255 +4,350 @@
 #include "object.h"
 #include <algorithm>
 #include <memory>
-#include <vector>
 #include <optional>
+#include <vector>
 
-std::optional<std::string> Compiler::compile(Node *node) {
-	AstType type = node->Type();
+std::optional<std::string> Compiler::compile(const Node &node) {
+	AstType type = node.Type();
 	switch (type) {
 	case AstType::Program: {
-		for (const auto &statement : ((Program *)node)->statements) {
-			auto status = compile(statement.get());
-			if (status.has_value())
-				return status;
+		try {
+			const auto &prg = dynamic_cast<const Program &>(node);
+			for (const auto &statement : prg.statements) {
+				auto status = compile(*statement);
+				if (status.has_value())
+					return status;
+			}
+		} catch (std::bad_cast &e) {
+			return "could not cast program type to node reference. " +
+						 std::string(e.what());
 		}
 		break;
 	}
 	case AstType::ExpressionStatement: {
-		auto status = compile(((ExpressionStatement *)node)->expression.get());
-		if (status.has_value())
-			return "error while compiling expression statement expression.";
-		emit(code::OpPop);
+		try {
+			const auto &exp_stmt = dynamic_cast<const ExpressionStatement &>(node);
+			auto status = compile(*exp_stmt.expression);
+			if (status.has_value())
+				return "error while compiling expression statement expression.";
+			emit(code::OpPop);
+		} catch (std::bad_cast &e) {
+			return "could not cast expression statement type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::InfixExpression: {
-		if (((InfixExpression *)node)->opr == "<") {
-			// this is the same as the code below, but it adds the infix expressions
-			// in a different order such that we only need one type of greater than
-			// opcode.
-			auto status = compile(((InfixExpression *)node)->right.get());
-			if (status.has_value())
-				return "error compiling right side of infix expression";
+		try {
+			const auto &infx_exp = dynamic_cast<const InfixExpression &>(node);
+			if (infx_exp.opr == "<") {
+				// this is the same as the code below, but it adds the infix expressions
+				// in a different order such that we only need one type of greater than
+				// opcode.
+				auto status = compile(*infx_exp.right);
+				if (status.has_value())
+					return "error compiling right side of infix expression";
 
-			status = compile(((InfixExpression *)node)->left.get());
+				status = compile(*infx_exp.left);
+				if (status.has_value())
+					return "error compiling the left side of infix expression";
+
+				emit(code::OpGreaterThan);
+				return std::nullopt;
+			}
+			auto status = compile(*infx_exp.left);
 			if (status.has_value())
 				return "error compiling the left side of infix expression";
 
-			emit(code::OpGreaterThan);
-			return std::nullopt;
+			status = compile(*infx_exp.right);
+			if (status.has_value())
+				return "error compiling the right side of infix expression";
+
+			const auto &opr = infx_exp.opr;
+			if (opr == "+")
+				emit(code::OpAdd);
+			else if (opr == "-")
+				emit(code::OpSub);
+			else if (opr == "*")
+				emit(code::OpMul);
+			else if (opr == "/")
+				emit(code::OpDiv);
+			else if (opr == ">") {
+				emit(code::OpGreaterThan);
+			} else if (opr == "==") {
+				emit(code::OpEqual);
+			} else if (opr == "!=") {
+				emit(code::OpNotEqual);
+			} else
+				return "error: unrecognized infix operation";
+		} catch (std::bad_cast &e) {
+			return "could not cast infix expression type to node reference. " +
+						 std::string(e.what());
 		}
-		auto status = compile(((InfixExpression *)node)->left.get());
-		if (status.has_value())
-			return "error compiling the left side of infix expression";
-
-		status = compile(((InfixExpression *)node)->right.get());
-		if (status.has_value())
-			return "error compiling the right side of infix expression";
-
-		auto opr = ((InfixExpression *)node)->opr;
-		if (opr == "+")
-			emit(code::OpAdd);
-		else if (opr == "-")
-			emit(code::OpSub);
-		else if (opr == "*")
-			emit(code::OpMul);
-		else if (opr == "/")
-			emit(code::OpDiv);
-		else if (opr == ">") {
-			emit(code::OpGreaterThan);
-		} else if (opr == "==") {
-			emit(code::OpEqual);
-		} else if (opr == "!=") {
-			emit(code::OpNotEqual);
-		} else
-			return "error: unrecognized infix operation";
 		break;
 	}
 	case AstType::IntegerLiteral: {
-		auto integer = new Integer(((IntegerLiteral *)node)->value);
-		emit(code::OpConstant, {add_constant(integer)});
+		try {
+			const auto &intl = dynamic_cast<const IntegerLiteral &>(node);
+			auto integer = new Integer(intl.value);
+			emit(code::OpConstant, {add_constant(integer)});
+		} catch (std::bad_cast &e) {
+			return "could not cast integer literal type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::BooleanExpression: {
-		auto value = ((BooleanExpression *)node)->value;
-		if (value)
-			emit(code::OpTrue);
-		else
-			emit(code::OpFalse);
+		try {
+			const auto &booll = dynamic_cast<const BooleanExpression &>(node);
+			if (booll.value)
+				emit(code::OpTrue);
+			else
+				emit(code::OpFalse);
+		} catch (std::bad_cast &e) {
+			return "could not cast boolean expression type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::PrefixExpression: {
-		const auto prex = dynamic_cast<PrefixExpression *>(node);
-		auto status = compile(prex->right.get());
-		if (status.has_value())
-			return "error compiling the right side of prefix expression";
+		try {
+			const auto &prex = dynamic_cast<const PrefixExpression &>(node);
+			auto status = compile(*prex.right);
+			if (status.has_value())
+				return "error compiling the right side of prefix expression";
 
-		if (prex->opr == "!")
-			emit(code::OpBang);
-		else if (prex->opr == "-")
-			emit(code::OpMinus);
-		else
-			return "error: unrecognized prefix operation";
+			if (prex.opr == "!")
+				emit(code::OpBang);
+			else if (prex.opr == "-")
+				emit(code::OpMinus);
+			else
+				return "error: unrecognized prefix operation";
+		} catch (std::bad_cast &e) {
+			return "could not cast prefix expression type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::IfExpression: {
-		const auto ifx = dynamic_cast<IfExpression *>(node);
-		auto status = compile(ifx->cond.get());
-		if (status.has_value())
-			return "error compiling the if expression conditional";
-
-		const auto jump_not_truthy_pos = emit(code::OpJumpNotTruthy, {9999});
-
-		status = compile(ifx->after.get());
-		if (status.has_value())
-			return "error compiling if expression true body";
-
-		if (last_instruction_is(code::OpPop))
-			remove_last_pop();
-
-		const auto jump_pos = emit(code::OpJump, {9999});
-		const auto after_conq_pos = current_instructions().size();
-		change_operand(jump_not_truthy_pos, after_conq_pos);
-
-		if (ifx->other == nullptr) {
-			emit(code::OpNull);
-		} else {
-			status = compile(ifx->other.get());
+		try {
+			const auto &ifx = dynamic_cast<const IfExpression &>(node);
+			auto status = compile(*ifx.cond);
 			if (status.has_value())
-				return "error compiling if expression false body";
+				return "error compiling the if expression conditional";
+
+			const auto jump_not_truthy_pos = emit(code::OpJumpNotTruthy, {9999});
+
+			status = compile(*ifx.after);
+			if (status.has_value())
+				return "error compiling if expression true body";
 
 			if (last_instruction_is(code::OpPop))
 				remove_last_pop();
+
+			const auto jump_pos = emit(code::OpJump, {9999});
+			const auto after_conq_pos = current_instructions().size();
+			change_operand(jump_not_truthy_pos, after_conq_pos);
+
+			if (ifx.other == nullptr) {
+				emit(code::OpNull);
+			} else {
+				status = compile(*ifx.other);
+				if (status.has_value())
+					return "error compiling if expression false body";
+
+				if (last_instruction_is(code::OpPop))
+					remove_last_pop();
+			}
+			const auto after_other_pos = current_instructions().size();
+			change_operand(jump_pos, after_other_pos);
+		} catch (std::bad_cast &e) {
+			return "could not cast if expression type to node reference. " +
+						 std::string(e.what());
 		}
-		const auto after_other_pos = current_instructions().size();
-		change_operand(jump_pos, after_other_pos);
 		break;
 	}
 	case AstType::BlockStatement: {
-		for (auto &st : ((BlockStatement *)node)->statements) {
-			auto status = compile(st.get());
-			if (status.has_value())
-				return "error compiling block statement";
+		try {
+			const auto &block = dynamic_cast<const BlockStatement &>(node);
+			for (auto &st : block.statements) {
+				const auto status = compile(*st);
+				if (status.has_value())
+					return "error compiling block statement";
+			}
+		} catch (std::bad_cast &e) {
+			return "could not cast block statement type to node reference. " +
+						 std::string(e.what());
 		}
 		break;
 	}
 	case AstType::LetStatement: {
-		const auto letexp = dynamic_cast<LetStatement *>(node);
-		const auto &symbol = symbol_table_->define(letexp->name->value);
+		try {
+			const auto &letexp = dynamic_cast<const LetStatement &>(node);
+			const auto &symbol = symbol_table_->define(letexp.name->value);
 
-		const auto status = compile(letexp->value.get());
-		if (status.has_value())
-			return "error compiling let statement";
+			const auto status = compile(*letexp.value);
+			if (status.has_value())
+				return "error compiling let statement";
 
-		if (symbol.scope == scopes::GlobalScope)
-			emit(code::OpSetGlobal, {symbol.index});
-		else
-			emit(code::OpSetLocal, {symbol.index});
+			if (symbol.scope == scopes::GlobalScope)
+				emit(code::OpSetGlobal, {symbol.index});
+			else
+				emit(code::OpSetLocal, {symbol.index});
+		} catch (std::bad_cast &e) {
+			return "could not cast let statement type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::Identifier: {
-		auto symbol = symbol_table_->resolve(((Identifier *)node)->value);
-		if (!symbol.has_value())
-			return "Symbol is not found in symbol table.";
+		try {
+			const auto &identifier = dynamic_cast<const Identifier &>(node);
+			auto symbol = symbol_table_->resolve(identifier.value);
+			if (!symbol.has_value())
+				return "Symbol is not found in symbol table.";
 
-		load_symbol(symbol.value());
+			load_symbol(symbol.value());
+		} catch (std::bad_cast &e) {
+			return "could not cast identifier type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::StringLiteral: {
-		const auto str = new String(((StringLiteral *)node)->TokenLiteral());
-		emit(code::OpConstant, {add_constant(str)});
+		try {
+			const auto &strl = dynamic_cast<const StringLiteral &>(node);
+			const auto str = new String(strl.TokenLiteral());
+			emit(code::OpConstant, {add_constant(str)});
+		} catch (std::bad_cast &e) {
+			return "could not cast string literal type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::ArrayLiteral: {
-		for (const auto &el : ((ArrayLiteral *)node)->elements) {
-			const auto status = compile(el.get());
-			if (status.has_value())
-				return "error compiling array element";
-		}
+		try {
+			const auto &arrlit = dynamic_cast<const ArrayLiteral &>(node);
+			for (const auto &el : arrlit.elements) {
+				const auto status = compile(*el);
+				if (status.has_value())
+					return "error compiling array element";
+			}
 
-		emit(code::OpArray, {(int)((ArrayLiteral *)node)->elements.size()});
+			emit(code::OpArray, {(int)arrlit.elements.size()});
+		} catch (std::bad_cast &e) {
+			return "could not cast array literal type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::HashLiteral: {
-		auto hash_lit = dynamic_cast<HashLiteral *>(node);
+		try {
+			const auto &hash_lit = dynamic_cast<const HashLiteral &>(node);
 
-		// TODO: probably sort the elements or maybe not it works either way
-		for (auto const &pr : hash_lit->pairs) {
-			auto status = compile(pr.first.get());
-			if (status.has_value())
-				return "error compiling first part of hash pair";
+			// TODO: probably sort the elements or maybe not it works either way
+			for (auto const &pr : hash_lit.pairs) {
+				auto status = compile(*pr.first);
+				if (status.has_value())
+					return "error compiling first part of hash pair";
 
-			status = compile(pr.second.get());
-			if (status.has_value())
-				return "error compiling second part of hash pair";
+				status = compile(*pr.second);
+				if (status.has_value())
+					return "error compiling second part of hash pair";
+			}
+
+			emit(code::OpHash, {(int)hash_lit.pairs.size() * 2});
+		} catch (std::bad_cast &e) {
+			return "could not cast hash literal type to node reference. " +
+						 std::string(e.what());
 		}
-
-		emit(code::OpHash, {(int)hash_lit->pairs.size() * 2});
 		break;
 	}
 	case AstType::IndexExpression: {
-		auto index_expression = dynamic_cast<IndexExpression *>(node);
-		auto status = compile(index_expression->left.get());
-		if (status.has_value())
-			return "error compiling index expression left side";
+		try {
+			const auto &index_expression =
+					dynamic_cast<const IndexExpression &>(node);
+			auto status = compile(*index_expression.left);
+			if (status.has_value())
+				return "error compiling index expression left side";
 
-		status = compile(index_expression->index.get());
-		if (status.has_value())
-			return "error compiling index expression index";
-		emit(code::OpIndex);
+			status = compile(*index_expression.index);
+			if (status.has_value())
+				return "error compiling index expression index";
+			emit(code::OpIndex);
+		} catch (std::bad_cast &e) {
+			return "could not cast index expression type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::FunctionLiteral: {
-		enter_scope();
-		auto func = dynamic_cast<FunctionLiteral *>(node);
-		for (const auto &pr : func->params)
-			symbol_table_->define(pr->value);
+		try {
+			enter_scope();
+			const auto &func = dynamic_cast<const FunctionLiteral &>(node);
+			for (const auto &pr : func.params)
+				symbol_table_->define(pr->value);
 
-		auto status = compile(func->body.get());
-		if (status.has_value())
-			return "error compiling function body";
+			auto status = compile(*func.body);
+			if (status.has_value())
+				return "error compiling function body";
 
-		if (last_instruction_is(code::OpPop))
-			replace_last_pop_with_return();
+			if (last_instruction_is(code::OpPop))
+				replace_last_pop_with_return();
 
-		if (!last_instruction_is(code::OpReturnValue))
-			emit(code::OpReturn);
+			if (!last_instruction_is(code::OpReturnValue))
+				emit(code::OpReturn);
 
-		const auto num_locals = symbol_table_->definition_num_;
-		const auto &free_symbols = symbol_table_->free_symbols_;
-		auto instructions = leave_scope();
+			const auto num_locals = symbol_table_->definition_num_;
+			const auto &free_symbols = symbol_table_->free_symbols_;
+			auto instructions = leave_scope();
 
-		for (const auto &sym : free_symbols)
-			load_symbol(sym);
+			for (const auto &sym : free_symbols)
+				load_symbol(sym);
 
-		auto compiled_function = new CompiledFunction(instructions, num_locals);
-		compiled_function->m_num_parameters = func->params.size();
+			auto compiled_function = new CompiledFunction(instructions, num_locals);
+			compiled_function->m_num_parameters = func.params.size();
 
-		auto fn_index = add_constant(compiled_function);
+			auto fn_index = add_constant(compiled_function);
 
-		emit(code::OpClosure, {fn_index, (int)free_symbols.size()});
+			emit(code::OpClosure, {fn_index, (int)free_symbols.size()});
+		} catch (std::bad_cast &e) {
+			return "could not cast index expression type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::ReturnStatement: {
-		auto status = compile(((ReturnStatement *)node)->return_value.get());
+		try {
+			const auto &ret = dynamic_cast<const ReturnStatement&>(node);
+		const auto status = compile(*ret.return_value);
 		if (status.has_value())
 			return "error compiling return value";
 		emit(code::OpReturnValue);
+		} catch (std::bad_cast &e) {
+			return "could not cast return statement type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	case AstType::CallExpression: {
-		const auto call_exp = dynamic_cast<CallExpression *>(node);
-		auto status = compile(call_exp->func.get());
-		if (status.has_value())
-			return "error compiling call function";
-
-		for (const auto &arg : call_exp->arguments) {
-			status = compile(arg.get());
+		try {
+			const auto& call_exp = dynamic_cast<const CallExpression&>(node);
+			auto status = compile(*call_exp.func);
 			if (status.has_value())
-				return "error compiling call argument";
-		}
+				return "error compiling call function";
 
-		emit(code::OpCall, {(int)call_exp->arguments.size()});
+			for (const auto &arg : call_exp.arguments) {
+				status = compile(*arg);
+				if (status.has_value())
+					return "error compiling call argument";
+			}
+
+			emit(code::OpCall, {(int)call_exp.arguments.size()});
+		} catch (std::bad_cast &e) {
+			return "could not cast index expression type to node reference. " +
+						 std::string(e.what());
+		}
 		break;
 	}
 	}
@@ -424,7 +519,8 @@ void Compiler::load_symbol(const Symbol &sm) {
 const Symbol &SymbolTable::define_free(const Symbol &org) {
 	free_symbols_.push_back(org);
 
-	std::unique_ptr<Symbol> symbol(new Symbol{org.name, scopes::FreeScope, (int)free_symbols_.size() - 1});
+	std::unique_ptr<Symbol> symbol(
+			new Symbol{org.name, scopes::FreeScope, (int)free_symbols_.size() - 1});
 	store_[org.name] = std::move(symbol);
 
 	return *store_[org.name];

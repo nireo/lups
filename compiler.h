@@ -90,7 +90,7 @@ public:
 
 	// The main compiling function. It returns an optional string containing an error.
 	// so if compilation was successful then compile(node).has_value() == false
-	std::optional<std::string> compile(Node *node);
+	std::optional<std::string> compile(const Node &node);
 
 	int add_constant(Object *obj);
 	int emit(code::Opcode op, std::vector<int> operands);
