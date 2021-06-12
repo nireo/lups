@@ -1427,8 +1427,8 @@ const std::string run_vm_tests(const std::vector<VMTestcase<T>> &tests) {
 
 		auto vm = new VM(comp->bytecode());
 		auto vm_status = vm->run();
-		if (vm_status != 0)
-			return "Running the vm was unsuccessful";
+		if (vm_status.has_value())
+			return "Running the vm was unsuccessful, got err: " + vm_status.value();
 
 		auto stack_elem = vm->last_popped_stack_elem();
 		if (stack_elem == nullptr)
@@ -2448,8 +2448,7 @@ TEST(VMTest, WrongParameterCountReturnsError) {
 
 		auto vm = new VM(comp->bytecode());
 		auto vm_status = vm->run();
-		EXPECT_NE(vm_status, 0)
-				<< "Virtual machine run was successful even though it shouldn't be";
+		EXPECT_TRUE(vm_status.has_value());
 	}
 }
 
@@ -2730,4 +2729,7 @@ TEST(VMTest, Closures) {
 			"closure();", 99
 		}
 	};
+
+	auto err = run_vm_tests(test_cases);
+	EXPECT_EQ(err, "") << err;
 }

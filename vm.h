@@ -35,34 +35,38 @@ class VM {
 public:
 	VM(Bytecode *bytecode);
 	Object *stack_top();
-	int run();
-	int push(Object *obj);
+	std::optional<std::string> push(Object *obj);
 	Object *pop();
 	Object *last_popped_stack_elem();
 
+	// The optional contains a possible error message, meaning that std::optional doesn't have a value
+	// if an error has occurred.
+
+	std::optional<std::string> run();
+
 	// binary operations
-	int execute_binary_operation(code::Opcode op);
-	int execute_binary_integer_operation(code::Opcode op, Object *left, Object *right);
-	int execute_binary_string_operation(code::Opcode op, Object *left, Object *right);
+	std::optional<std::string> execute_binary_operation(code::Opcode op);
+	std::optional<std::string> execute_binary_integer_operation(code::Opcode op, Object *left, Object *right);
+	std::optional<std::string> execute_binary_string_operation(code::Opcode op, Object *left, Object *right);
 
 	// comparisons
-	int execute_comparison(code::Opcode op);
-	int execute_integer_comparison(code::Opcode op, Object *left, Object *right);
+	std::optional<std::string> execute_comparison(code::Opcode op);
+	std::optional<std::string> execute_integer_comparison(code::Opcode op, Object *left, Object *right);
 
 	// prefix expressions
-	int execute_bang_operator();
-	int execute_minus_operator();
+	std::optional<std::string> execute_bang_operator();
+	std::optional<std::string> execute_minus_operator();
 
 	// index expressions
-	int execute_index_expression(Object *left, Object *index);
-	int execute_array_index(Object *left, Object *index);
-	int execute_hash_index(Object *left, Object *index);
+	std::optional<std::string> execute_index_expression(Object *left, Object *index);
+	std::optional<std::string> execute_array_index(Object *left, Object *index);
+	std::optional<std::string> execute_hash_index(Object *left, Object *index);
 
 	// functions
-	int call_closure(Object *cl, int num_args);
-	int call_builtin(Object *fn, int num_args);
-	int execute_call(int num_args);
-	int push_closure(int const_index, int num_free);
+	std::optional<std::string> call_closure(Object *cl, int num_args);
+	std::optional<std::string> call_builtin(Object *fn, int num_args);
+	std::optional<std::string> execute_call(int num_args);
+	std::optional<std::string> push_closure(int const_index, int num_free);
 
 	Object *build_array(int start_index, int end_index);
 	Object *build_hash(int start_index, int end_index);

@@ -6,8 +6,9 @@
 #include "object.h"
 #include <cstdint>
 #include <iostream>
-#include <memory>
 #include <map>
+#include <memory>
+#include <optional>
 
 // TODO: add better error handling rather than just returning integers. Probably
 // by making some kind of error class or something since enums aren't different
@@ -20,7 +21,6 @@
 // where the string is the error message is the way to go with proper error
 // handling. Since then I don't have to hardcode multiple different errors
 // values into enums or something similar.
-
 
 Object *native_bool_to_obj(bool val) {
 	return (val ? object_constant::TRUE_OBJ : object_constant::FALSE_OBJ);
@@ -61,7 +61,7 @@ Object *VM::stack_top() {
 	return m_stack[m_sp - 1];
 }
 
-int VM::run() {
+std::optional<std::string> VM::run() {
 	for (current_frame().ip_ = 0;
 			 current_frame().ip_ < (int)current_frame().instructions().size();
 			 ++current_frame().ip_) {
@@ -75,9 +75,9 @@ int VM::run() {
 					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
 			current_frame().ip_ += 2;
 
-			int status = push(m_constants[const_index]);
-			if (status != 0)
-				return status;
+			auto status = push(m_constants[const_index]);
+			if (status.has_value())
+				return status.value();
 
 			break;
 		}
@@ -90,40 +90,40 @@ int VM::run() {
 		case code::OpSub:
 		case code::OpAdd: {
 			auto status = execute_binary_operation(op);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpTrue: {
 			auto status = push(object_constant::TRUE_OBJ);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpFalse: {
 			auto status = push(object_constant::FALSE_OBJ);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpEqual:
 		case code::OpNotEqual:
 		case code::OpGreaterThan: {
 			auto status = execute_comparison(op);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpBang: {
 			auto status = execute_bang_operator();
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpMinus: {
 			auto status = execute_minus_operator();
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpJump: {
@@ -144,8 +144,8 @@ int VM::run() {
 		}
 		case code::OpNull: {
 			auto status = push(object_constant::null);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpSetGlobal: {
@@ -162,8 +162,8 @@ int VM::run() {
 			current_frame().ip_ += 2;
 
 			auto status = push(m_globals[global_index]);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpArray: {
@@ -174,8 +174,8 @@ int VM::run() {
 			m_sp = m_sp - num_elements;
 
 			auto status = push(array);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpHash: {
@@ -186,8 +186,8 @@ int VM::run() {
 			auto hash = build_hash(m_sp - num_elements, m_sp);
 			m_sp = m_sp - num_elements;
 			auto status = push(hash);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpIndex: {
@@ -195,8 +195,8 @@ int VM::run() {
 			auto left = pop();
 
 			auto status = execute_index_expression(left, index);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpCall: {
@@ -204,9 +204,8 @@ int VM::run() {
 			current_frame().ip_ += 1;
 
 			auto status = execute_call(num_args);
-			if (status != 0)
-				return status;
-
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpReturnValue: {
@@ -215,8 +214,8 @@ int VM::run() {
 			m_sp = frame.base_pointer_ - 1;
 
 			auto status = push(return_value);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpReturn: {
@@ -224,8 +223,8 @@ int VM::run() {
 			m_sp = frame.base_pointer_ - 1;
 
 			auto status = push(object_constant::null);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpSetLocal: {
@@ -242,60 +241,60 @@ int VM::run() {
 
 			const auto &frame = current_frame();
 			auto status = push(m_stack[frame.base_pointer_ + local_index]);
-			if (status != 0) {
-				return status;
+			if (status.has_value()) {
+				return status.value();
 			}
 			break;
 		}
 		case code::OpGetBuiltin: {
-			auto builtin_index = (int)((std::uint8_t)inst[ip+1]);
+			auto builtin_index = (int)((std::uint8_t)inst[ip + 1]);
 			current_frame().ip_ += 1;
 
 			// the compiler ensures that this index exists
 			auto def = builtin_functions::functions[builtin_index];
 
 			auto status = push(def.second);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 		}
 		case code::OpClosure: {
 			auto const_index = code::decode_uint16(
 					code::Instructions(inst.begin() + ip + 1, inst.begin() + ip + 3));
-			auto num_free = (int)((uint8_t)inst[ip+3]);
+			auto num_free = (int)((uint8_t)inst[ip + 3]);
 			current_frame().ip_ += 3;
 
 			auto status = push_closure(const_index, num_free);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 			break;
 		}
 		case code::OpGetFree: {
-			auto free_idx= (int)((uint8_t)inst[ip+1]);
+			auto free_idx = (int)((uint8_t)inst[ip + 1]);
 			current_frame().ip_ += 1;
 
-			const auto& curr_closure = current_frame().closure();
+			const auto &curr_closure = current_frame().closure();
 			auto status = push(curr_closure.free_[free_idx]);
-			if (status != 0)
-				return status;
+			if (status.has_value())
+				return status.value();
 
 			break;
 		}
 		}
 	}
 
-	return 0;
+	return std::nullopt;
 }
 
 // push item to the stack and check for stack overflow.
-int VM::push(Object *obj) {
+std::optional<std::string> VM::push(Object *obj) {
 	if (m_sp >= StackSize)
 		// stack overflow
-		return -1;
+		return "stack overflow";
 
 	m_stack[m_sp] = obj;
 	++m_sp;
 
-	return 0;
+	return std::nullopt;
 }
 
 // pop the top element from the stack and return it.
@@ -308,24 +307,23 @@ Object *VM::pop() {
 
 Object *VM::last_popped_stack_elem() { return m_stack[m_sp]; }
 
-int VM::execute_binary_operation(code::Opcode op) {
+std::optional<std::string> VM::execute_binary_operation(code::Opcode op) {
 	auto right = pop();
 	auto left = pop();
 
 	// check that types support a certain operation.
-	if (left->Type() == ObjType::Integer &&
-			right->Type() == ObjType::Integer) {
+	if (left->Type() == ObjType::Integer && right->Type() == ObjType::Integer) {
 		return execute_binary_integer_operation(op, left, right);
 	} else if (left->Type() == ObjType::String &&
 						 right->Type() == ObjType::String) {
 		return execute_binary_string_operation(op, left, right);
 	} else {
 		// the types don't have a supported binary expression
-		return -1;
+		return "binary operation is not recognized for given types.";
 	}
 }
 
-int VM::execute_binary_integer_operation(code::Opcode op, Object *left,
+std::optional<std::string> VM::execute_binary_integer_operation(code::Opcode op, Object *left,
 																				 Object *right) {
 	auto left_val = ((Integer *)left)->value;
 	auto right_val = ((Integer *)right)->value;
@@ -346,19 +344,18 @@ int VM::execute_binary_integer_operation(code::Opcode op, Object *left,
 		break;
 	default:
 		// operator not recognized
-		return -1;
+		return "binary integer operation is not recognized.";
 	}
 
 	return push(new Integer(res));
 }
 
-int VM::execute_comparison(code::Opcode op) {
+std::optional<std::string> VM::execute_comparison(code::Opcode op) {
 	auto right = pop();
 	auto left = pop();
 
 	// check that types support a certain operation.
-	if (left->Type() == ObjType::Integer &&
-			right->Type() == ObjType::Integer) {
+	if (left->Type() == ObjType::Integer && right->Type() == ObjType::Integer) {
 		return execute_integer_comparison(op, left, right);
 	}
 
@@ -370,10 +367,10 @@ int VM::execute_comparison(code::Opcode op) {
 	}
 
 	// the operation is not recognized.
-	return -1;
+	return "comparison operator is not recognized";
 }
 
-int VM::execute_integer_comparison(code::Opcode op, Object *left,
+std::optional<std::string> VM::execute_integer_comparison(code::Opcode op, Object *left,
 																	 Object *right) {
 	auto left_value = ((Integer *)left)->value;
 	auto right_value = ((Integer *)right)->value;
@@ -387,10 +384,10 @@ int VM::execute_integer_comparison(code::Opcode op, Object *left,
 		return push(native_bool_to_obj(left_value > right_value));
 	}
 
-	return -1;
+	return "integer comparison operator not supported";
 }
 
-int VM::execute_bang_operator() {
+std::optional<std::string> VM::execute_bang_operator() {
 	auto oper = pop();
 	if (oper == object_constant::TRUE_OBJ)
 		return push(object_constant::FALSE_OBJ);
@@ -402,20 +399,20 @@ int VM::execute_bang_operator() {
 	return push(object_constant::FALSE_OBJ);
 }
 
-int VM::execute_minus_operator() {
+std::optional<std::string> VM::execute_minus_operator() {
 	auto oper = pop();
 	if (oper->Type() != ObjType::Integer)
 		// type cannot be used in conjunction with integer type
-		return -1;
+		return "type cannot be used in conjunction with minus expression";
 
 	auto value = ((Integer *)oper)->value;
 	return push(new Integer(-value));
 }
 
-int VM::execute_binary_string_operation(code::Opcode op, Object *left,
+std::optional<std::string> VM::execute_binary_string_operation(code::Opcode op, Object *left,
 																				Object *right) {
 	if (op != code::OpAdd)
-		return -1;
+		return "binary string operation not recognized has to be '+'";
 
 	auto left_value = ((String *)left)->value;
 	auto right_value = ((String *)right)->value;
@@ -439,8 +436,7 @@ Object *VM::build_hash(int start_index, int end_index) {
 		auto value = m_stack[i + 1];
 		auto pair = new HashPair{key, value};
 
-		if (!(key->Type() == ObjType::Integer ||
-					key->Type() == ObjType::String ||
+		if (!(key->Type() == ObjType::Integer || key->Type() == ObjType::String ||
 					key->Type() == ObjType::Boolean))
 			return nullptr;
 
@@ -459,21 +455,20 @@ Object *VM::build_hash(int start_index, int end_index) {
 	return hashtable;
 }
 
-int VM::execute_index_expression(Object *left, Object *index) {
-	if (left->Type() == ObjType::Array &&
-			index->Type() == ObjType::Integer)
+std::optional<std::string> VM::execute_index_expression(Object *left, Object *index) {
+	if (left->Type() == ObjType::Array && index->Type() == ObjType::Integer)
 		return execute_array_index(left, index);
 	else if (left->Type() == ObjType::Hash)
 		return execute_hash_index(left, index);
 
 	// the index operator is not supported for this type
-	return -1;
+	return "index expression is not supported for the type in question.";
 }
 
-int VM::execute_array_index(Object *arr, Object *index) {
+std::optional<std::string> VM::execute_array_index(Object *arr, Object *index) {
 	auto array = dynamic_cast<Array *>(arr);
 	if (array == nullptr)
-		return -1;
+		return "object is not of type array.";
 
 	auto idx = ((Integer *)index)->value;
 	auto max = (int)array->elements.size() - 1;
@@ -485,15 +480,14 @@ int VM::execute_array_index(Object *arr, Object *index) {
 	return push(array->elements[idx]);
 }
 
-int VM::execute_hash_index(Object *hash, Object *index) {
+std::optional<std::string> VM::execute_hash_index(Object *hash, Object *index) {
 	auto hashobj = dynamic_cast<Hash *>(hash);
 	if (hashobj == nullptr)
-		return -1;
+		return "object is not of type hash.";
 
-	if (!(index->Type() == ObjType::Integer ||
-				index->Type() == ObjType::String ||
+	if (!(index->Type() == ObjType::Integer || index->Type() == ObjType::String ||
 				index->Type() == ObjType::Boolean))
-		return -1;
+		return "type of index is invalid, needs to be 'int' 'bool' or 'string'";
 
 	HashKey res;
 	// we only need to check these types since the previous if expressions
@@ -511,24 +505,25 @@ int VM::execute_hash_index(Object *hash, Object *index) {
 	return push(hashobj->pairs[res.value]->value);
 }
 
-int VM::call_closure(Object *cl, int num_args) {
+std::optional<std::string> VM::call_closure(Object *cl, int num_args) {
 	const auto closure = dynamic_cast<Closure *>(cl);
 	if (closure == nullptr)
-		return -1;
+		return "object is not of type closure.";
 
 	if (num_args != closure->func_->m_num_parameters)
-		return -1;
+		return "the amount of arguments supplied differs from the amount of parameters the function needs.";
 
-	auto frame = std::make_unique<Frame>(closure->func_->m_instructions, m_sp - num_args);
+	auto frame =
+			std::make_unique<Frame>(closure->func_->m_instructions, m_sp - num_args);
 	auto new_stack_ptr = frame->base_pointer_ + closure->func_->m_num_locals;
 	push_frame(std::move(frame));
 	m_sp = new_stack_ptr;
 
-	return 0;
+	return std::nullopt;
 }
 
-int VM::execute_call(int num_args) {
-	const auto callee = m_stack[m_sp-1-num_args];
+std::optional<std::string> VM::execute_call(int num_args) {
+	const auto callee = m_stack[m_sp - 1 - num_args];
 
 	if (callee->Type() == ObjType::Closure)
 		return call_closure(callee, num_args);
@@ -536,15 +531,16 @@ int VM::execute_call(int num_args) {
 		return call_builtin(callee, num_args);
 
 	// calling a non-function.
-	return -1;
+	return "calling a type that is not a function.";
 }
 
-int VM::call_builtin(Object *builtin, int num_args) {
-	const auto builtin_func = dynamic_cast<Builtin*>(builtin);
+std::optional<std::string> VM::call_builtin(Object *builtin, int num_args) {
+	const auto builtin_func = dynamic_cast<Builtin *>(builtin);
 	if (builtin_func == nullptr)
-		return -1;
+		return "the object is not of type builtin";
 
-	auto args = std::vector<Object*>(m_stack.begin()+m_sp-num_args, m_stack.begin()+m_sp);
+	auto args = std::vector<Object *>(m_stack.begin() + m_sp - num_args,
+																		m_stack.begin() + m_sp);
 	auto res = (builtin_func->func(args));
 
 	if (res != nullptr) {
@@ -553,19 +549,19 @@ int VM::call_builtin(Object *builtin, int num_args) {
 		push(object_constant::null);
 	}
 
-	return 0;
+	return std::nullopt;
 }
 
-int VM::push_closure(int const_index, int num_free) {
+std::optional<std::string> VM::push_closure(int const_index, int num_free) {
 	auto constant = m_constants[const_index];
 
-	auto fn = dynamic_cast<CompiledFunction*>(constant);
+	auto fn = dynamic_cast<CompiledFunction *>(constant);
 	if (fn == nullptr)
-		return -1;
+		return "the object is not of type 'CompiledFunction'";
 
-	std::vector<Object*> free_vec(num_free, nullptr);
+	std::vector<Object *> free_vec(num_free, nullptr);
 	for (int i = 0; i < num_free; ++i)
-		free_vec[i] = m_stack[m_sp-num_free+i];
+		free_vec[i] = m_stack[m_sp - num_free + i];
 	m_sp = m_sp - num_free;
 
 	auto closure = new Closure(fn);

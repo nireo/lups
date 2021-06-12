@@ -34,7 +34,7 @@ static const std::string input = "let fib = func(n) {"
 																 "        }"
 																 "    }"
 																 "};"
-																 "fib(30);";
+																 "fib(25);";
 
 int main() {
 	std::string engine;
