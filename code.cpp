@@ -1,7 +1,7 @@
 #include "code.h"
 #include <bits/stdint-uintn.h>
-#include <stdarg.h>
 #include <cstdint>
+#include <stdarg.h>
 
 using namespace code;
 Definition *code::look_up(char op_code) {
@@ -21,24 +21,25 @@ std::vector<char> code::encode_uint16(std::uint16_t val) {
 	return big_endian;
 }
 std::string string_format(const std::string fmt, ...) {
-		int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
-		std::string str;
-		va_list ap;
-		while (1) {     // Maximum two passes on a POSIX system...
-				str.resize(size);
-				va_start(ap, fmt);
-				int n = vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
-				va_end(ap);
-				if (n > -1 && n < size) {  // Everything worked
-						str.resize(n);
-						return str;
-				}
-				if (n > -1)  // Needed size returned
-						size = n + 1;   // For null char
-				else
-						size *= 2;      // Guess at a larger size (OS specific)
+	int size =
+			((int)fmt.size()) * 2 + 50; // Use a rubric appropriate for your code
+	std::string str;
+	va_list ap;
+	while (1) { // Maximum two passes on a POSIX system...
+		str.resize(size);
+		va_start(ap, fmt);
+		int n = vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
+		va_end(ap);
+		if (n > -1 && n < size) { // Everything worked
+			str.resize(n);
+			return str;
 		}
-		return str;
+		if (n > -1)     // Needed size returned
+			size = n + 1; // For null char
+		else
+			size *= 2; // Guess at a larger size (OS specific)
+	}
+	return str;
 }
 
 std::uint16_t code::decode_uint16(Instructions inst) {
@@ -84,8 +85,10 @@ std::string code::instructions_to_string(Instructions &instructions) {
 			continue;
 		}
 
-		auto read_res = code::read_operands(def, Instructions(instructions.begin()+i+1, instructions.end()));
-		res += string_format("%04d %s\n", i, code::fmt_instructions(def, read_res.first).c_str());
+		auto read_res = code::read_operands(
+				def, Instructions(instructions.begin() + i + 1, instructions.end()));
+		res += string_format("%04d %s\n", i,
+												 code::fmt_instructions(def, read_res.first).c_str());
 		i += 1 + read_res.second;
 	}
 
@@ -100,7 +103,8 @@ std::pair<std::vector<int>, int> code::read_operands(Definition *def,
 	for (int i = 0; i < (int)def->operand_widths.size(); ++i) {
 		auto width = def->operand_widths[i];
 		if (width == 2) {
-			operands[i] = (int)code::decode_uint16(Instructions(inst.begin()+offset, inst.end()));
+			operands[i] = (int)code::decode_uint16(
+					Instructions(inst.begin() + offset, inst.end()));
 		} else if (width == 1) {
 			operands[i] = (int)((std::uint8_t)inst[offset]);
 		}
@@ -122,7 +126,8 @@ std::string code::fmt_instructions(Definition *def, std::vector<int> operands) {
 	case 1:
 		return def->name + " " + std::to_string(operands[0]);
 	case 2:
-		return def->name + " " + std::to_string(operands[0]) + " " + std::to_string(operands[1]);
+		return def->name + " " + std::to_string(operands[0]) + " " +
+					 std::to_string(operands[1]);
 	}
 
 	return "ERROR: unhandled operand count for " + def->name + '\n';

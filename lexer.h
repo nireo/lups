@@ -10,10 +10,10 @@ public:
 	Token next_token();
 
 private:
-	std::string m_input;
-	int m_pos;
-	char m_ch;
-	int m_read_pos;
+	std::string input_;
+	int pos_;
+	char ch_;
+	int read_pos_;
 
 	std::string read_ident();
 	std::string read_number();

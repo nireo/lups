@@ -43,11 +43,10 @@ public:
 	Parser(std::unique_ptr<Lexer> lx);
 	std::unique_ptr<Program> parse_program();
 	std::vector<std::string> errors() const;
-
 private:
-	std::unique_ptr<Lexer> m_lx;
-	Token m_current;
-	Token m_peek;
+	std::unique_ptr<Lexer> lx_;
+	Token current_;
+	Token peek_;
 
 	std::unordered_map<TokenType, PrefixParseFn> m_prefix_parse_fns;
 	std::unordered_map<TokenType, InfixParseFn> m_infix_parse_fns;
@@ -88,7 +87,7 @@ private:
 	bool current_token_is(TokenType tt);
 	void peek_error(TokenType tt);
 
-	std::vector<std::string> m_errors;
+	std::vector<std::string> errors_;
 };
 
 #endif

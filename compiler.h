@@ -67,29 +67,11 @@ public:
 
 class Compiler {
 public:
-	Compiler() {
-		m_instructions = code::Instructions();
-		m_constants = std::vector<Object *>();
-		last_inst = nullptr;
-		prev_inst = nullptr;
-		symbol_table_ = new SymbolTable();
+	Compiler();
 
-		for (int i = 0; i < (int)builtin_functions::functions.size(); ++i)
-			symbol_table_->define_builtin(i, builtin_functions::functions[i].first);
-
-		scope_index = 0;
-
-		auto main_scope = CompilationScope{
-				code::Instructions(),
-				EmittedInstruction{},
-				EmittedInstruction{},
-		};
-
-		scopes = std::vector<CompilationScope>(1, main_scope);
-	}
-
-	// The main compiling function. It returns an optional string containing an error.
-	// so if compilation was successful then compile(node).has_value() == false
+	// The main compiling function. It returns an optional string containing an
+	// error. so if compilation was successful then compile(node).has_value() ==
+	// false
 	std::optional<std::string> compile(const Node &node);
 
 	int add_constant(Object *obj);
@@ -104,28 +86,29 @@ public:
 	code::Instructions current_instructions();
 	int add_instructions(std::vector<char> &inst);
 	Bytecode *bytecode() {
-		return new Bytecode{current_instructions(), m_constants};
+		return new Bytecode{current_instructions(), constants_};
 	}
 
 	void replace_last_pop_with_return();
 
 	code::Instructions &scoped_inst() { return curr_scope().instructions; }
-	CompilationScope &curr_scope() { return scopes.back(); }
+	CompilationScope &curr_scope() { return scopes_.back(); }
 
 	void load_symbol(const Symbol &m);
 
 	void enter_scope();
 	code::Instructions leave_scope();
 
-	std::vector<CompilationScope> scopes;
-	int scope_index;
-	SymbolTable* symbol_table_;
-private:
-	code::Instructions m_instructions;
-	std::vector<Object *> m_constants;
+	std::vector<CompilationScope> scopes_;
+	int scope_index_;
+	SymbolTable *symbol_table_;
 
-	EmittedInstruction *last_inst;
-	EmittedInstruction *prev_inst;
+private:
+	code::Instructions instructions_;
+	std::vector<Object *> constants_;
+
+	EmittedInstruction *last_inst_;
+	EmittedInstruction *prev_inst_;
 };
 
 #endif

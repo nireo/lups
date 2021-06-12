@@ -3,8 +3,8 @@
 #include <cctype>
 
 Lexer::Lexer(const std::string &input) {
-	m_input = input;
-	m_read_pos = 0;
+	input_ = input;
+	read_pos_ = 0;
 	read_char();
 }
 
@@ -15,13 +15,13 @@ bool is_letter(char ch) {
 bool is_digit(char ch) { return '0' <= ch && ch <= '9'; }
 
 void Lexer::read_char() {
-	if (m_read_pos >= (int)m_input.size())
-		m_ch = 0;
+	if (read_pos_ >= (int)input_.size())
+		ch_ = 0;
 	else
-		m_ch = m_input[m_read_pos];
+		ch_ = input_[read_pos_];
 
-	m_pos = m_read_pos;
-	m_read_pos++;
+	pos_ = read_pos_;
+	read_pos_++;
 }
 
 Token new_token(TokenType type, char ch) {
@@ -40,83 +40,83 @@ Token Lexer::next_token() {
 
 	skip_whitespace();
 
-	switch (m_ch) {
+	switch (ch_) {
 	case '=':
 		if (peek_char() == '=') {
-			tok = Token{.type=tokentypes::EQ, .literal="=="};
+			tok = Token{.type = tokentypes::EQ, .literal = "=="};
 			read_char();
 		} else {
-			tok = new_token(tokentypes::ASSIGN, m_ch);
+			tok = new_token(tokentypes::ASSIGN, ch_);
 		}
 		read_char();
 		break;
 	case ';':
-		tok = new_token(tokentypes::SEMICOLON, m_ch);
+		tok = new_token(tokentypes::SEMICOLON, ch_);
 		read_char();
 		break;
 	case ':':
-		tok = new_token(tokentypes::COLON, m_ch);
+		tok = new_token(tokentypes::COLON, ch_);
 		read_char();
 		break;
 	case '(':
-		tok = new_token(tokentypes::LPAREN, m_ch);
+		tok = new_token(tokentypes::LPAREN, ch_);
 		read_char();
 		break;
 	case ')':
-		tok = new_token(tokentypes::RPAREN, m_ch);
+		tok = new_token(tokentypes::RPAREN, ch_);
 		read_char();
 		break;
 	case '[':
-		tok = new_token(tokentypes::LBRACKET, m_ch);
+		tok = new_token(tokentypes::LBRACKET, ch_);
 		read_char();
 		break;
 	case ']':
-		tok = new_token(tokentypes::RBRACKET, m_ch);
+		tok = new_token(tokentypes::RBRACKET, ch_);
 		read_char();
 		break;
 	case ',':
-		tok = new_token(tokentypes::COMMA, m_ch);
+		tok = new_token(tokentypes::COMMA, ch_);
 		read_char();
 		break;
 	case '+':
-		tok = new_token(tokentypes::PLUS, m_ch);
+		tok = new_token(tokentypes::PLUS, ch_);
 		read_char();
 		break;
 	case '-':
-		tok = new_token(tokentypes::MINUS, m_ch);
+		tok = new_token(tokentypes::MINUS, ch_);
 		read_char();
 		break;
 	case '!':
 		if (peek_char() == '=') {
-			tok = Token{.type=tokentypes::NEQ, .literal="!="};
+			tok = Token{.type = tokentypes::NEQ, .literal = "!="};
 			read_char();
 		} else {
-			tok = new_token(tokentypes::BANG, m_ch);
+			tok = new_token(tokentypes::BANG, ch_);
 		}
 		read_char();
 		break;
 	case '/':
-		tok = new_token(tokentypes::SLASH, m_ch);
+		tok = new_token(tokentypes::SLASH, ch_);
 		read_char();
 		break;
 	case '*':
-		tok = new_token(tokentypes::ASTERISK, m_ch);
+		tok = new_token(tokentypes::ASTERISK, ch_);
 		read_char();
 		break;
 	case '<':
-		tok = new_token(tokentypes::LT, m_ch);
+		tok = new_token(tokentypes::LT, ch_);
 		read_char();
 		break;
 	case '>':
-		tok = new_token(tokentypes::GT, m_ch);
+		tok = new_token(tokentypes::GT, ch_);
 		read_char();
 		break;
 	case '{':
-		tok = new_token(tokentypes::LBRACE, m_ch);
+		tok = new_token(tokentypes::LBRACE, ch_);
 		read_char();
 		break;
 	case '}':
-		tok = new_token(tokentypes::RBRACE, m_ch);
+		tok = new_token(tokentypes::RBRACE, ch_);
 		read_char();
 		break;
 	case '"':
@@ -130,14 +130,14 @@ Token Lexer::next_token() {
 		read_char();
 		break;
 	default:
-		if (is_letter(m_ch)) {
+		if (is_letter(ch_)) {
 			tok.literal = read_ident();
 			tok.type = lookup_ident(tok.literal);
-		} else if (is_digit(m_ch)) {
+		} else if (is_digit(ch_)) {
 			tok.type = tokentypes::INT;
 			tok.literal = read_number();
 		} else {
-			tok = new_token(tokentypes::ILLEGAL, m_ch);
+			tok = new_token(tokentypes::ILLEGAL, ch_);
 			read_char();
 		}
 		break;
@@ -147,43 +147,43 @@ Token Lexer::next_token() {
 }
 
 std::string Lexer::read_string() {
-	int start_pos = m_pos + 1;
+	int start_pos = pos_ + 1;
 	for (;;) {
 		read_char();
-		if (m_ch == '"' || m_ch == 0) {
+		if (ch_ == '"' || ch_ == 0) {
 			break;
 		}
 	}
 
-	return m_input.substr(start_pos, m_pos-start_pos);
+	return input_.substr(start_pos, pos_ - start_pos);
 }
 
 void Lexer::skip_whitespace() {
-	while (m_ch == ' ' || m_ch == '\t' || m_ch == '\n' || m_ch == '\r')
+	while (ch_ == ' ' || ch_ == '\t' || ch_ == '\n' || ch_ == '\r')
 		read_char();
 }
 
 std::string Lexer::read_ident() {
-	int start_pos = m_pos;
-	while (is_letter(m_ch)) {
+	int start_pos = pos_;
+	while (is_letter(ch_)) {
 		read_char();
 	}
 
-	return m_input.substr(start_pos, m_pos-start_pos);
+	return input_.substr(start_pos, pos_ - start_pos);
 }
 
 std::string Lexer::read_number() {
-	int start_pos = m_pos;
-	while (is_digit(m_ch)) {
+	int start_pos = pos_;
+	while (is_digit(ch_)) {
 		read_char();
 	}
 
-	return m_input.substr(start_pos, m_pos-start_pos);
+	return input_.substr(start_pos, pos_ - start_pos);
 }
 
 char Lexer::peek_char() {
-	if (m_read_pos >= (int)m_input.size())
+	if (read_pos_ >= (int)input_.size())
 		return 0;
 	else
-		return m_input[m_read_pos];
+		return input_[read_pos_];
 }

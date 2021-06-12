@@ -23,8 +23,10 @@ public:
 		base_pointer_ = base_pointer;
 	}
 
-	code::Instructions &instructions() noexcept { return cl_->func_->m_instructions; }
-	const Closure& closure() const noexcept { return *cl_; };
+	code::Instructions &instructions() noexcept {
+		return cl_->func_->m_instructions;
+	}
+	const Closure &closure() const noexcept { return *cl_; };
 
 	int ip_;
 	int base_pointer_;
@@ -39,26 +41,31 @@ public:
 	Object *pop();
 	Object *last_popped_stack_elem();
 
-	// The optional contains a possible error message, meaning that std::optional doesn't have a value
-	// if an error has occurred.
+	// The optional contains a possible error message, meaning that std::optional
+	// doesn't have a value if an error has occurred.
 
 	std::optional<std::string> run();
 
 	// binary operations
 	std::optional<std::string> execute_binary_operation(code::Opcode op);
-	std::optional<std::string> execute_binary_integer_operation(code::Opcode op, Object *left, Object *right);
-	std::optional<std::string> execute_binary_string_operation(code::Opcode op, Object *left, Object *right);
+	std::optional<std::string> execute_binary_integer_operation(code::Opcode op,
+																															Object *left,
+																															Object *right);
+	std::optional<std::string>
+	execute_binary_string_operation(code::Opcode op, Object *left, Object *right);
 
 	// comparisons
 	std::optional<std::string> execute_comparison(code::Opcode op);
-	std::optional<std::string> execute_integer_comparison(code::Opcode op, Object *left, Object *right);
+	std::optional<std::string>
+	execute_integer_comparison(code::Opcode op, Object *left, Object *right);
 
 	// prefix expressions
 	std::optional<std::string> execute_bang_operator();
 	std::optional<std::string> execute_minus_operator();
 
 	// index expressions
-	std::optional<std::string> execute_index_expression(Object *left, Object *index);
+	std::optional<std::string> execute_index_expression(Object *left,
+																											Object *index);
 	std::optional<std::string> execute_array_index(Object *left, Object *index);
 	std::optional<std::string> execute_hash_index(Object *left, Object *index);
 
@@ -72,26 +79,26 @@ public:
 	Object *build_hash(int start_index, int end_index);
 
 	// frame functions
-	Frame& current_frame() { return *frames_[frames_index_-1]; }
+	Frame &current_frame() { return *frames_[frames_index_ - 1]; }
 
 	void push_frame(std::unique_ptr<Frame> frame) {
 		frames_[frames_index_] = std::move(frame);
 		++frames_index_;
 	}
 
-	Frame& pop_frame() {
+	Frame &pop_frame() {
 		--frames_index_;
 		return *frames_[frames_index_];
 	}
 
 private:
-	int m_sp;
-	std::vector<Object *> m_constants;
-	std::vector<Object *> m_stack;
-	std::vector<Object *> m_globals;
+	int sp_;
+	std::vector<Object *> constants_;
+	std::vector<Object *> stack_;
+	std::vector<Object *> globals_;
 
-				std::array<std::unique_ptr<Frame>, MaxFrames> frames_;
-				int frames_index_;
+	std::array<std::unique_ptr<Frame>, MaxFrames> frames_;
+	int frames_index_;
 };
 
 #endif

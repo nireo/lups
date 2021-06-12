@@ -7,6 +7,27 @@
 #include <optional>
 #include <vector>
 
+Compiler::Compiler() {
+	instructions_ = code::Instructions();
+	constants_ = std::vector<Object *>();
+	last_inst_ = nullptr;
+	prev_inst_ = nullptr;
+	symbol_table_ = new SymbolTable();
+
+	for (int i = 0; i < (int)builtin_functions::functions.size(); ++i)
+		symbol_table_->define_builtin(i, builtin_functions::functions[i].first);
+
+	scope_index_ = 0;
+
+	auto main_scope = CompilationScope{
+			code::Instructions(),
+			EmittedInstruction{},
+			EmittedInstruction{},
+	};
+
+	scopes_ = std::vector<CompilationScope>(1, main_scope);
+}
+
 std::optional<std::string> Compiler::compile(const Node &node) {
 	AstType type = node.Type();
 	switch (type) {
@@ -319,11 +340,11 @@ std::optional<std::string> Compiler::compile(const Node &node) {
 	}
 	case AstType::ReturnStatement: {
 		try {
-			const auto &ret = dynamic_cast<const ReturnStatement&>(node);
-		const auto status = compile(*ret.return_value);
-		if (status.has_value())
-			return "error compiling return value";
-		emit(code::OpReturnValue);
+			const auto &ret = dynamic_cast<const ReturnStatement &>(node);
+			const auto status = compile(*ret.return_value);
+			if (status.has_value())
+				return "error compiling return value";
+			emit(code::OpReturnValue);
 		} catch (std::bad_cast &e) {
 			return "could not cast return statement type to node reference. " +
 						 std::string(e.what());
@@ -332,7 +353,7 @@ std::optional<std::string> Compiler::compile(const Node &node) {
 	}
 	case AstType::CallExpression: {
 		try {
-			const auto& call_exp = dynamic_cast<const CallExpression&>(node);
+			const auto &call_exp = dynamic_cast<const CallExpression &>(node);
 			auto status = compile(*call_exp.func);
 			if (status.has_value())
 				return "error compiling call function";
@@ -356,8 +377,8 @@ std::optional<std::string> Compiler::compile(const Node &node) {
 }
 
 int Compiler::add_constant(Object *obj) {
-	m_constants.push_back(obj);
-	return (int)m_constants.size() - 1;
+	constants_.push_back(obj);
+	return (int)constants_.size() - 1;
 }
 
 int Compiler::emit(code::Opcode op, std::vector<int> operands) {
@@ -381,28 +402,28 @@ int Compiler::add_instruction(std::vector<char> inst) {
 	auto pos_new_instruction = cur_inst.size();
 	cur_inst.insert(cur_inst.end(), inst.begin(), inst.end());
 
-	scopes[scope_index].instructions = cur_inst;
+	scopes_[scope_index_].instructions = cur_inst;
 
 	return pos_new_instruction;
 }
 
 void Compiler::set_last_instruction(code::Opcode op, int pos) {
-	auto prev = scopes[scope_index].last_inst;
+	auto prev = scopes_[scope_index_].last_inst;
 	auto last = EmittedInstruction{op, pos};
 
-	scopes[scope_index].prev_inst = prev;
-	scopes[scope_index].last_inst = last;
+	scopes_[scope_index_].prev_inst = prev;
+	scopes_[scope_index_].last_inst = last;
 }
 
 void Compiler::remove_last_pop() {
-	auto last = scopes[scope_index].last_inst;
-	auto prev = scopes[scope_index].prev_inst;
+	auto last = scopes_[scope_index_].last_inst;
+	auto prev = scopes_[scope_index_].prev_inst;
 
 	auto old = current_instructions();
 	auto new_inst = code::Instructions(old.begin(), old.begin() + last.pos);
 
-	scopes[scope_index].instructions = new_inst;
-	scopes[scope_index].last_inst = prev;
+	scopes_[scope_index_].instructions = new_inst;
+	scopes_[scope_index_].last_inst = prev;
 }
 
 void Compiler::change_operand(int op_pos, int operand) {
@@ -464,7 +485,7 @@ const Symbol &SymbolTable::define_builtin(int index, const std::string &name) {
 }
 
 code::Instructions Compiler::current_instructions() {
-	return scopes[scope_index].instructions;
+	return scopes_[scope_index_].instructions;
 }
 
 void Compiler::enter_scope() {
@@ -474,8 +495,8 @@ void Compiler::enter_scope() {
 			EmittedInstruction{},
 	};
 
-	scopes.push_back(scope);
-	++scope_index;
+	scopes_.push_back(scope);
+	++scope_index_;
 
 	symbol_table_ = new SymbolTable(symbol_table_);
 }
@@ -483,9 +504,9 @@ void Compiler::enter_scope() {
 code::Instructions Compiler::leave_scope() {
 	auto instructions = current_instructions();
 
-	scopes = std::vector<CompilationScope>(scopes.begin(),
-																				 scopes.begin() + scopes.size() - 1);
-	--scope_index;
+	scopes_ = std::vector<CompilationScope>(scopes_.begin(),
+																					scopes_.begin() + scopes_.size() - 1);
+	--scope_index_;
 
 	symbol_table_ = symbol_table_->outer_;
 
@@ -496,13 +517,13 @@ bool Compiler::last_instruction_is(const code::Opcode &op) {
 	if (scoped_inst().size() == 0)
 		return false;
 
-	return scopes[scope_index].last_inst.op == op;
+	return scopes_[scope_index_].last_inst.op == op;
 }
 
 void Compiler::replace_last_pop_with_return() {
-	auto last_pos = scopes[scope_index].last_inst.pos;
+	auto last_pos = scopes_[scope_index_].last_inst.pos;
 	replace_instructions(last_pos, code::make(code::OpReturnValue, {}));
-	scopes[scope_index].last_inst.op = code::OpReturnValue;
+	scopes_[scope_index_].last_inst.op = code::OpReturnValue;
 }
 
 void Compiler::load_symbol(const Symbol &sm) {

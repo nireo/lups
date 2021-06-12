@@ -14,9 +14,7 @@ Object *println(std::vector<Object *> &objs);
 Object *len(std::vector<Object *> &objs);
 
 // we store them in an array such that the function indices are predictable.
- extern const std::array<std::pair<std::string, Builtin *>, 6> functions;
-} // namespace builtins
-
-
+extern const std::array<std::pair<std::string, Builtin *>, 6> functions;
+} // namespace builtin_functions
 
 #endif

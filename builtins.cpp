@@ -1,14 +1,15 @@
 #include "builtins.h"
-#include <iostream>
 #include "eval.h"
+#include <iostream>
 
-const std::array<std::pair<std::string, Builtin *>, 6> builtin_functions::functions = {
-		std::make_pair("len", new Builtin(*builtin_functions::len)),
-		std::make_pair("println", new Builtin(*builtin_functions::println)),
-		std::make_pair("first", new Builtin(*builtin_functions::array_first)),
-		std::make_pair("last", new Builtin(*builtin_functions::array_last)),
-		std::make_pair("tail", new Builtin(*builtin_functions::array_tail)),
-		std::make_pair("push", new Builtin(*builtin_functions::array_push)),
+const std::array<std::pair<std::string, Builtin *>, 6>
+		builtin_functions::functions = {
+				std::make_pair("len", new Builtin(*builtin_functions::len)),
+				std::make_pair("println", new Builtin(*builtin_functions::println)),
+				std::make_pair("first", new Builtin(*builtin_functions::array_first)),
+				std::make_pair("last", new Builtin(*builtin_functions::array_last)),
+				std::make_pair("tail", new Builtin(*builtin_functions::array_tail)),
+				std::make_pair("push", new Builtin(*builtin_functions::array_push)),
 };
 
 Object *builtin_functions::len(std::vector<Object *> &objs) {
@@ -21,9 +22,9 @@ Object *builtin_functions::len(std::vector<Object *> &objs) {
 	}
 
 	if (objs[0]->Type() == ObjType::Array) {
-		return new Integer(((Array*)objs[0])->elements.size());
+		return new Integer(((Array *)objs[0])->elements.size());
 	} else if (objs[0]->Type() == ObjType::String) {
-		return new Integer(((String*)objs[0])->value.size());
+		return new Integer(((String *)objs[0])->value.size());
 	}
 
 	// shouldn't be possible to reach this.
@@ -31,7 +32,7 @@ Object *builtin_functions::len(std::vector<Object *> &objs) {
 }
 
 Object *builtin_functions::println(std::vector<Object *> &objs) {
-	for (const auto& arg : objs) {
+	for (const auto &arg : objs) {
 		std::cout << arg->Inspect() << ' ';
 	}
 	std::cout << '\n';

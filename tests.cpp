@@ -2149,36 +2149,36 @@ TEST(VMTest, IndexExpressions) {
 
 TEST(CompilerTest, CompilerScopes) {
 	auto compiler = new Compiler();
-	EXPECT_EQ(compiler->scope_index, 0);
+	EXPECT_EQ(compiler->scope_index_, 0);
 
 	auto global_symbol_table = compiler->symbol_table_;
 	compiler->emit(code::OpMul);
 
 	compiler->enter_scope();
-	EXPECT_EQ(compiler->scope_index, 1);
+	EXPECT_EQ(compiler->scope_index_, 1);
 
 	compiler->emit(code::OpSub);
-	EXPECT_EQ(compiler->scopes[compiler->scope_index].instructions.size(), 1);
+	EXPECT_EQ(compiler->scopes_[compiler->scope_index_].instructions.size(), 1);
 
-	auto last = compiler->scopes[compiler->scope_index].last_inst;
+	auto last = compiler->scopes_[compiler->scope_index_].last_inst;
 	EXPECT_EQ(last.op, code::OpSub);
 
 	EXPECT_EQ(compiler->symbol_table_->outer_, global_symbol_table);
 
 	compiler->leave_scope();
-	EXPECT_EQ(compiler->scope_index, 0);
+	EXPECT_EQ(compiler->scope_index_, 0);
 
 	EXPECT_EQ(compiler->symbol_table_, global_symbol_table);
 	EXPECT_EQ(compiler->symbol_table_->outer_, nullptr);
 
 	compiler->emit(code::OpAdd);
 
-	EXPECT_EQ(compiler->scopes[compiler->scope_index].instructions.size(), 2);
+	EXPECT_EQ(compiler->scopes_[compiler->scope_index_].instructions.size(), 2);
 
-	last = compiler->scopes[compiler->scope_index].last_inst;
+	last = compiler->scopes_[compiler->scope_index_].last_inst;
 	EXPECT_EQ(last.op, code::OpAdd);
 
-	auto previous = compiler->scopes[compiler->scope_index].prev_inst;
+	auto previous = compiler->scopes_[compiler->scope_index_].prev_inst;
 	EXPECT_EQ(previous.op, code::OpMul);
 }
 
