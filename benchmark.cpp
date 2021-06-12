@@ -45,7 +45,7 @@ int main() {
 
 	if (engine == "vm") {
 		auto comp = new Compiler();
-		auto status = comp->compile(program.get());
+		auto status = comp->compile(*program);
 		if (status.has_value()) {
 			std::cout << "compilation unsuccessful";
 			return -1;
@@ -57,8 +57,8 @@ int main() {
 
 		auto vm_status = vm->run();
 		timestamp_t t1 = get_timestamp();
-		if (vm_status != 0) {
-			std::cout << "running unsuccessful";
+		if (vm_status.has_value()) {
+			std::cout << "running unsuccessful: " << vm_status.value();
 			return -1;
 		}
 
